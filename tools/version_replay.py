@@ -54,6 +54,7 @@ REPLAY_START = "0.1.0.0-pre-alpha"
 # closed batch, covering BATCH_LOG.md exactly.
 UNITS = [
     ("A1", "initial", "The governed repository itself: doc-pack, instruction surface, ratified genesis direction (DR-001..DR-009); no mod code."),
+    ("A2", "kohai", "The verified ground before anything builds on it: forks DR-010..DR-012, the engine contract, the sister audit, findings F-001..F-006; preparation, not a shipped capability."),
 ]
 
 TIER_MEANINGS = [

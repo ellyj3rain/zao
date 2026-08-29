@@ -1,32 +1,41 @@
 | Document | Zombie Awareness Overhaul Session State |
 |---|---|
-| Version | `0.1.0.0-pre-alpha` |
+| Version | `0.1.1.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `SESSION_STATE.md` |
 | Status | CANONICAL - where the work actually stands. |
 
 # Session state
 
-**As of** 2026-08-29, `[A1]` close.
+**As of** 2026-08-29, `[A2]` close.
 
 ## Standing
 
-The governed repository exists: doc-pack, instruction surface, version
-machine, two-border gate, and nine ratified decisions (DR-001..DR-009)
-restating the operator's genesis direction. The catalog is ZAO's own, thin,
-from `[A1]`; `A2` is the next batch.
+`[A1]` established the governed repository: doc-pack, instruction surface,
+version machine, two-border gate, and DR-001..DR-009 restating the
+operator's genesis direction. `[A2]` closed three operator forks (DR-010
+standalone-and-sister, DR-011 derived records for the ambient dead, DR-012
+the per-outcome player rule) and modeled the ground on the operator's
+redirect: `ENGINE_CONTRACT.md` holds the disassembled turn machinery and
+the per-body surface, `SAO_SEAM_AUDIT.md` holds the sister at the seam with
+five named collision points, and `FINDINGS.md` opened with F-001..F-006 —
+the corpse-modData identity channel, the nameless turn, the DoZombieStats
+re-roll chief among them. F-003's consequence for SAO's own turning
+recognition was reported upstream as a separate task. `A3` is the next
+batch.
 
-No mod code exists. Every engine surface named in `ARCHITECTURE.md` is a
-claim awaiting G0's file-and-line evidence; `FINDINGS.md` is empty by
-design.
+No mod code exists. Everything structural is verified against the installed
+jar and shipped trees; nothing has a live receipt — the G0 ledger
+(`ENGINE_CONTRACT.md` §10) is the honest list.
 
 ## Open items
 
-The fork ledger in `ROADMAP.md` is the live list of decisions reserved to
-the operator: mutation axes (hybridization candidate recorded), strain
-names, rarity, enable defaults, the player's relation to the axes, SAO
-posture, preexisting zombies, mod id, publication. The architectural forks
-among them gate what `A2` can specify; they are being asked, not assumed.
+The interrelation draft for Knox, decay, and mutation was presented to the
+operator and awaits ratification or amendment; nothing of it is inscribed.
+The fork ledger in `ROADMAP.md` keeps what stays reserved: mutation axes
+(operator direction recorded, draft owed), strain names, rarity, enable
+defaults, mod id, publication. Per-outcome player calls (DR-012) land at
+the batches that build the outcomes.
 
 ## Instruments
 

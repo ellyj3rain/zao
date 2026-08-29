@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Memory |
 |---|---|
-| Version | `0.1.0.0-pre-alpha` |
+| Version | `0.1.1.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `MEMORY.md` |
 | Status | ACTIVE - index of every root document and its standing. |
@@ -34,6 +34,8 @@ it is current. Nothing at the root is unclassified.
 | `VERSION_MAP.md` | REGULATORY | The version machine's rendering over the closed chronology. |
 | `ROADMAP.md` | CANONICAL | Gate order and the open-fork ledger. |
 | `SESSION_STATE.md` | CANONICAL | Where the work actually stands. |
+| `ENGINE_CONTRACT.md` | CANONICAL, INCOMPLETE | The verified engine mechanics the turned require; live-unverified throughout. |
+| `SAO_SEAM_AUDIT.md` | CANONICAL | Reference audit of the sister at the turn; collision points and precedents. |
 | `VERSION` | CANONICAL | The machine's output. Every root header's `Version` cell reads this and nothing else. |
 | `LICENSE` | CANONICAL | GPL-3.0. |
 

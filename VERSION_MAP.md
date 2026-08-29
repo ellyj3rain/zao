@@ -16,9 +16,9 @@ the machine. Names, dates, and threads below come from
 | Form | `major.minor.kohai.patch-maturity` |
 | Hard caps | minor 12; kohai 16; patch 24 |
 | Replay start | `0.1.0.0-pre-alpha` |
-| Current version | `0.1.0.0-pre-alpha` |
-| Closed chronology | `A1` |
-| Next batch | `A2` |
+| Current version | `0.1.1.0-pre-alpha` |
+| Closed chronology | `A1-A2` |
+| Next batch | `A3` |
 | Executable source | [`tools/version_replay.py`](tools/version_replay.py) |
 
 ## Tier meanings
@@ -36,6 +36,7 @@ the machine. Names, dates, and threads below come from
 | Batch | Date | Tier | Resulting version | Name | Classification |
 |---|---|---|---|---|---|
 | `A1` | 2026-08-29 | initial | `0.1.0.0-pre-alpha` | Repository and governance surface | The governed repository itself: doc-pack, instruction surface, ratified genesis direction (DR-001..DR-009); no mod code. |
+| `A2` | 2026-08-29 | kohai | `0.1.1.0-pre-alpha` | Operator forks closed; the sister and the engine modeled | The verified ground before anything builds on it: forks DR-010..DR-012, the engine contract, the sister audit, findings F-001..F-006; preparation, not a shipped capability. |
 
 ## Maturity
 
@@ -45,11 +46,11 @@ says.
 
 ## Next movement
 
-`A2` is the next batch. Its content determines its tier after it
+`A3` is the next batch. Its content determines its tier after it
 exists:
 
-| If A2 is | Result |
+| If A3 is | Result |
 |---|---|
-| patch or hotfix | `0.1.0.1-pre-alpha` |
-| kohai | `0.1.1.0-pre-alpha` |
+| patch or hotfix | `0.1.1.1-pre-alpha` |
+| kohai | `0.1.2.0-pre-alpha` |
 | minor | `0.2.0.0-pre-alpha` |

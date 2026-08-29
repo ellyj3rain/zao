@@ -16,7 +16,17 @@ design.
 The gate, its borders, the version machine, and the repository's own
 discipline.
 
-**Batches**: `A1`
+**Batches**: `A1`, `A2`
 
 **Owes**: a Lua structural border the moment the first Lua lands; a control
 for every border as it is born.
+
+### <a id="t-002"></a>T-002 - Verification against the real artifact
+
+Instruments and audits measured against the genuine artifact, engine or
+code — the installed jar, the shipped trees, the sister's actual sources.
+
+**Batches**: `A2`
+
+**Owes**: the G0 ledger in `ENGINE_CONTRACT.md` §10, every item; live
+receipts for all of it.
