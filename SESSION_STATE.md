@@ -30,10 +30,15 @@ jar and shipped trees; nothing has a live receipt — the G0 ledger
 
 ## Open items
 
-**ZAO is holding, by operator direction after [A2]:** the seam items the
-model surfaced go back to SAO first (the turning identity chain, the
-pool-take, the promise target, the uncited constants, the belief-scope
-fork — carried to the sister as a self-contained repair prompt). ZAO
+**ZAO is holding, by operator direction after [A2]:** SAO's ontology gets
+concreted first — the operator's words: ZAO built on an unconcreted SAO
+ontology "won't develop how it needs to be developed." The repair prompt
+carried to the sister covers: making the turn real (arm the corpse timer,
+the modData identity chain, the false contract row), the blind pool-take
+deletion (fix regardless of ZAO), the promise target, the uncited
+engine-authority constants, the belief-scope fork, grounding the zombie
+population in the county's real demography and the lore (the census
+precedent extended to the dead), and a general hardening sweep. ZAO
 determinations resume when the operator returns with those resolved.
 
 The operator also corrected the axes framing: the engine's per-body fields
