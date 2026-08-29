@@ -201,3 +201,64 @@ the coordinate.
 its tier and argument, run `python tools/version_replay.py --write`, and
 restamp the doc headers. `VERSION` and `VERSION_MAP.md` are never edited by
 hand. The gate holds every stated version to the replay.
+
+---
+
+## DR-010 — Standalone and an integrated sister, both
+
+**Date** 2026-08-29 09:10 UTC / 2026-08-29 02:10 PDT
+**Status** RATIFIED (operator-directed: "it can both be standalone and a fully integrated sister")
+
+**Decision.** ZAO reads SAO's record at the turn where SAO is present, and
+derives a thin record for a turned body where SAO is absent. It never
+requires SAO, and it never ignores SAO where SAO is loaded.
+
+**Rationale.** The same posture DR-005 takes toward the recovery mods,
+applied to the sister: richer beside her, whole without her. A person SAO
+tracked for weeks must not turn into a stranger.
+
+**Consequences.** The record layer has one shape with two sources — read or
+derived — and everything downstream of it is source-blind. No ZAO feature
+may branch on "is SAO installed" beyond the record source itself.
+
+---
+
+## DR-011 — The ambient dead carry derived records
+
+**Date** 2026-08-29 09:10 UTC / 2026-08-29 02:10 PDT
+**Status** RATIFIED (operator-selected)
+
+**Decision.** The county's preexisting zombies — turned before anyone was
+watching, with no tracked person behind them — draw a decayed thin record
+from where they stand, on SAO's world-origin precedent: a body in a house
+was plausibly its occupant.
+
+**Rationale.** Without this, the county's millions stay ordinary shamblers
+forever and settlement formation (DR-006) could only ever involve the
+recently dead. Mechanism one must cover the whole county.
+
+**Consequences.** Derivation is a record source under DR-010's one-shape
+rule. What a derived record may plausibly contain is bounded by where the
+body is and what it wears and carries — never by what the encounter would
+find convenient.
+
+---
+
+## DR-012 — The player walks an axis where the loop supports it
+
+**Date** 2026-08-29 09:10 UTC / 2026-08-29 02:10 PDT
+**Status** RATIFIED (operator-directed: "wherever it makes sense in the gameplay loop; by design some things only make sense because they are NPCs")
+
+**Decision.** Whether the player experiences a given mutation outcome is
+decided per outcome by whether the gameplay loop supports it — not by a
+blanket yes or no. Some outcomes exist only for NPCs, by design, because
+they only make sense uncontrolled by a human.
+
+**Rationale.** The operator's rule verbatim. A spread built for watching
+the county is not automatically a spread built for playing, and forcing
+symmetry either way is the flattening DR-008 forbids.
+
+**Consequences.** Every outcome region that ships states its player-side
+answer at the batch that builds it, with NPC-only as the default until
+stated. Player-facing outcomes must close their loop (agency, feedback,
+an ending) before shipping as playable.

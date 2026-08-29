@@ -64,13 +64,13 @@ in `DECISION_REGISTRY.md` and the fork is struck here.
 
 | Fork | What it decides | Status |
 |---|---|---|
-| Mutation axes | The separate axes mutation moves on (DR-008 consequence). Operator-proposed candidate on the table: hybridization as a form of mutation, both directions, good and bad; the still-human bloodlusted type is distinct from it, not a grade of it. | OPEN — operator direction of 2026-08-29 recorded; axes not ratified |
-| Strain names | Names for whatever the axes yield. | OPEN — operator names them |
+| Mutation axes | The gradients and branches mutation moves on (DR-008 consequence). Operator direction of 2026-08-29: think in spectrums and gradients, branches that are not binaries, spectrums along each branch, variation at every level; decay can come back via mutation; end states can pass human strength and speed; hybridization on the table, both directions, good and bad; nothing gimmicky, no example names (the comics, the ghoul parallel) promoted into spec. Neo drafts the interrelation of Knox, decay, and mutation; the operator ratifies. | OPEN — draft owed at A2 |
+| Strain names | Names for whatever the axes yield, and for the recognizable regions of the outcome space. | OPEN — operator names them |
 | Rarity | Numbers for the spread's tails, settlement frequency included. | OPEN |
 | Enable defaults | Sandbox defaults: what ships on, what ships off. | OPEN |
-| Player on the axes | Whether the player walks the same mutation axes as NPCs. | OPEN |
-| SAO posture | Whether ZAO requires SAO, or runs beside vanilla with records derived some other way. | OPEN |
-| Preexisting zombies | Whether the county's ambient zombies (no SAO record) get derived thin records — SAO's world-origin precedent — or stay vanilla, ZAO applying only to tracked turns. | OPEN |
+| Player on the axes | ~~Whether the player walks the same mutation axes as NPCs.~~ RATIFIED as a rule (DR-012): per outcome, where the gameplay loop supports it; some outcomes NPC-only by design. Each shipped outcome still states its player-side answer at its own batch. | CLOSED to a per-outcome call |
+| SAO posture | ~~Whether ZAO requires SAO.~~ RATIFIED (DR-010): standalone and an integrated sister, both — read where present, derive where absent, one record shape. | CLOSED |
+| Preexisting zombies | ~~Derived records or vanilla.~~ RATIFIED (DR-011): the ambient dead carry derived thin records, world-origin precedent. | CLOSED |
 | Mod id | The stable id, before the mod tree ships; changing it later breaks saves. | OPEN — operator names it |
 | Publication | Whether and when this repository gets a public remote. | OPEN — local-first until directed |
 
