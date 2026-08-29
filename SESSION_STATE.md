@@ -1,54 +1,53 @@
 | Document | Zombie Awareness Overhaul Session State |
 |---|---|
-| Version | `0.1.1.0-pre-alpha` |
+| Version | `0.1.1.1-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `SESSION_STATE.md` |
 | Status | CANONICAL - where the work actually stands. |
 
 # Session state
 
-**As of** 2026-08-29, `[A2]` close.
+**As of** 2026-08-29, `[A3]` close.
 
 ## Standing
 
 `[A1]` established the governed repository: doc-pack, instruction surface,
-version machine, two-border gate, and DR-001..DR-009 restating the
-operator's genesis direction. `[A2]` closed three operator forks (DR-010
-standalone-and-sister, DR-011 derived records for the ambient dead, DR-012
-the per-outcome player rule) and modeled the ground on the operator's
-redirect: `ENGINE_CONTRACT.md` holds the disassembled turn machinery and
-the per-body surface, `SAO_SEAM_AUDIT.md` holds the sister at the seam with
-five named collision points, and `FINDINGS.md` opened with F-001..F-006 —
-the corpse-modData identity channel, the nameless turn, the DoZombieStats
-re-roll chief among them. F-003's consequence for SAO's own turning
-recognition was reported upstream as a separate task. `A3` is the next
-batch.
+version machine, two-border gate, DR-001..DR-009. `[A2]` closed three
+operator forks (DR-010..DR-012) and modeled the ground: the engine
+contract, the sister audit, findings F-001..F-006; the seam repairs went
+back to SAO as a portable prompt and ZAO held. `[A3]` is the operator's
+corrections and the sister's answer: the axes framing corrected (engine
+fields are actuators, not the axis set), the corpse-side ruled a gap and
+repaired over there, and — after SAO's hardening landed (its 1.11.2.0
+tip) — two of this repository's own findings falsified and re-derived by
+hand (F-007: the character's modData reaches the corpse unconditionally,
+stamping the living body suffices; F-008: the corpse knows the name, the
+risen body does not), the ratified identity contract adopted (DR-013:
+`SAOPersonId` verbatim, the crowd ledger, the identity-bearing predicate
+shape), and the sister's verified arming chain recorded
+(`ENGINE_CONTRACT.md` §9a). `A4` is the next batch.
 
-No mod code exists. Everything structural is verified against the installed
-jar and shipped trees; nothing has a live receipt — the G0 ledger
-(`ENGINE_CONTRACT.md` §10) is the honest list.
+No mod code exists, by design of the gate below.
+
+## The gate
+
+**ZAO's mechanics stay closed until the turn has one live receipt** — a
+bitten SAO survivor witnessed dying, leaving a named corpse, rising with
+`SAOPersonId` intact, and being recognized. The operator is play-testing
+SAO 1.11.2.0 now; the receipt is expected from those sessions. Until it
+lands, ZAO work is evidence, contracts, and paper only
+(`ENGINE_CONTRACT.md` §10.1; DR-013 consequences). The next session
+inherits this gate.
 
 ## Open items
 
-**ZAO is holding, by operator direction after [A2]:** SAO's ontology gets
-concreted first — the operator's words: ZAO built on an unconcreted SAO
-ontology "won't develop how it needs to be developed." The repair prompt
-carried to the sister covers: making the turn real (arm the corpse timer,
-the modData identity chain, the false contract row), the blind pool-take
-deletion (fix regardless of ZAO), the promise target, the uncited
-engine-authority constants, the belief-scope fork, grounding the zombie
-population in the county's real demography and the lore (the census
-precedent extended to the dead), and a general hardening sweep. ZAO
-determinations resume when the operator returns with those resolved.
-
-The operator also corrected the axes framing: the engine's per-body fields
-(F-005) are actuators, not the axis set — the design axes are ZAO's own
-and new, inverse/mirror axes included (`ROADMAP.md`, mutation-axes fork).
-The interrelation draft for Knox, decay, and mutation awaits ratification
-or amendment behind that hold; nothing of it is inscribed. The fork ledger
-keeps what stays reserved: mutation axes, strain names, rarity, enable
-defaults, mod id, publication. Per-outcome player calls (DR-012) land at
-the batches that build the outcomes.
+The interrelation draft for Knox, decay, and mutation awaits operator
+ratification behind the gate; nothing of it is inscribed. The design axes
+are ZAO's own and new — engine fields are actuators (F-005, as corrected);
+inverse/mirror axes are in the operator's direction. The fork ledger keeps
+what stays reserved: mutation axes, strain names, rarity, enable defaults,
+mod id, publication. Per-outcome player calls (DR-012) land at the batches
+that build the outcomes.
 
 ## Instruments
 

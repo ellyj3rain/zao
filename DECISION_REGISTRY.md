@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Decision Registry |
 |---|---|
-| Version | `0.1.1.0-pre-alpha` |
+| Version | `0.1.1.1-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `DECISION_REGISTRY.md` |
 | Status | CANONICAL, APPEND-ONLY - ratified decisions. |
@@ -262,3 +262,32 @@ symmetry either way is the flattening DR-008 forbids.
 answer at the batch that builds it, with NPC-only as the default until
 stated. Player-facing outcomes must close their loop (agency, feedback,
 an ending) before shipping as playable.
+
+---
+
+## DR-013 — The identity contract at the seam, adopted from the sister
+
+**Date** 2026-08-29 (after SAO's ontology hardening, its 1.11.2.0 tip)
+**Status** RATIFIED (mirrors SAO DR-016 and DR-019, operator-ratified
+there 2026-08-29; extends DR-004 and DR-010)
+
+**Decision.** The division at the seam, as ratified on the SAO side: SAO
+owns death of the person completely — the record, the corpse's identity,
+and arming the turn under the game's own rules. ZAO owns the risen brain
+when installed and on; one brain per body (DR-004 unchanged). The identity
+key is SAO's **`SAOPersonId`**, stamped on the living body's modData and
+carried by the engine through corpse and reanimation (F-007); ZAO reads
+exactly that string and never mints a parallel key for people SAO tracks.
+
+**Rationale.** One key, one accounting, one owner per fact. The engine
+performs the whole relay itself; a second channel would be drift waiting
+to happen.
+
+**Consequences.** ZAO's derived records for the ambient dead (DR-011) use
+ZAO's own keying only where no `SAOPersonId` exists, and yield to it where
+one does. Knox ids contain `:`, so ZAO wire protocols that separate on `:`
+encode the id. If ZAO ever counts or moves the crowd, it reads SAO's
+`"SurvivorAwareness_CrowdLedger"` rather than keeping a second ledger; any
+ZAO consumer of the zombie list mirrors SAO's identity-bearing predicate
+shape, failing closed. ZAO mechanics stay gated until the turn has one
+live receipt (`ENGINE_CONTRACT.md` §10.1).

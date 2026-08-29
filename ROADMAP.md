@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Roadmap |
 |---|---|
-| Version | `0.1.1.0-pre-alpha` |
+| Version | `0.1.1.1-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `ROADMAP.md` |
 | Status | CANONICAL - gate order and the open-fork ledger. |
@@ -64,7 +64,7 @@ in `DECISION_REGISTRY.md` and the fork is struck here.
 
 | Fork | What it decides | Status |
 |---|---|---|
-| Mutation axes | The gradients and branches mutation moves on (DR-008 consequence). Operator direction of 2026-08-29: think in spectrums and gradients, branches that are not binaries, spectrums along each branch, variation at every level; decay can come back via mutation; end states can pass human strength and speed; hybridization on the table, both directions, good and bad; nothing gimmicky, no example names (the comics, the ghoul parallel) promoted into spec. Corrected by the operator after [A2]: the engine's per-body fields (F-005) are ACTUATORS the axes project onto, not the axis set — the design axes are ZAO's own and new, and the direction includes inverse/mirror axes. Neo drafts the interrelation of Knox, decay, and mutation; the operator ratifies. | OPEN — draft owed; held behind the SAO seam repairs |
+| Mutation axes | The gradients and branches mutation moves on (DR-008 consequence). Operator direction of 2026-08-29: think in spectrums and gradients, branches that are not binaries, spectrums along each branch, variation at every level; decay can come back via mutation; end states can pass human strength and speed; hybridization on the table, both directions, good and bad; nothing gimmicky, no example names (the comics, the ghoul parallel) promoted into spec. Corrected by the operator after [A2]: the engine's per-body fields (F-005) are ACTUATORS the axes project onto, not the axis set — the design axes are ZAO's own and new, and the direction includes inverse/mirror axes. Neo drafts the interrelation of Knox, decay, and mutation; the operator ratifies. | OPEN — draft owed; gated behind the live turn receipt (SESSION_STATE, the gate) |
 | Strain names | Names for whatever the axes yield, and for the recognizable regions of the outcome space. | OPEN — operator names them |
 | Rarity | Numbers for the spread's tails, settlement frequency included. | OPEN |
 | Enable defaults | Sandbox defaults: what ships on, what ships off. | OPEN |

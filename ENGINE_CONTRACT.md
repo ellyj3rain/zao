@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Engine Contract |
 |---|---|
-| Version | `0.1.1.0-pre-alpha` |
+| Version | `0.1.1.1-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `ENGINE_CONTRACT.md` |
 | Status | CANONICAL, INCOMPLETE - the verified engine mechanics the turned require; nothing here is live-verified. |
@@ -45,26 +45,29 @@ is structurally verified and live-unverified; live receipts are G0's close.
   - 643/654: `IsoPlayer.reanimatedCorpse` / `.reanimatedCorpseId` written —
     the player object points at its zombie, not the reverse.
 
-**How a corpse gets a descriptor at all** (HAND-CHECKED): the `IsoDeadBody`
-constructor writes `desc` in exactly two branches — `instanceof IsoZombie`
-(ctor offset 626) and `instanceof IsoSurvivor` (offset 1019), each via the
-`SurvivorDesc` copy-constructor; the only other `desc` write in the class is
-a fresh `SurvivorDesc(boolean)` in a separate method (offset 239 there).
-`getDescriptor()` is a bare field read with no fallback. **An `IsoPlayer`
-corpse — every SAO shell — therefore carries `desc = null`.**
+**How a corpse gets a descriptor** (HAND-CHECKED; corrected at [A3] by
+F-008 — the [A2] reading of this paragraph was falsified by SAO's pass and
+re-derived here): the `IsoDeadBody(IsoGameCharacter)` constructor copies
+the dying character's descriptor for zombie characters (offset 626) AND for
+every non-animal character at offsets 1007-1019 — the `instanceof
+IsoSurvivor` at 989 guards only a survivor-list removal, not the copy.
+Player corpses carry the full descriptor, with the voice prefix adjusted to
+Male/FemaleZombie (1035-1064). `getDescriptor()` is a bare field read.
 
-**Contract consequences.**
-1. *The name does not survive the turn through the engine.* Any recognition
-   chain built on the zombie's descriptor name is structurally dead for
-   player-class corpses (see `SAO_SEAM_AUDIT.md` §5).
-2. *The modData table is the engine-native identity channel.* Stamp the
-   CORPSE's modData and `reanimate()` carries it to the zombie. The corpse
-   is NOT auto-populated from the dying character (the class has exactly two
-   `copyTable` sites: `reanimate()` and `reanimateAnimal()`) — a mod must
-   write the corpse itself. `Events.OnDeadBodySpawn` fires with the body
-   (shipped subscriber: `media/lua/client/ISUI/ISWorldObjectContextMenu.lua:2795`)
-   and `body:getModData()` is exercised by shipped Lua
-   (`media/lua/shared/Definitions/animal/ButcheringUtil.lua:594,602`).
+**Contract consequences (as corrected at [A3]).**
+1. *The corpse knows the name; the risen body does not.* Named-corpse reads
+   are legitimate. The RISEN body's descriptor is fresh (gender + voice
+   prefix only, offsets 43-74), and per SAO's pass
+   `SharedDescriptors.createPlayerZombieDescriptor` no-ops outside a
+   server — so recognition of the turned still cannot ride names (F-008).
+2. *The modData table is the engine-native identity channel, end to end.*
+   The constructor copies the character's modData onto the corpse
+   unconditionally (offsets 1102-1113, the join point every path reaches),
+   and `reanimate()` copies the corpse's onto the zombie (234-242). Stamp
+   the LIVING body once and the engine carries it through death and the
+   turn (F-007); the corpse's copy also persists on disk through
+   `IsoObject`'s serialization while the body lies there. No
+   `OnDeadBodySpawn` correlation is needed for identity.
 
 Persistence: `zombie.ReanimatedPlayers` (`addReanimatedPlayersToChunk`,
 `save/loadReanimatedPlayers`) keeps reanimated players across chunk load;
@@ -264,12 +267,48 @@ UNCHECKED and decisive** — if not, per-body control needs a Java component
 (SAO ships one; ZombieBuddy is the load path, `SAO_SEAM_AUDIT.md` §7). No
 `*Reanimate*` global exists.
 
+## 9a · The ratified identity contract, and the sister's new ground ([A3])
+
+**The key.** SAO stamps every person's id into the living body's modData
+under the key **`SAOPersonId`** (SAO DR-019, operator-ratified 2026-08-29).
+ZAO reads exactly that string — verbatim, never respelled (ZAO DR-013).
+The engine's two `copyTable` sites carry it character → corpse → risen
+zombie (F-007). Caution: Knox record ids contain `:` (`ks:<kid>`), so any
+ZAO wire protocol that field-separates on `:` must encode the id (SAO uses
+`~`, decoded at one declared reader).
+
+**Composition facts from SAO's hardening (its 1.11.2.0 tip):** the spawn
+pool and presence layer reconcile against a durable ledger in ModData under
+`"SurvivorAwareness_CrowdLedger"` (fields `taken`/`added`) — if ZAO ever
+counts or moves the crowd, it reads that ledger rather than inventing a
+second accounting; and SAO's deletion-grade predicate
+(`SAOKnox.identityBearing`: Knox marks, `isReanimatedPlayer`,
+`SAOPersonId`, failing closed) is the pattern any ZAO consumer of the
+zombie list mirrors.
+
+**The arming chain and the course, adopted from SAO's verified pass**
+(receipts: SAO `FINDINGS.md` F-044..F-047; this repository re-derived the
+falsifying items in §1 and spot-checked the signatures below, but did not
+re-derive the full chain): single-player, the path is
+`PlayerOnGroundState.execute` → `die()` → become-corpse → died-listeners →
+`reanimateLater()`, gated on `shouldBecomeZombieAfterDeath()` (the
+Transmission switch over real infection; signature confirmed on
+`IsoGameCharacter` in this pass); `updateInternal`'s `die()` is
+server-only. A bite infects with CERTAINTY under any saliva transmission
+(`BodyPart.SetBitten` carries no roll); the infected die exactly at
+`infectionTime + pickMortalityDuration()` (Mortality 5 default = 48-72 h,
+trait-scaled), on `hoursSurvived` for `IsoPlayer` characters.
+
 ## 10 · The G0 ledger — what remains unverified
 
 Everything above is structural. Still owed, each a named gap:
 
-1. LIVE: a dead `IsoPlayer`-class corpse actually reanimates with its
-   modData intact (the whole §1 contract, witnessed once in a running game).
+1. LIVE — **the gate on all ZAO mechanics**: one witnessed turn — a bitten
+   SAO survivor dying, leaving a named corpse, rising with `SAOPersonId`
+   intact, and being recognized. Expected from the operator's current SAO
+   1.11.2.0 play sessions. (The [A2] sub-question "does the corpse inherit
+   the character's modData?" is CLOSED structurally by F-007; the live
+   witness remains.)
 2. `LuaManager$Exposer` field exposure (§9) — decides Lua vs Java control.
 3. `BodyDamage.Update()` infection→zombify branch (§7).
 4. Per-state field reads (§4); `initializeStates()` registration order.

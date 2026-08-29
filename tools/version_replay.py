@@ -55,6 +55,7 @@ REPLAY_START = "0.1.0.0-pre-alpha"
 UNITS = [
     ("A1", "initial", "The governed repository itself: doc-pack, instruction surface, ratified genesis direction (DR-001..DR-009); no mod code."),
     ("A2", "kohai", "The verified ground before anything builds on it: forks DR-010..DR-012, the engine contract, the sister audit, findings F-001..F-006; preparation, not a shipped capability."),
+    ("A3", "patch", "Corrections across the seam: two findings falsified and re-derived (F-007/F-008), the identity contract adopted (DR-013), the mechanics gate armed - verification closure, no boundary moved."),
 ]
 
 TIER_MEANINGS = [
