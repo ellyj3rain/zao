@@ -79,11 +79,13 @@ engine's", `:4357-4359`); the operator has since ruled it a GAP to repair:
 SAO owns death of the person completely — the record, the corpse's
 identity, and ensuring the turn actually fires under the game's own rules —
 while the risen body's brain stays vanilla's, or ZAO's when ZAO is on
-(DR-004). Note the sharpest edge: no code anywhere may ever set
-`reanimateTime` for a dead shell's corpse, so a bitten SAO survivor
-possibly never rises at all — the [A2] repair prompt carries this to SAO
-for verification and repair. Its zombie director (`SAOZombieDirector.java`)
-drives vanilla zombies AT its shells for combat and is harness-only in Lua.
+(DR-004). The sharpest edge at [A2] — nothing arming `reanimateTime` for a
+dead shell's corpse, so a bitten survivor possibly never rose at all —
+went to SAO in the repair prompt and was repaired in its hardening (SAO
+1.11.2.0, its DR-016); the verified single-player arming chain is recorded
+at `ENGINE_CONTRACT.md` §9a. Its zombie director
+(`SAOZombieDirector.java`) drives vanilla zombies AT its shells for combat
+and is harness-only in Lua.
 
 **The surface ZAO exists to own — the risen body's mind — is genuinely
 empty**, and stays ZAO's after the SAO-side repairs: SAO makes the turn
@@ -98,18 +100,18 @@ record already marked dead (`SAO_Perception.lua:208-233` — `zrec.dead` is
 the entire test), then fires witness/grief/promise machinery
 (`SAO_Controller.lua:4073-4108`).
 
-**[A2]'s hand-checked engine finding breaks this chain twice for SAO's own
-people** (F-003, `ENGINE_CONTRACT.md` §1): an `IsoPlayer`-class corpse never
-receives a `SurvivorDesc` (the corpse constructor copies descriptors only
-for `IsoZombie`/`IsoSurvivor` characters), and `reanimate()` builds the new
-zombie a fresh descriptor carrying only gender and voice prefix. The
-zombie of a turned SAO survivor therefore has no name for the scanner to
-read, and `findNamedCorpsesNear` (`SAONeeds.java:2089-2135`) reads null
-descriptors off shell corpses. The chain was structurally sound for
-KnoxSurvivors' zombie-backed humans and is structurally dead for SAO's
-player-backed shells. Reported upstream as a spun-off task; ZAO's own
-identity channel is the corpse-modData copy the engine performs
-(F-002), which owes nothing to names.
+**Corrected at [A3] (F-008 supersedes [A2]'s F-003 reading):** the chain
+breaks ONCE, not twice. The corpse DOES carry the person's full descriptor
+— the constructor's copy is unguarded for non-animal characters — so
+named-corpse reads (`findNamedCorpsesNear`, `SAONeeds.java:2089-2135`) are
+legitimate. What stays broken is the risen body: `reanimate()` builds it a
+fresh descriptor carrying gender and voice prefix only, and the shared
+player-zombie descriptor path no-ops in single player, so the zombie of a
+turned survivor is nameless and name-keyed recognition can never fire on
+it. SAO's hardening answered by ratifying identity onto modData: the
+`SAOPersonId` key (SAO DR-019), which the engine relays character →
+corpse → risen zombie by itself (F-007) and which ZAO reads verbatim
+(DR-013).
 
 ## 5 · Collision points — negotiated, not discovered later
 
