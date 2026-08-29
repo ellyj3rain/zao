@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# [A1] The pre-commit hook: the borders are not a habit.
+#
+# Install (or re-install after a fresh clone):
+#     cp tools/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
+#
+# Refuses the commit when the gate refuses. To commit anyway - which
+# should be a deliberate act with a reason written into the batch
+# record, not a reflex:
+#     git commit --no-verify
+exec "$(git rev-parse --show-toplevel)/tools/check.sh" --staged
