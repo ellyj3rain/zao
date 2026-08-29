@@ -68,20 +68,26 @@ the claim travels as told-provenance news. SAO's dormant bite-risk constants
 (`0.10 + min(0.5, hours/480)`, `:1416-1418`) claim to be "the engine's own
 turning odds" with no citation — treat as SAO's tuning, not engine fact.
 
-## 3 · The corpse, over there — deliberately unowned
+## 3 · The corpse, over there — a gap, not a principle
 
-SAO refuses the body after death, in its own words: "never removeFromWorld a
-corpse" (`SAO_Controller.lua:4390`), "the corpse is the engine's — a person
-ended, they do not despawn" (`:4357-4359`). Nothing in the sister's tree
-reanimates, zombifies, spawns a zombie from a corpse, or drives a turned
-body (full-tree sweep at [A2]: the only `reanimat*` hits are a javap note
-and an unshipped roadmap line). Its zombie director
-(`SAOZombieDirector.java`) drives vanilla zombies AT its shells for combat
-and is harness-only in Lua.
+Nothing in the sister's tree touches the body after death: no corpse
+removal ("never removeFromWorld a corpse", `SAO_Controller.lua:4390`), no
+reanimation, no zombify, no driving of a turned body (full-tree sweep at
+[A2]: the only `reanimat*` hits are a javap note and an unshipped roadmap
+line). Its code comments dress this as doctrine ("the corpse is the
+engine's", `:4357-4359`); the operator has since ruled it a GAP to repair:
+SAO owns death of the person completely — the record, the corpse's
+identity, and ensuring the turn actually fires under the game's own rules —
+while the risen body's brain stays vanilla's, or ZAO's when ZAO is on
+(DR-004). Note the sharpest edge: no code anywhere may ever set
+`reanimateTime` for a dead shell's corpse, so a bitten SAO survivor
+possibly never rises at all — the [A2] repair prompt carries this to SAO
+for verification and repair. Its zombie director (`SAOZombieDirector.java`)
+drives vanilla zombies AT its shells for combat and is harness-only in Lua.
 
-**The surface ZAO exists to own is genuinely empty.** SAO's roadmap itself
-marks outbreak/turning live-verification as unshipped
-(`ROADMAP.md:203-205`).
+**The surface ZAO exists to own — the risen body's mind — is genuinely
+empty**, and stays ZAO's after the SAO-side repairs: SAO makes the turn
+happen; ZAO is what the turned body IS.
 
 ## 4 · Turning recognition, over there — and where it breaks
 
