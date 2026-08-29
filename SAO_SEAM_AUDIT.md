@@ -8,9 +8,15 @@
 # The sister at the seam — what SAO is when a person dies
 
 Read at [A2] from `../survivor-awareness` at its `[C7]` tip
-(`1.10.6.0-pre-alpha`). This maps what SAO owns, what it deliberately does
-not, and where ZAO must not collide. Citations are SAO paths; line numbers
-are as of the audited tip and drift with the sister's own work.
+(`1.10.6.0-pre-alpha`). This maps what SAO owns, what it does not, and
+where ZAO must not collide. Citations are SAO paths; line numbers are as of
+the audited tip and drift with the sister's own work.
+
+A note on intent: where this audit says "deliberately" or quotes a
+doctrine, it reports what the sister's code and comments claim about
+themselves — not ratified operator intent. The operator may overturn any of
+it, and after [A2] directed exactly that: the seam items below went back to
+SAO as repairs and decisions, not as settled design.
 
 ## 1 · What a person IS over there
 

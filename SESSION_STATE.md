@@ -30,10 +30,18 @@ jar and shipped trees; nothing has a live receipt — the G0 ledger
 
 ## Open items
 
-The interrelation draft for Knox, decay, and mutation was presented to the
-operator and awaits ratification or amendment; nothing of it is inscribed.
-The fork ledger in `ROADMAP.md` keeps what stays reserved: mutation axes
-(operator direction recorded, draft owed), strain names, rarity, enable
+**ZAO is holding, by operator direction after [A2]:** the seam items the
+model surfaced go back to SAO first (the turning identity chain, the
+pool-take, the promise target, the uncited constants, the belief-scope
+fork — carried to the sister as a self-contained repair prompt). ZAO
+determinations resume when the operator returns with those resolved.
+
+The operator also corrected the axes framing: the engine's per-body fields
+(F-005) are actuators, not the axis set — the design axes are ZAO's own
+and new, inverse/mirror axes included (`ROADMAP.md`, mutation-axes fork).
+The interrelation draft for Knox, decay, and mutation awaits ratification
+or amendment behind that hold; nothing of it is inscribed. The fork ledger
+keeps what stays reserved: mutation axes, strain names, rarity, enable
 defaults, mod id, publication. Per-outcome player calls (DR-012) land at
 the batches that build the outcomes.
 
