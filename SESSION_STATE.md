@@ -1,13 +1,28 @@
 | Document | Zombie Awareness Overhaul Session State |
 |---|---|
-| Version | `0.1.1.1-pre-alpha` |
+| Version | `0.1.1.2-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `SESSION_STATE.md` |
 | Status | CANONICAL - where the work actually stands. |
 
 # Session state
 
-**As of** 2026-08-29, `[A3]` close.
+**As of** 2026-09-08, `[A4]` close - the repository is published and
+CI runs the gate. ZAO was eleven commits on a local `main` with no
+remote while SAO and CAO were both public under the same licence, and
+`GOVERNANCE.md` already said remotes publish the canonical tree. It is
+at `ellyj3rain/zao` now, public, history intact. With it came what the
+siblings carry and this did not: `ci-verify` running the diff-hygiene
+check and the whole border gate on every pull request and push to
+`main`, `codeql-python` over `tools/`, SAO's pull-request template and
+CODEOWNERS, a dependabot configuration that groups the two halves of
+`codeql-action` so SAO's `[C58]` cannot recur here, and the publishing
+convention `NEO.md` did not have - branch, one squashed commit,
+squash-merge, `main` protected and refusing a direct push. Border 1
+gained the `argv[1]` control mechanism it never had, which is the
+identical gap SAO found in its own `[C64]` the same day. What is
+deliberately absent is named in `.github/CI-README.md` rather than left
+as an oversight. `[A3]` before it.
 
 ## Standing
 

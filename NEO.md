@@ -56,6 +56,23 @@ Living people are SAO's until the turn.
 - **The gate.** `tools/check.sh` runs every border; the pre-commit hook runs
   it. Run it before every commit and read the whole verdict, including the
   exit code.
+- **Publishing.** A closed batch reaches `origin/main` through a branch and a
+  pull request, merged by you. `main` is protected and refuses a direct push.
+  The shape is SAO's, which is CAO's:
+
+  | Part | Shape |
+  |---|---|
+  | branch | `neo/a<n>-<short-slug>`, off the batch's own name |
+  | commit | ONE, squashed, carrying the tree at the batch's close |
+  | title | `[A<n>] <the batch's name from BATCH_LOG.md>` |
+  | body | `.github/pull_request_template.md`, filled in - not a rationale pasted in its place |
+  | merge | squash, delete the branch, by you and not left for the operator |
+
+  Never push a branch that carries local history: one squashed commit on
+  `origin/main` is the only thing that goes out. Check
+  `git rev-list --count origin/main..HEAD` at session start and say so if the
+  public copy has fallen behind. Assistance is not authorship: no co-author
+  trailers or tool attribution anywhere in the forge history.
 - **Names come from the operator or from surfaces that already exist** — SAO,
   CAO, vanilla, and the Workshop mods this project hooks. No new dialect, no
   provisional concept names promoted into spec. Strain names, rarity, enable

@@ -20,7 +20,12 @@ import pathlib
 import re
 import sys
 
-ROOT = pathlib.Path(__file__).resolve().parent.parent
+# [A4] An optional argv[1] points the checker at another tree root,
+# which is how its control runs. It had none - ROOT was the tree this
+# file lives in and nothing else - so the border could not be pointed
+# at a broken tree and its control had never been run. SAO carried the
+# same gap and found it the same way, in its own [C64].
+ROOT = pathlib.Path(sys.argv[1]).resolve() if len(sys.argv) > 1     else pathlib.Path(__file__).resolve().parent.parent
 VERSION_FILE = ROOT / "VERSION"
 MEMORY = ROOT / "MEMORY.md"
 
