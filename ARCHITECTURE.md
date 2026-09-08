@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Architecture |
 |---|---|
-| Version | `0.1.1.1-pre-alpha` |
+| Version | `0.1.1.2-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `ARCHITECTURE.md` |
 | Status | ACTIVE - ratified framework shape. Engine surfaces claimed here are unverified until `FINDINGS.md` carries them. |

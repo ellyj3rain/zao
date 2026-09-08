@@ -1,0 +1,51 @@
+name: CI Verify
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-verify-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  ci-verify:
+    name: ci-verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out the project
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # The diff-hygiene step below compares against the base ref, and
+          # a shallow clone would not have it.
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+
+      - name: Check committed diff hygiene
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            git diff --check "origin/${{ github.base_ref }}"...HEAD
+          else
+            git show --check --format=fuller HEAD
+          fi
+
+      # The gate. Every border in tools/ runs here, and it is the same
+      # content the pre-commit hook runs. Borders that read the installed
+      # game must report SKIPPED rather than passing - a check that
+      # cannot run must never look like a check that passed - because
+      # this runner has no Project Zomboid installation and never will.
+      - name: Run the borders
+        shell: bash
+        run: bash tools/check.sh

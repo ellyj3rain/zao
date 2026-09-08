@@ -16,7 +16,7 @@ design.
 The gate, its borders, the version machine, and the repository's own
 discipline.
 
-**Batches**: `A1`, `A2`, `A3`
+**Batches**: `A1`, `A2`, `A3`, `A4`
 
 **Owes**: a Lua structural border the moment the first Lua lands; a control
 for every border as it is born.
