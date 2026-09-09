@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Findings |
 |---|---|
-| Version | `0.1.1.7-pre-alpha` |
+| Version | `0.1.1.8-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `FINDINGS.md` |
 | Status | CANONICAL, APPEND-ONLY - verified engine findings from F-001. |
@@ -472,3 +472,48 @@ API has no way to say *I have let this one go*, and Bandits' release is
 visible only as the absence of a variable that used to be there.
 
 Nothing is designed here. The fork stays the operator's.
+
+---
+
+## F-014 — Five of the six per-body actuators are unreachable from Lua, so the axes drive from Java
+
+**Verified** [A10], structural (`javap` against the shipped
+`projectzomboid.jar`). Closes the second unchecked item in
+`ENGINE_CONTRACT.md` §9, which named it as the fact deciding Lua-side
+versus Java-side control.
+
+`IsoZombie` declares six public mutable int fields, which F-005 found:
+`speedType`, `strength`, `cognition`, `memory`, `sight`, `hearing`.
+
+**Only one of them has an accessor.** `getSpeedType()` exists.
+`getStrength`, `getCognition`, `getMemory`, `getSight` and
+`getHearing` do not, on `IsoZombie` or anywhere above it -
+`IsoGameCharacter` and `IsoMovingObject` were both checked and declare
+none. **No setter exists for any of the six**, including `speedType`;
+`setSpeedTypeFromWalkType()` derives that field from a walk-type string
+and is not a setter for it.
+
+**Kahlua's exposer publishes methods.**
+`zombie.Lua.LuaManager$Exposer` extends
+`se.krka.kahlua.integration.expose.LuaJavaClassExposer`, whose entire
+public exposure surface is method-shaped - `exposeMethod`,
+`exposeGlobalObjectFunction`, `exposeGlobalClassFunction`,
+`exposeGlobalFunctions`, `exposeLikeJava` and its recursive form. There
+is no field-exposing entry point on it.
+
+So from Lua a mod can read `speedType` through its getter and can reach
+none of the other five in either direction, and can write none of the
+six at all.
+
+**Consequence.** Any projection from ZAO's axes onto the per-body
+actuators is Java-side. That is not a preference and not a
+recommendation; it is the only reachable path. The runtime that already
+loads Java for the sister is ZombieBuddy, which is MIT.
+
+**Method note.** The exposer's lack of a field entry point is an
+absence, and this session has five recorded instances of an absence
+asserted from a narrow search. It is not load-bearing here: the
+positive test carries the finding on its own, because five actuators
+with no accessor anywhere in the inheritance chain are unreachable by a
+method-based binding whatever else that binding does. The negative is
+recorded as corroboration, not as the evidence.
