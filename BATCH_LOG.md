@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Batch Log |
 |---|---|
-| Version | `0.1.1.5-pre-alpha` |
+| Version | `0.1.1.6-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `BATCH_LOG.md` |
 | Status | REGULATORY - chronological batch index. |
@@ -23,3 +23,4 @@ history tree. The last row below is the tip.
 | [A5](Batches/A5-2026-09-09-the-turned-body-control-surface-and-the-players-own-dials.md) | 2026-09-09 | The turned body's control surface, and the player's own dials | [`T-002`](Batches/THREADS.md#t-002), [`T-001`](Batches/THREADS.md#t-001) |
 | [A6](Batches/A6-2026-09-09-antibodies-is-installed-and-g0-closes.md) | 2026-09-09 | Antibodies is installed, and G0 closes | [`T-002`](Batches/THREADS.md#t-002), [`T-001`](Batches/THREADS.md#t-001) |
 | [A7](Batches/A7-2026-09-09-a-second-mod-runs-behaviour-on-turned-bodies.md) | 2026-09-09 | A second mod runs behaviour on turned bodies, and publishes a claim API | [`T-002`](Batches/THREADS.md#t-002), [`T-001`](Batches/THREADS.md#t-001) |
+| [A8](Batches/A8-2026-09-09-a-claim-on-a-body-is-released-at-the-turn.md) | 2026-09-09 | A claim on a body is released at the turn | [`T-002`](Batches/THREADS.md#t-002), [`T-001`](Batches/THREADS.md#t-001) |
