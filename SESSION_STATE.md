@@ -1,26 +1,31 @@
 | Document | Zombie Awareness Overhaul Session State |
 |---|---|
-| Version | `0.1.1.6-pre-alpha` |
+| Version | `0.1.1.7-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `SESSION_STATE.md` |
 | Status | CANONICAL - where the work actually stands. |
 
 # Session state
 
-**As of** 2026-09-09, `[A8]` close - a claim on a body is released at
-the turn. `[A7]` read Bandits through The Mutants' compatibility shim;
-Bandits is installed, ships a `42.20` build, and reading it directly
-produced one correction and one mechanism (F-013). The correction:
-`[A7]` said Bandits publishes nothing, and it publishes four surfaces -
-a documented marker variable, four modData keys, a global, and a
-`Bandit.*` namespace of some twenty-five read functions. What is true
-is narrower: there is no canonical is-this-body-mine query, and The
-Mutants' three routes exist for a timing reason rather than an absence.
-The mechanism: Bandits **releases** the body when its NPC dies, which
-is DR-004's seam done by a third party on this project's own target
-build. A claim is a property of a body at a time, so a claim query has
-to be re-askable and a claim protocol needs a release as much as an
-assertion.
+**As of** 2026-09-09, `[A9]` close - the integration posture, and
+attribution per source. This repository had read five other mods for
+evidence and had no `CREDITS.md`; it has one now, and two rulings that
+were being applied without being written down are DR-014 and DR-015.
+
+DR-014: this project is the ontology other mods become coherent inside.
+Every good narrow answer on the Workshop ships its own small
+world-model, so four of them in one load order make four ontologies in
+one county. A taxonomy is the cheapest part of a mod and an
+implementation is the most expensive; names and categories are dropped
+freely, working code is the thing worth having, and what decides which
+body has a capability is always this project's own account of who that
+person was. DR-015 is the same rule at its sharpest case: a hostile is
+an outcome, and a mod that manufactures hostiles is a compatibility
+target.
+
+`CREDITS.md` also corrected a false dichotomy in its own first draft.
+Each source states something different, and two of the six are MIT -
+which was not known when `[A6]` and `[A7]` were written.
 
 ## Standing
 
@@ -78,7 +83,11 @@ now that a shipped precedent exists; and whether ZAO publishes a claim
 API, which is cheap only while no mod code exists. `[A8]` corrects `[A7]`'s reading of
 Bandits against Bandits itself and finds the release half of the claim
 protocol at the turn, which gives that fork a shape rather than only a
-question. `A9` is the next batch.
+question. `[A9]` writes the posture down, adds `CREDITS.md`, and finds
+that **Antibodies is MIT on its public repository** - which bears on the
+decision `[A6]` handed the operator, because a mod under MIT can be
+read as source rather than named at runtime. That adds an option to the
+fork rather than deciding it. `A10` is the next batch.
 
 No mod code exists, by design of the gate below.
 
