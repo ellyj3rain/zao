@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Memory |
 |---|---|
-| Version | `0.1.1.6-pre-alpha` |
+| Version | `0.1.1.7-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `MEMORY.md` |
 | Status | ACTIVE - index of every root document and its standing. |
@@ -38,6 +38,7 @@ it is current. Nothing at the root is unclassified.
 | `SAO_SEAM_AUDIT.md` | CANONICAL | Reference audit of the sister at the turn; collision points and precedents. |
 | `VERSION` | CANONICAL | The machine's output. Every root header's `Version` cell reads this and nothing else. |
 | `LICENSE` | CANONICAL | GPL-3.0. |
+| `CREDITS.md` | CANONICAL | Attribution and integration status per source; every entry states what was taken and what was not. |
 
 ## Instruction surface
 
