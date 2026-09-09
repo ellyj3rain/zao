@@ -7,10 +7,10 @@
 
 # Zombie Awareness Overhaul
 
-A Project Zomboid Build 42 add-on beside [Survivor Awareness
-Overhaul](../survivor-awareness): SAO owns the living, ZAO owns the turned,
-and the seam between them is the turn. With ZAO disabled, vanilla handles
-every corpse.
+A Project Zomboid Build 42 add-on to [Survivor Awareness
+Overhaul](../survivor-awareness). SAO handles living survivors. This
+handles a body after it turns, and the handover happens at death. With
+ZAO disabled, vanilla handles every corpse.
 
 The architecture across the three repositories - what SAO, ZAO and
 [Speakeasy](../zomboid-speakeasy) each own, and the three seams between
@@ -22,24 +22,32 @@ is for a reader who has only this one.
 
 Two mechanisms, litigated separately and never merged:
 
-- **Zombie intelligence** — modeled decay and neurodegeneration. What a
-  turned body knows and does is its person's own SAO record rotting: what
-  they had perceived, the verbs they carried in, falling off at different
-  speeds on different bodies. Rarely, and on purpose, groups of the turned
-  form settlements the way living survivors do — built whole, never stubbed
-  for being rare.
+- **Zombie intelligence** — modeled decay and neurodegeneration. A turned
+  body acts on its person's own SAO record as that record degrades. It
+  retains what they had perceived and the actions they could perform, and
+  loses both over time at a rate that differs per body. Groups of the
+  turned can form settlements the way living survivors do. That is rare by
+  design and is built complete rather than stubbed.
 - **Decay and mutation** — the pathogen's own mechanics, on two ledgers:
   what Knox does to bodies through which routes, and what anyone is
-  permitted to know about it. Recovery mods (Antibodies and cousins) are
-  inputs where loaded, never dependencies; mutation moves on separate axes
-  whose definition is reserved to the operator.
+  permitted to know about it. No capability here requires another mod to
+  be installed. Mutation moves on separate axes whose definition is
+  reserved to the operator.
 
 ## Status
 
-`[A1]` — the governed repository exists; no mod code yet. The engine's turn
-surface is unverified claim until G0 lands file-and-line evidence. See
-[`SESSION_STATE.md`](SESSION_STATE.md) for where the work stands and
-[`ROADMAP.md`](ROADMAP.md) for the gate order and the open-fork ledger.
+No mod code yet, which is what the gate order asks for at this point.
+
+G0 closed at `[A6]`: the engine's turn surface is established from the
+installed build with file-and-line evidence, in F-001 through F-011.
+`[A7]` to `[A9]` read the mods that already run behaviour on turned
+bodies and set what this project does with them. G1 — one controller
+per body, proven by observation — is gated on three decisions in the
+fork ledger.
+
+[`SESSION_STATE.md`](SESSION_STATE.md) holds where the work stands and
+[`ROADMAP.md`](ROADMAP.md) holds the gate order and the open forks.
+This section states the tip and goes stale; those two are maintained.
 
 ## Reading order
 
@@ -48,7 +56,6 @@ for identity and the two mechanisms, [`ARCHITECTURE.md`](ARCHITECTURE.md)
 for the ratified shape, [`GOVERNANCE.md`](GOVERNANCE.md) for discipline,
 [`DECISION_REGISTRY.md`](DECISION_REGISTRY.md) for what is ratified and
 why. The gate is `tools/check.sh`; the version is
-[`tools/version_replay.py`](tools/version_replay.py)'s output, nobody's
-choice.
+[`tools/version_replay.py`](tools/version_replay.py)'s output.
 
 Licensed GPL-3.0.
