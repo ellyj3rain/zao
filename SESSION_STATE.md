@@ -1,27 +1,26 @@
 | Document | Zombie Awareness Overhaul Session State |
 |---|---|
-| Version | `0.1.1.5-pre-alpha` |
+| Version | `0.1.1.6-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `SESSION_STATE.md` |
 | Status | CANONICAL - where the work actually stands. |
 
 # Session state
 
-**As of** 2026-09-09, `[A7]` close - a second mod runs behaviour on
-turned bodies and publishes a claim API. `The Mutants` (Workshop
-`3796669056`, `PZTheMutants`) shipped 2026-09-07 with six behaviours
-over 19,733 lines of Lua, and it is the first mod found occupying the
-seam G1 exists to prove that also publishes a contract for sharing it:
-`PZTheMutants.API` carrying `API.VERSION = 1`, and
-`ForeignOwnership.isClaimed` answering `claimed, owner, reason`. F-012
-reads it. DR-004 names Knox Survivors as the mod that may be in the
-load order without owning the infected; there are two such claimants
-now, they detect each other by hand, and neither knows about a third.
-
-This header had drifted three batches: it named `[A4]` while `[A6]` was
-the tip, because `[A5]` and `[A6]` both appended to Standing without
-moving it. Border 1 holds version strings and does not hold this, so
-the drift was silent.
+**As of** 2026-09-09, `[A8]` close - a claim on a body is released at
+the turn. `[A7]` read Bandits through The Mutants' compatibility shim;
+Bandits is installed, ships a `42.20` build, and reading it directly
+produced one correction and one mechanism (F-013). The correction:
+`[A7]` said Bandits publishes nothing, and it publishes four surfaces -
+a documented marker variable, four modData keys, a global, and a
+`Bandit.*` namespace of some twenty-five read functions. What is true
+is narrower: there is no canonical is-this-body-mine query, and The
+Mutants' three routes exist for a timing reason rather than an absence.
+The mechanism: Bandits **releases** the body when its NPC dies, which
+is DR-004's seam done by a third party on this project's own target
+build. A claim is a property of a body at a time, so a claim query has
+to be re-askable and a claim protocol needs a release as much as an
+assertion.
 
 ## Standing
 
@@ -76,8 +75,10 @@ mod its own key space, which F-007 established rides the turn by the
 engine's own hand. Two questions go to the operator: whether ZAO adopts
 the named-constant-behind-a-presence-check shape that F-011 left open,
 now that a shipped precedent exists; and whether ZAO publishes a claim
-API, which is cheap only while no mod code exists. `A8` is the next
-batch.
+API, which is cheap only while no mod code exists. `[A8]` corrects `[A7]`'s reading of
+Bandits against Bandits itself and finds the release half of the claim
+protocol at the turn, which gives that fork a shape rather than only a
+question. `A9` is the next batch.
 
 No mod code exists, by design of the gate below.
 

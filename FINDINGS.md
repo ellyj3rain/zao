@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Findings |
 |---|---|
-| Version | `0.1.1.5-pre-alpha` |
+| Version | `0.1.1.6-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `FINDINGS.md` |
 | Status | CANONICAL, APPEND-ONLY - verified engine findings from F-001. |
@@ -386,3 +386,89 @@ outward so nobody has to reverse-engineer it, and three fallback
 heuristics inward because Bandits offered none. A claim query that
 answers `claimed, owner, reason` costs one small file and is the
 difference between the two.
+
+---
+
+## F-013 — Bandits publishes four surfaces, and releases its claim at the turn
+
+**Verified** [A8] against the installed copy — Workshop `3268487204`,
+mod id `Bandits`, shipping a `42.20` build, which is this project's
+target build exactly. Read in place. No live receipt.
+
+`[A7]` reached Bandits through The Mutants' compatibility shim rather
+than through Bandits itself. Two things come out of reading the source:
+one correction to `[A7]`, and one mechanism `[A7]` did not see.
+
+### The correction
+
+`[A7]`'s record and its pull request both say The Mutants had to
+reverse-engineer Bandits **because Bandits publishes nothing**, and
+that it "publishes no claim API". That is wrong. Bandits publishes four
+distinct surfaces:
+
+| Surface | Where |
+|---|---|
+| `zombie:setVariable("Bandit", true)` | `client/BanditUpdate.lua:199` |
+| `getModData()` keys `IsBandit`, `isDeadBandit`, `brainId`, `zid` | throughout |
+| `GetBanditClusterData(id)` | `shared/BanditGMD.lua:81` |
+| a `Bandit.*` shared namespace, some twenty-five functions | `shared/Bandit.lua:74` onward |
+
+The marker is deliberate and documented in its own comment at
+`BanditUpdate.lua:198` — it says the variable determines whether a
+zombie is a bandit and can be used by other mods. That namespace
+includes `Bandit.GetTask`, `Bandit.HasTask`, `Bandit.GetInfection`,
+`Bandit.IsSleeping`, `Bandit.IsAim` and `Bandit.IsForceStationary`,
+which is a wider read surface than F-011 found on Antibodies and wider
+than The Mutants publishes.
+
+**What is actually true is narrower.** There is no single canonical
+is-this-body-mine query, and the three routes in `PZM_ForeignOwnership`
+exist for a reason The Mutants states in its own comments: Bandits
+writes its brain into the cluster during the same spawn call, while
+PZTheMutants waits until a later tick to classify. That is a **timing**
+problem, not an absence of surface. A marker that is correct on tick
+two is useless to a reader on tick one, and no amount of publishing
+fixes it — which is a more useful thing to know than what `[A7]` wrote.
+
+`[A7]` stands as written because the ledgers are append-only. This
+entry carries the correction, and `SESSION_STATE.md` carries it too.
+
+### The mechanism `[A7]` did not see
+
+**A claim on a body is released.** `BanditUpdate.lua` has a local
+function whose own comment is *turns bandit into a zombie*, and it
+clears the marker — `bandit:setVariable("Bandit", false)` at line 244,
+alongside dropping the hand items, resetting `setNoTeeth`, and setting
+the walk type back. A second release sits at line 2444 in a
+deprovision path that also calls `setUseless(false)` and
+`setReanim(false)`.
+
+So Bandits hands the body back at exactly the moment ZAO cares about.
+Its NPC dies, and it stops owning the corpse.
+
+**That is DR-004's seam, implemented by another mod for its own
+people.** DR-004 rules that living people are SAO's until the turn and
+the body is ZAO's after it, with never two brains on one corpse. Here
+is a third party doing the same handoff, in the same engine, on the
+same build, with the release written as an ordinary state change rather
+than a protocol.
+
+### What this changes about the claim surface
+
+The fork `[A7]` opened asks whether ZAO publishes a claim query. F-013
+says what shape it has to have.
+
+**A claim is not a property of a body; it is a property of a body at a
+time.** The Mutants' `API.isMutant(zombie)` reads a persistent outfit
+id and is true for as long as the clothing survives. Bandits' marker is
+true between its spawn and its death. `[A7]` treated a claim as static
+and it is not — ownership of a body transfers, and the transfer is the
+turn, which is the one moment this project exists to get right.
+
+So a claim query has to be re-askable rather than cached, and a claim
+protocol needs a release as much as it needs an assertion. Neither of
+the two published surfaces read so far models release: The Mutants'
+API has no way to say *I have let this one go*, and Bandits' release is
+visible only as the absence of a variable that used to be there.
+
+Nothing is designed here. The fork stays the operator's.
