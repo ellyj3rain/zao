@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Decision Registry |
 |---|---|
-| Version | `0.1.1.6-pre-alpha` |
+| Version | `0.1.1.7-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `DECISION_REGISTRY.md` |
 | Status | CANONICAL, APPEND-ONLY - ratified decisions. |
@@ -291,3 +291,88 @@ encode the id. If ZAO ever counts or moves the crowd, it reads SAO's
 ZAO consumer of the zombie list mirrors SAO's identity-bearing predicate
 shape, failing closed. ZAO mechanics stay gated until the turn has one
 live receipt (`ENGINE_CONTRACT.md` §10.1).
+
+---
+
+## DR-014 — The project is the ontology other mods become coherent inside
+
+**Date** 2026-09-09
+**Status** RATIFIED (operator-directed)
+
+**Decision.** This project is not assembled out of other mods and does
+not import them. The Workshop already answers narrow questions well -
+what a special infected does, how a hostile fights, how an infection
+course runs, how a companion takes an order - and each answer ships
+with its own small world-model: its own way of marking a body, its own
+taxonomy, its own reason a population exists at all. Run four of them
+together and a county holds four unrelated ontologies.
+
+What is built here is the county those answers can be true inside at
+once: one identity per person, one owner per body, one causal account
+of how somebody came to be the way they are. Complementary work becomes
+an EXPRESSION on this project's own people rather than a second
+population beside them.
+
+**A taxonomy is the cheapest part of a mod and an implementation is
+the most expensive part.** Names, categories and the reasons a mod
+gives for why a body is the way it is are all discardable, and
+discarding them costs nothing. Working code that makes a body leap a
+fence, charge in a line, resist a bullet or cry where it sits is
+months of somebody's craft. This project keeps the second and is
+indifferent to the first: a capability is renamed, recombined and
+re-caused freely, and what decides which body has it is always this
+project's own account of who that person was and what happened to
+them.
+
+**Rationale.** The value is not in the acquiring. Copying another
+mod's systems produces a worse copy of that mod; what does not exist
+anywhere is the substrate that makes disparate good work cohere while
+this project's own systems carry the causation. That substrate is the
+new thing, and it is the only part nobody else is building. The point
+of it is a better game than anyone is currently providing.
+
+**Consequences.** Compatibility is a first-class outcome rather than a
+courtesy, so the claim-and-release surface (F-012, F-013) is load
+bearing rather than a nicety. Nothing here derives a population from
+another mod. Where another author's work is genuinely used, it is named
+in `CREDITS.md` entry by entry with its own terms and its own
+integration status, and most entries take nothing. An entry in
+`CREDITS.md` is an acknowledgement of work this project is built to sit
+with, not evidence that any of it is in this tree.
+
+---
+
+## DR-015 — A hostile is an outcome; a mod that produces hostiles is a compatibility target
+
+**Date** 2026-09-09
+**Status** RATIFIED (operator-directed)
+
+**Decision.** This project does not take its hostile population from
+another mod and does not place hostiles of its own. What it wants is
+the conditions under which somebody becomes hostile - who they are,
+what they are short of, what has been done to them - so that a bandit
+is something the county produced rather than something spawned into it.
+
+Bandits (Slayer, `Bandits2`) is a compatibility target: a mod many
+players run, which should work alongside this project rather than
+underneath it. Its shapes are prior art and are read as such. Its
+deterministic production of hostiles is not adopted.
+
+**Rationale.** A mod that reliably manufactures bandits answers a
+different question from the one this project asks. The moment a hostile
+is placed, the only measurement there is - what these people did on
+their own - is destroyed. It is the sister's DR-037 applied to
+hostility instead of to houses, and DR-014's general rule at its
+sharpest case.
+
+**Consequences.** No spawn table, no hostility roster, no faction
+placed at world generation. Hostility is a state a person reaches
+through the model that already governs standing and scarcity, and it is
+reversible by the same model. Where Bandits is loaded, its bodies are
+its own and this project does not claim them (DR-004); its published
+surfaces are readable where useful and never required (DR-005).
+
+The half of this that belongs to the living county rather than the
+turned is the sister's, under its own DR-037. This entry fixes the
+posture toward placement and toward the mod; it does not design the
+mechanism.
