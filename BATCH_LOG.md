@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Batch Log |
 |---|---|
-| Version | `0.1.1.2-pre-alpha` |
+| Version | `0.1.1.3-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `BATCH_LOG.md` |
 | Status | REGULATORY - chronological batch index. |
@@ -20,3 +20,4 @@ history tree. The last row below is the tip.
 | [A2](Batches/A2-2026-08-29-forks-closed-the-sister-and-the-engine-modeled.md) | 2026-08-29 | Operator forks closed; the sister and the engine modeled | [`T-001`](Batches/THREADS.md#t-001), [`T-002`](Batches/THREADS.md#t-002) |
 | [A3](Batches/A3-2026-08-29-corrections-across-the-seam.md) | 2026-08-29 | Corrections across the seam | [`T-001`](Batches/THREADS.md#t-001), [`T-002`](Batches/THREADS.md#t-002) |
 | [A4](Batches/A4-2026-09-08-the-repository-is-published-and-ci-runs-the-gate.md) | 2026-09-08 | The repository is published and CI runs the gate | [`T-001`](Batches/THREADS.md#t-001) |
+| [A5](Batches/A5-2026-09-09-the-turned-body-control-surface-and-the-players-own-dials.md) | 2026-09-09 | The turned body's control surface, and the player's own dials | [`T-002`](Batches/THREADS.md#t-002), [`T-001`](Batches/THREADS.md#t-001) |

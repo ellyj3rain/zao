@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul |
 |---|---|
-| Version | `0.1.1.2-pre-alpha` |
+| Version | `0.1.1.3-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `README.md` |
 | Status | CANONICAL - human entry point. |
@@ -11,6 +11,10 @@ A Project Zomboid Build 42 add-on beside [Survivor Awareness
 Overhaul](../survivor-awareness): SAO owns the living, ZAO owns the turned,
 and the seam between them is the turn. With ZAO disabled, vanilla handles
 every corpse.
+
+The architecture across the three repositories - what SAO, ZAO and
+[Speakeasy](../zomboid-speakeasy) each own, and the three seams between
+them - is held in [`../survivor-awareness/PROJECTS.md`](../survivor-awareness/PROJECTS.md).
 
 Two mechanisms, litigated separately and never merged:
 

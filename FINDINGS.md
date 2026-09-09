@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Findings |
 |---|---|
-| Version | `0.1.1.2-pre-alpha` |
+| Version | `0.1.1.3-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `FINDINGS.md` |
 | Status | CANONICAL, APPEND-ONLY - verified engine findings from F-001. |
@@ -123,3 +123,75 @@ the risen body a fresh descriptor carrying gender and voice prefix only
 `if (!GameServer.server) return` — a no-op in single player. Net contract:
 named-corpse reads are legitimate; the risen body is nameless; identity
 through the turn rides modData only (F-007).
+
+## F-009 — The turned body is driven by target and path, the same shape as a living shell
+
+**Verified** [A5] by `javap` against the installed
+`projectzomboid.jar`, class `zombie.characters.IsoZombie`. The public
+surface a controller would take a body by:
+
+| Declared on `IsoZombie` | What it is |
+|---|---|
+| `public void update()` | the per-frame drive |
+| `public void setTarget(IsoMovingObject)` / `getTarget()` | who it is going for |
+| `public void pathToCharacter(IsoGameCharacter)` | send it at a person |
+| `public void pathToLocationF(float, float, float)` | send it at a tile |
+| `public void setTargetSeenTime(float)` / `getTargetSeenTime()` | how long the target has been in view |
+| `public void setUseless(boolean)` / `isUseless()` | the engine's own inert flag |
+| `public boolean isReanimate()` / `setReanimate(boolean)` | risen rather than spawned |
+| `public boolean isReanimatedPlayer()` / `setReanimatedPlayer(boolean)` | risen from a player |
+| `public int getSpeedType()` | which of the lore's speed bands this body is |
+
+That is target-and-path, which is the same shape SAO drives a living
+shell with. G1 — one brain per body — therefore has a seam to be proven
+at rather than a mechanism to be invented: whoever sets the target owns
+the body, and two controllers setting it is the defect the gate exists
+to catch.
+
+**What this does not say.** `IsoZombie` declares no modData accessor of
+its own; it inherits `IsoGameCharacter`'s, and identity through the turn
+is F-007's finding rather than this one. Nothing here establishes that
+overriding `update()` is safe or necessary, and nothing here is a claim
+about the unloaded crowd, which F-006 reports as native and opaque.
+
+## F-010 — The player already sets twenty-nine zombie dials, and a preset need not carry them all
+
+**Verified** [A5] by reading the shipped
+`media/lua/shared/Sandbox/*.lua`. Four of the five presets — Apocalypse,
+Extinction, Outbreak, Rising — carry an identical `ZombieLore` block of
+**29 keys**:
+
+`ActiveOnly`, `ChanceOfAttachedWeapon`, `Cognition`, `CrawlUnderVehicle`,
+`DisableFakeDead`, `DoorOpeningPercentage`, `FenceDamageMultiplier`,
+`FenceThumpersRequired`, `Hearing`, `Memory`, `Mortality`,
+`PlayerSpawnZombieRemoval`, `Reanimate`, `Sight`, `Speed`,
+`SpottedLogic`, `SprinterPercentage`, `Strength`, `ThumpNoChasing`,
+`ThumpOnConstruction`, `Toughness`, `Transmission`, `TriggerHouseAlarm`,
+`ZombiesArmorFactor`, `ZombiesCrawlersDragDown`, `ZombiesDragDown`,
+`ZombiesFallDamage`, `ZombiesFenceLunge`, `ZombiesMaxDefense`.
+
+`SixMonthsLater` carries **19** of them and omits ten:
+`ChanceOfAttachedWeapon`, `DoorOpeningPercentage`,
+`FenceDamageMultiplier`, `PlayerSpawnZombieRemoval`, `SpottedLogic`,
+`SprinterPercentage`, `ZombiesArmorFactor`, `ZombiesCrawlersDragDown`,
+`ZombiesFallDamage`, `ZombiesMaxDefense`.
+
+**Two things follow.** `Cognition`, `Memory`, `Sight`, `Hearing`,
+`Speed`, `Strength`, `Toughness`, `Reanimate`, `Mortality` and
+`Transmission` are already the player's own words for what this project
+models. Registering a second set beside them would ask a player to
+answer the same question twice and would put ZAO's model and the
+engine's actuators into open disagreement — which is [A3]'s correction
+made concrete: the engine fields are actuators, not the axis set.
+
+And a preset is not a guarantee that a key is present. Any read of
+`SandboxVars.ZombieLore.<key>` has to survive the key being absent, or
+a `SixMonthsLater` save takes a nil through ten of them.
+
+## What is UNCHECKED, and why
+
+**What the recovery mods expose.** G0 names it and it is not done. The
+Antibodies family is not in the user's `Zomboid/mods` directory, and the
+Workshop content directory holds numeric ids that were not resolved to
+mod names in this batch. Reported rather than omitted: the finding is
+not that they expose nothing, it is that this batch could not see them.
