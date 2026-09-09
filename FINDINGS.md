@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Findings |
 |---|---|
-| Version | `0.1.1.3-pre-alpha` |
+| Version | `0.1.1.4-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `FINDINGS.md` |
 | Status | CANONICAL, APPEND-ONLY - verified engine findings from F-001. |
@@ -195,3 +195,68 @@ Antibodies family is not in the user's `Zomboid/mods` directory, and the
 Workshop content directory holds numeric ids that were not resolved to
 mod names in this batch. Reported rather than omitted: the finding is
 not that they expose nothing, it is that this batch could not see them.
+
+## F-011 — Antibodies exposes no API; its state is a namespaced modData table, and its options are version-pinned
+
+**Verified** [A6] against the installed copy — Workshop `2392676812`,
+`Antibodies (v1.97)` by lonegamedev, which ships two builds
+(`42.0` and `42.13`) under `mods/lgd_antibodies/`. G0 named this
+unchecked at [A5] because the mod was looked for in the user's `mods`
+directory and not in the Workshop tree. It is installed.
+
+**There is no API.** Every module in the B42.13 build is
+`require`-scoped — `local Antibodies = {} ... return Antibodies` — so
+nothing reaches a consumer through a global. The only globals the mod
+publishes are `AntibodiesServer` and seven timed-action hook functions
+(`ISDisinfect_perform`, `ISGarlicCataplasm_perform` and
+`_complete`, the plantain and comfrey pairs). None of them is a read
+surface.
+
+**Its state is on the character.**
+`Antibodies.getNamespacedModData(player)` returns
+`player:getModData().Antibodies`, and the medical file lives at
+`.medicalFile` inside it — an `AntibodiesMedicalFile` instance with a
+metatable, rehydrated from the save on load and carrying its own
+`migrateData` path across mod versions.
+
+So the state is readable by anything holding the character, and it is
+readable only by naming the mod.
+
+**Sixty-seven sandbox options**, every one prefixed
+`lgd_antibodies_194_`. Two families: general —
+`base_growth`, `recovery_effect`, `recovery_threshold`,
+`mutation_effect`, `mutation_threshold`, `mutation_start`,
+`diagnose_enabled`, `diagnose_skill_needed`,
+`doctor_skill_treatment_mod` — and a per-condition weight for each of
+fitness, strength, fatigue, endurance, weight, thirst, sickness, food
+sickness, temperature, intoxication, hunger, pain and stress.
+
+**The `194` is the mod's own options version.** An option read is
+therefore pinned to a mod version, and a consumer reading one is
+reading a name that the next release may change.
+
+## Three things this hands the operator, unresolved on purpose
+
+**Reading it names a mod in code.** The house discipline this project
+was built to is that a mod is never named in logic — property, not
+name. `getModData().Antibodies` is a name. DR-005 says recovery mods
+are inputs where loaded and never dependencies, and that ruling did not
+anticipate that the only door in is a named one. Whether a named read
+behind a presence check is acceptable, or whether a property-shaped
+probe has to be invented, is a decision rather than a detail.
+
+**Its mutation axes overlap this project's second mechanism.**
+`mutation_effect`, `mutation_threshold` and `mutation_start` are
+already a model of the pathogen mutating, and DR-008 reserves
+mutation's axes and outcomes to the operator. Two models of the same
+thing running beside each other is the state to decide about before
+anything is built, not after.
+
+**Version pinning.** Any option read carries `194` in its name. A read
+that survives the mod updating needs the prefix discovered rather than
+typed, and nothing in the mod publishes it.
+
+**G0's last piece is closed by this.** Every part of the gate's
+verification now has evidence: F-001 to F-008 for the turn, F-009 for
+the control surface, F-010 for the player's own dials, and this for the
+recovery mods.

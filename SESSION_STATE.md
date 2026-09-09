@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Session State |
 |---|---|
-| Version | `0.1.1.3-pre-alpha` |
+| Version | `0.1.1.4-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `SESSION_STATE.md` |
 | Status | CANONICAL - where the work actually stands. |
@@ -49,11 +49,20 @@ shipped presets carry an identical `ZombieLore` block of twenty-nine
 keys, ten of which are already the player's own words for what this
 project models, while `SixMonthsLater` carries nineteen - so a preset
 is no guarantee a key is present and every read has to survive its
-absence. The third piece, what the loaded recovery mods expose, is
-reported UNCHECKED with its reason and G0 stays open on it. The README
+absence. `[A6]` closes the third piece and G0 with it: the Antibodies family IS
+installed, in the Workshop tree under a numeric id rather than in the
+user's `mods` directory, and F-011 reads it - no API, every module
+`require`-scoped; state on the character at
+`getModData().Antibodies` with a rehydrating medical file inside it;
+sixty-seven sandbox options every one prefixed `lgd_antibodies_194_`.
+Three things go to the operator unresolved: reading it names a mod in
+code against the house discipline, its mutation options already model
+what DR-008 reserves, and every option name carries the mod's version.
+G0 is closed and no mod code exists, which is what the gate ladder asks
+for at this point. The README
 points at `../survivor-awareness/PROJECTS.md`, which now holds the
 architecture across the three repositories and names the edge from
-here to Speakeasy. `A6` is the next batch.
+here to Speakeasy. `A7` is the next batch.
 
 No mod code exists, by design of the gate below.
 
