@@ -14,7 +14,11 @@ every corpse.
 
 The architecture across the three repositories - what SAO, ZAO and
 [Speakeasy](../zomboid-speakeasy) each own, and the three seams between
-them - is held in [`../survivor-awareness/PROJECTS.md`](../survivor-awareness/PROJECTS.md).
+them - is held in `../survivor-awareness/PROJECTS.md`, which is
+[`PROJECTS.md`](https://github.com/ellyj3rain/sao/blob/main/PROJECTS.md)
+on the forge. The relative path is for a reader with the three
+repositories side by side, which is how they are worked on; the link
+is for a reader who has only this one.
 
 Two mechanisms, litigated separately and never merged:
 
