@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Session State |
 |---|---|
-| Version | `0.1.1.2-pre-alpha` |
+| Version | `0.1.1.3-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `SESSION_STATE.md` |
 | Status | CANONICAL - where the work actually stands. |
@@ -40,7 +40,20 @@ stamping the living body suffices; F-008: the corpse knows the name, the
 risen body does not), the ratified identity contract adopted (DR-013:
 `SAOPersonId` verbatim, the crowd ledger, the identity-bearing predicate
 shape), and the sister's verified arming chain recorded
-(`ENGINE_CONTRACT.md` §9a). `A4` is the next batch.
+(`ENGINE_CONTRACT.md` §9a). `[A4]` published the repository and put CI over the gate. `[A5]`
+closes two of G0's three open pieces against the installed build:
+F-009, the turned body is driven by target and path - the same shape
+SAO drives a living shell with, so G1 has a seam to be proven at
+rather than a mechanism to be invented; and F-010, four of the five
+shipped presets carry an identical `ZombieLore` block of twenty-nine
+keys, ten of which are already the player's own words for what this
+project models, while `SixMonthsLater` carries nineteen - so a preset
+is no guarantee a key is present and every read has to survive its
+absence. The third piece, what the loaded recovery mods expose, is
+reported UNCHECKED with its reason and G0 stays open on it. The README
+points at `../survivor-awareness/PROJECTS.md`, which now holds the
+architecture across the three repositories and names the edge from
+here to Speakeasy. `A6` is the next batch.
 
 No mod code exists, by design of the gate below.
 
