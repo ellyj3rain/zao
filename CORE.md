@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Core |
 |---|---|
-| Version | `0.1.1.4-pre-alpha` |
+| Version | `0.1.1.5-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `CORE.md` |
 | Status | ACTIVE - genesis identity for this project. |

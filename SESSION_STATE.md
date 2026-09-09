@@ -1,28 +1,27 @@
 | Document | Zombie Awareness Overhaul Session State |
 |---|---|
-| Version | `0.1.1.4-pre-alpha` |
+| Version | `0.1.1.5-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `SESSION_STATE.md` |
 | Status | CANONICAL - where the work actually stands. |
 
 # Session state
 
-**As of** 2026-09-08, `[A4]` close - the repository is published and
-CI runs the gate. ZAO was eleven commits on a local `main` with no
-remote while SAO and CAO were both public under the same licence, and
-`GOVERNANCE.md` already said remotes publish the canonical tree. It is
-at `ellyj3rain/zao` now, public, history intact. With it came what the
-siblings carry and this did not: `ci-verify` running the diff-hygiene
-check and the whole border gate on every pull request and push to
-`main`, `codeql-python` over `tools/`, SAO's pull-request template and
-CODEOWNERS, a dependabot configuration that groups the two halves of
-`codeql-action` so SAO's `[C58]` cannot recur here, and the publishing
-convention `NEO.md` did not have - branch, one squashed commit,
-squash-merge, `main` protected and refusing a direct push. Border 1
-gained the `argv[1]` control mechanism it never had, which is the
-identical gap SAO found in its own `[C64]` the same day. What is
-deliberately absent is named in `.github/CI-README.md` rather than left
-as an oversight. `[A3]` before it.
+**As of** 2026-09-09, `[A7]` close - a second mod runs behaviour on
+turned bodies and publishes a claim API. `The Mutants` (Workshop
+`3796669056`, `PZTheMutants`) shipped 2026-09-07 with six behaviours
+over 19,733 lines of Lua, and it is the first mod found occupying the
+seam G1 exists to prove that also publishes a contract for sharing it:
+`PZTheMutants.API` carrying `API.VERSION = 1`, and
+`ForeignOwnership.isClaimed` answering `claimed, owner, reason`. F-012
+reads it. DR-004 names Knox Survivors as the mod that may be in the
+load order without owning the infected; there are two such claimants
+now, they detect each other by hand, and neither knows about a third.
+
+This header had drifted three batches: it named `[A4]` while `[A6]` was
+the tip, because `[A5]` and `[A6]` both appended to Standing without
+moving it. Border 1 holds version strings and does not hold this, so
+the drift was silent.
 
 ## Standing
 
@@ -62,7 +61,23 @@ G0 is closed and no mod code exists, which is what the gate ladder asks
 for at this point. The README
 points at `../survivor-awareness/PROJECTS.md`, which now holds the
 architecture across the three repositories and names the edge from
-here to Speakeasy. `A7` is the next batch.
+here to Speakeasy. `[A7]` records the arrival of a second claimant on
+the turned body: F-012, `The Mutants`, verified against the installed
+copy and against `projectzomboid.jar` for every engine call it makes.
+Two things it does are worth copying - a published read-only API with a
+contract version, and a claim query that answers who and how rather
+than yes or no - and two are not: a file named for foreign ownership
+whose whole body is one named mod, and identity carried on the
+persistent outfit id, a packed int that is also the body's clothing and
+that `setPersistentOutfitID`, `dressInNamedOutfit` and
+`dressInPersistentOutfitID` all overwrite in public. Of the three claim
+channels now identified, character modData is the only one giving each
+mod its own key space, which F-007 established rides the turn by the
+engine's own hand. Two questions go to the operator: whether ZAO adopts
+the named-constant-behind-a-presence-check shape that F-011 left open,
+now that a shipped precedent exists; and whether ZAO publishes a claim
+API, which is cheap only while no mod code exists. `A8` is the next
+batch.
 
 No mod code exists, by design of the gate below.
 

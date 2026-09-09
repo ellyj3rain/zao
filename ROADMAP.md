@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Roadmap |
 |---|---|
-| Version | `0.1.1.4-pre-alpha` |
+| Version | `0.1.1.5-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `ROADMAP.md` |
 | Status | CANONICAL - gate order and the open-fork ledger. |
@@ -71,6 +71,7 @@ in `DECISION_REGISTRY.md` and the fork is struck here.
 | Player on the axes | ~~Whether the player walks the same mutation axes as NPCs.~~ RATIFIED as a rule (DR-012): per outcome, where the gameplay loop supports it; some outcomes NPC-only by design. Each shipped outcome still states its player-side answer at its own batch. | CLOSED to a per-outcome call |
 | SAO posture | ~~Whether ZAO requires SAO.~~ RATIFIED (DR-010): standalone and an integrated sister, both — read where present, derive where absent, one record shape. | CLOSED |
 | Preexisting zombies | ~~Derived records or vanilla.~~ RATIFIED (DR-011): the ambient dead carry derived thin records, world-origin precedent. | CLOSED |
+| The claim surface | Whether ZAO publishes a query letting another mod ask whether it owns a body, and how ZAO reads the same question of others. F-012: `The Mutants` publishes `PZTheMutants.API` with a contract version, and separately reverse-engineers Bandits through three fallback routes because Bandits publishes nothing - the same mod carrying both patterns at once. F-011 left open whether naming a mod in code is acceptable when the only door in is a named one; `PZM_ForeignOwnership` is a shipped precedent for the shape - one constant in one dedicated file, presence a type test on a global, every read `pcall`-wrapped, absence returning false. Both halves are public-contract decisions and both are cheap only while no mod code exists. | OPEN - operator decides; raised at [A7] |
 | Mod id | The stable id, before the mod tree ships; changing it later breaks saves. | OPEN — operator names it |
 | Publication | Whether and when this repository gets a public remote. | OPEN — local-first until directed |
 

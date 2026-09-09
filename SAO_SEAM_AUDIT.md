@@ -1,6 +1,6 @@
 | Document | SAO Seam Audit |
 |---|---|
-| Version | `0.1.1.4-pre-alpha` |
+| Version | `0.1.1.5-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `SAO_SEAM_AUDIT.md` |
 | Status | CANONICAL - reference audit of the sister at the turn; mechanics read, files never copied. |
