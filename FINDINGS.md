@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Findings |
 |---|---|
-| Version | `0.1.1.4-pre-alpha` |
+| Version | `0.1.1.5-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `FINDINGS.md` |
 | Status | CANONICAL, APPEND-ONLY - verified engine findings from F-001. |
@@ -260,3 +260,129 @@ typed, and nothing in the mod publishes it.
 verification now has evidence: F-001 to F-008 for the turn, F-009 for
 the control surface, F-010 for the player's own dials, and this for the
 recovery mods.
+
+---
+
+## F-012 — The Mutants publishes a versioned claim API and detects a second mod's bodies by three routes
+
+**Verified** [A7] against the installed copy — Workshop `3796669056`,
+`The Mutants` (`PZTheMutants`, `modversion=0.0.1`) by SiaCatty, under
+`mods/PZTheMutants/42/`, 68 Lua files and 19,733 lines. Published
+2026-09-07. Method: the mod's own source read in place, plus `javap`
+signatures from `projectzomboid.jar` for every engine call it makes. No
+live receipt; nothing below was observed in a running session.
+
+This is the first mod found that runs behaviour on turned bodies and
+publishes a contract for coexisting with other mods that do the same.
+It is the surface G1 must be proven against, and it answers part of
+what `[A6]` handed the operator.
+
+### It publishes a read-only API with a contract version
+
+`PZTheMutants.API` is a global. `API.VERSION = 1` at
+`PZM_PublicAPI.lua:16`, with a comment saying it increments only if the
+public contract changes. Two functions:
+`API.getMutantType(zombie)` (line 25) and `API.isMutant(zombie)`
+(line 42). Both resolve through `zombie:getPersistentOutfitID()`.
+
+The Workshop page tells other modders to call it behind a nil guard —
+`if PZTheMutants and PZTheMutants.API and PZTheMutants.API.isMutant(zombie)`
+— so the reader names the mod but never requires it, and the mod's
+absence is a falsy read.
+
+### Its own compatibility with Bandits is the opposite shape
+
+`PZM_ForeignOwnership.lua` exists because Bandits publishes no such
+API. `ForeignOwnership.isClaimed(zombie, outfitName)` (line 123)
+returns `claimed, owner, reason`, and there are three detection routes
+tried in order, each with its reason named as a string:
+
+| Route | What it reads |
+|---|---|
+| `runtime-marker` (line 83) | `zombie:getVariableBoolean("Bandit")` |
+| `persistent-outfit-source` (line 97) | the outfit's owning mod id, from parsed `clothing.xml` |
+| `cluster-spawn-brain` (line 112) | Bandits' own `GetBanditClusterData` global |
+
+The third cross-checks the id against the body's spawn square and sex
+before claiming, with a comment saying a non-unique persistent id would
+otherwise cause a false claim.
+
+**The name is in the code and the dependency is not.**
+`local BANDITS_MOD_ID = "Bandits2"` at line 16 is one constant in one
+file whose whole job is foreign ownership. Line 28 is
+`if type(GetBanditClusterData) ~= "function" then return false end`,
+with the comment at line 27 stating that Bandits is never required
+because compatibility must remain optional. Every foreign read is
+`pcall`-wrapped. That is DR-005's rule — inputs where loaded, never
+dependencies — as working code in another author's tree.
+
+**The file is general and its contents are one mod.**
+`ForeignOwnership.isClaimed` has exactly one implementation,
+`PZM_isBanditsOwned`. The population is every mod that runs behaviour
+on a zombie body, and The Mutants is now a member of that population
+which Bandits does not know about. Two mods detecting each other by
+hand is quadratic in mods and silent when it fails.
+
+### Three claim channels exist, and all three are publicly writable
+
+Each of these was confirmed against `projectzomboid.jar` rather than
+taken from the mod:
+
+| Channel | Read | Write | Shape |
+|---|---|---|---|
+| animation variable | `getVariableBoolean(String)`, a default method on `IAnimationVariableSource` | `IsoGameCharacter.setVariable(String, boolean)` | one string-keyed map, shared with the engine's animation system |
+| persistent outfit | `IsoGameCharacter.getPersistentOutfitID()` | `setPersistentOutfitID(int)`, `dressInNamedOutfit(String)`, `dressInPersistentOutfitID(int)` | one packed 32-bit int |
+| character modData | `getModData()` | same | a namespaced table |
+
+Bandits marks bodies on the first, The Mutants identifies bodies on the
+second, and F-007 established that ZAO's record crosses on the third.
+The first two are single shared slots that any mod can overwrite at any
+time; a body re-dressed by another mod stops being a Mutant, and
+nothing reports it. Only modData gives each mod its own key space, and
+F-007 already showed it riding character to corpse to risen body by the
+engine's own hand.
+
+The Mutants documents the persistent outfit id's bit layout at
+`PZM_Identity.lua:265-268` — bit 31 gender, bits 30-16 outfit index,
+bit 15 the fallen accessory flag, bits 14-0 variant. That layout is
+stated by the mod and is **not** re-derived here; it is recorded as a
+lead, not as a verified engine fact.
+
+The mod also cannot read the engine's own outfit table. The comment at
+`PZM_Identity.lua:41` says Lua cannot query `PersistentOutfits.Data.useSeed`
+directly, so `initializeOutfitIndexLookup` reconstructs the index by
+calling `getAllOutfits(true)` and `getAllOutfits(false)` and replaying
+the insertion order, and bails while keeping old state if any declared
+Mutant outfit is absent. `PZM_OutfitPriority.lua` builds the ownership
+table by parsing `media/clothing/clothing.xml` out of every loaded mod.
+
+### One vanilla outfit name on the turn path
+
+`nonSeededOutfits` at `PZM_Identity.lua:43` holds a single entry,
+`ReanimatedPlayer`, as an outfit whose id carries no seeded variant.
+That is a vanilla name on the turn surface and it bears on F-008, where
+the risen body was found nameless. It is noted here and not chased.
+
+### What this bears on
+
+**DR-004 names one mod; the population is larger.** The ruling says
+Knox Survivors may be in the load order and does not own the infected.
+The Mutants is a second member of the same population, shipped, and G1
+now has a live case to be proven against rather than a hypothetical.
+
+**The decision `[A6]` handed the operator has a shipped precedent.**
+F-011 found that reading Antibodies means naming a mod in code, against
+the discipline that a mod is never named in logic, and that DR-005 did
+not anticipate a door that is only ever a named one. `PZM_ForeignOwnership`
+is a working answer to the same problem: the name is a constant in one
+file dedicated to foreign ownership, the presence check is a type test
+on a global, every read is `pcall`-wrapped, and absence returns false
+rather than failing to load. Whether ZAO adopts that shape is still the
+operator's call. What is no longer open is whether anyone has solved it.
+
+**Publishing a claim surface is what stops the next mod guessing.** The
+Mutants contains both patterns at once — a versioned API offered
+outward so nobody has to reverse-engineer it, and three fallback
+heuristics inward because Bandits offered none. A claim query that
+answers `claimed, owner, reason` costs one small file and is the
+difference between the two.
