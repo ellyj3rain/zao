@@ -1,13 +1,29 @@
 | Document | Zombie Awareness Overhaul Session State |
 |---|---|
-| Version | `0.1.1.7-pre-alpha` |
+| Version | `0.1.1.8-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `SESSION_STATE.md` |
 | Status | CANONICAL - where the work actually stands. |
 
 # Session state
 
-**As of** 2026-09-09, `[A9]` close - the integration posture, and
+**As of** 2026-09-09, `[A10]` close - the actuators are Java-side.
+`ENGINE_CONTRACT.md` §9 listed one fact as unchecked and named what it
+decides, and it was answerable with `javap`. `IsoZombie` declares the
+six per-body fields F-005 found; only `speedType` has an accessor, none
+of the six has a setter, nothing above declares the missing five, and
+Kahlua's exposer publishes methods. So any projection from this
+project's axes onto those actuators is Java-side - the only reachable
+path rather than a preference - and the runtime already loading Java
+for the sister is ZombieBuddy, MIT.
+
+F-014 says which half of that carries it. The exposer having no
+field-exposing entry point is an absence, and absences asserted from
+narrow searches went wrong five times in one session; the finding rests
+on the positive test instead. It settles nothing about the axes
+themselves, which stay the operator's in the fork ledger.
+
+**Before that**, `[A9]` - the integration posture, and
 attribution per source. This repository had read five other mods for
 evidence and had no `CREDITS.md`; it has one now, and two rulings that
 were being applied without being written down are DR-014 and DR-015.
