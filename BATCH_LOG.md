@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Batch Log |
 |---|---|
-| Version | `0.1.1.8-pre-alpha` |
+| Version | `0.1.1.9-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `BATCH_LOG.md` |
 | Status | REGULATORY - chronological batch index. |
@@ -26,3 +26,4 @@ history tree. The last row below is the tip.
 | [A8](Batches/A8-2026-09-09-a-claim-on-a-body-is-released-at-the-turn.md) | 2026-09-09 | A claim on a body is released at the turn | [`T-002`](Batches/THREADS.md#t-002), [`T-001`](Batches/THREADS.md#t-001) |
 | [A9](Batches/A9-2026-09-09-the-integration-posture-and-attribution-per-source.md) | 2026-09-09 | The integration posture, and attribution per source | [`T-001`](Batches/THREADS.md#t-001), [`T-002`](Batches/THREADS.md#t-002) |
 | [A10](Batches/A10-2026-09-09-the-actuators-are-java-side.md) | 2026-09-09 | The actuators are Java-side | [`T-002`](Batches/THREADS.md#t-002), [`T-001`](Batches/THREADS.md#t-001) |
+| [A11](Batches/A11-2026-09-09-the-mutation-system-defined.md) | 2026-09-09 | The mutation system defined | [`T-002`](Batches/THREADS.md#t-002), [`T-001`](Batches/THREADS.md#t-001) |

@@ -1,13 +1,49 @@
 | Document | Zombie Awareness Overhaul Session State |
 |---|---|
-| Version | `0.1.1.8-pre-alpha` |
+| Version | `0.1.1.9-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `SESSION_STATE.md` |
 | Status | CANONICAL - where the work actually stands. |
 
 # Session state
 
-**As of** 2026-09-09, `[A10]` close - the actuators are Java-side.
+**As of** 2026-09-09, `[A11]` close - the mutation system defined.
+`ROADMAP.md` had said *draft owed* against the mutation-axes fork since
+`[A2]`. `MUTATION.md` answers it, and it is a definition rather than a
+draft: the operator defined the system directly and the document records
+what they said.
+
+Infection is a repeated event; surviving enough produces resistance and
+then immunity. Every infection rolls the same odds across a gradient
+holding both capability mutations and attribute mutations, with crossed
+rarer and carrying its own number, plus a rare per-infection variable
+that makes a body sicker faster and takes it PAST death. The two ends
+are opposite in how much of a person is left, and appearance is
+independent of it: **crossed** looks like a person and is not one;
+**afflicted** looks like a monster and is a person again, cannot become
+one of the dead, and is likelier than anyone to become crossed. Houses
+decide about their own and can split over it. The crossed organise, act
+with a person's vocabulary, use the dead rather than fighting them, and
+work on the afflicted through fear - which needs no new machinery,
+because moodles already feed susceptibility in the infection model this
+project absorbed.
+
+**ZAO owns both**, and that opens a second seam: `PROJECTS.md` lists one
+crossing between the projects and there is now another running the other
+way, a person becoming this project's while staying inside the sister's
+county. The crossed also need the sister's action machinery stripped of
+what humanity gave it, which is a larger claim on the sister than
+anything here has needed and is not designed yet.
+
+**Three attempts failed before the definition landed**, and the batch
+record keeps them: a menu put to the operator before a system existed to
+choose within; unilateral authorship after the menu was refused; and a
+local terminology fix after the authorship was refused. The posture the
+operator named is to take what they set, carry it far enough that they
+can see it was understood, and surface the decisions that fall out of
+their frame.
+
+**Before that**, `[A10]` - the actuators are Java-side.
 `ENGINE_CONTRACT.md` §9 listed one fact as unchecked and named what it
 decides, and it was answerable with `javap`. `IsoZombie` declares the
 six per-body fields F-005 found; only `speedType` has an accessor, none
