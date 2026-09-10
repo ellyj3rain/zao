@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Roadmap |
 |---|---|
-| Version | `0.1.1.8-pre-alpha` |
+| Version | `0.1.1.9-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `ROADMAP.md` |
 | Status | CANONICAL - gate order and the open-fork ledger. |
@@ -64,7 +64,7 @@ in `DECISION_REGISTRY.md` and the fork is struck here.
 
 | Fork | What it decides | Status |
 |---|---|---|
-| Mutation axes | The gradients and branches mutation moves on (DR-008 consequence). Operator direction of 2026-08-29: think in spectrums and gradients, branches that are not binaries, spectrums along each branch, variation at every level; decay can come back via mutation; end states can pass human strength and speed; hybridization on the table, both directions, good and bad; nothing gimmicky, no example names (the comics, the ghoul parallel) promoted into spec. Corrected by the operator after [A2]: the engine's per-body fields (F-005) are ACTUATORS the axes project onto, not the axis set — the design axes are ZAO's own and new, and the direction includes inverse/mirror axes. Neo drafts the interrelation of Knox, decay, and mutation; the operator ratifies. | OPEN — draft owed; gated behind the live turn receipt (SESSION_STATE, the gate) |
+| Mutation axes | The gradients and branches mutation moves on (DR-008 consequence). Operator direction of 2026-08-29: think in spectrums and gradients, branches that are not binaries, spectrums along each branch, variation at every level; decay can come back via mutation; end states can pass human strength and speed; hybridization on the table, both directions, good and bad; nothing gimmicky, no example names (the comics, the ghoul parallel) promoted into spec. Corrected by the operator after [A2]: the engine's per-body fields (F-005) are ACTUATORS the axes project onto, not the axis set — the design axes are ZAO's own and new, and the direction includes inverse/mirror axes. Neo drafts the interrelation of Knox, decay, and mutation; the operator ratifies. | ANSWERED at [A11] - the operator defined the system directly and `MUTATION.md` records it: infection as a repeated event with resistance and immunity thresholds, a gradient carrying both capability mutations and attribute mutations, death not always required, and two ends opposite in how much of a person is left - crossed, which looks human and is not, and afflicted, which looks monstrous and is a person again. Ratification into `DECISION_REGISTRY.md` is still the operator's, and the dials, the strain names and how many mutations sit on the gradient remain open below. |
 | Strain names | Names for whatever the axes yield, and for the recognizable regions of the outcome space. | OPEN — operator names them |
 | Rarity | Numbers for the spread's tails, settlement frequency included. | OPEN |
 | Enable defaults | Sandbox defaults: what ships on, what ships off. | OPEN |

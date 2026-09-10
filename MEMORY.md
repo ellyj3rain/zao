@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Memory |
 |---|---|
-| Version | `0.1.1.8-pre-alpha` |
+| Version | `0.1.1.9-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `MEMORY.md` |
 | Status | ACTIVE - index of every root document and its standing. |
@@ -39,6 +39,7 @@ it is current. Nothing at the root is unclassified.
 | `VERSION` | CANONICAL | The machine's output. Every root header's `Version` cell reads this and nothing else. |
 | `LICENSE` | CANONICAL | GPL-3.0. |
 | `CREDITS.md` | CANONICAL | Attribution and integration status per source; every entry states what was taken and what was not. |
+| `MUTATION.md` | CANONICAL | The mutation system as the operator defined it: what the pathogen does to a body and what that body becomes, with every dial named. |
 
 ## Instruction surface
 

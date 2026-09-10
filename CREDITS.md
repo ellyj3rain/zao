@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Credits |
 |---|---|
-| Version | `0.1.1.8-pre-alpha` |
+| Version | `0.1.1.9-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `CREDITS.md` |
 | Status | CANONICAL - attribution and integration status per source. |
