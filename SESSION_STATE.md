@@ -1,13 +1,29 @@
 | Document | Zombie Awareness Overhaul Session State |
 |---|---|
-| Version | `0.1.1.10-pre-alpha` |
+| Version | `0.1.1.11-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `SESSION_STATE.md` |
 | Status | CANONICAL - where the work actually stands. |
 
 # Session state
 
-**As of** 2026-09-09, `[A12]` close - the second seam defined.
+**As of** 2026-09-09, `[A13]` close - the seam carries the driving
+map. The sister's `[C82]` landed and this repository's canonical
+clause on the seam went stale in the same turn: `MUTATION.md` said
+the sister has not mapped driving yet, and the map now exists. What
+the sister's map holds, at their `F-067`: every identity gate along
+the driving path exists to exclude the blocked local player and none
+requires one, so the doorway - seat 0, the public control fields
+standing as written, an engine start bounded by the same keys,
+hotwire, sandbox and condition rules a player faces - is
+surface-mapped, and no shipped code exercises it, so the live
+receipt stays owed. The canonical paragraph now says what the crossed
+need from driving rides in the record as named consumers of that map,
+while explosives and loudspeakers remain unmapped, so the seam still
+runs two ways in time for them, and neither side invents its half
+alone.
+
+**Before that**, `[A12]` - the second seam defined.
 `[A11]` opened it; the operator has ruled on its shape. The ruling
 principle is their own frame: three repositories, one project, and
 each machinery runs what it owns.

@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Batch Log |
 |---|---|
-| Version | `0.1.1.10-pre-alpha` |
+| Version | `0.1.1.11-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `BATCH_LOG.md` |
 | Status | REGULATORY - chronological batch index. |
@@ -28,3 +28,4 @@ history tree. The last row below is the tip.
 | [A10](Batches/A10-2026-09-09-the-actuators-are-java-side.md) | 2026-09-09 | The actuators are Java-side | [`T-002`](Batches/THREADS.md#t-002), [`T-001`](Batches/THREADS.md#t-001) |
 | [A11](Batches/A11-2026-09-09-the-mutation-system-defined.md) | 2026-09-09 | The mutation system defined | [`T-002`](Batches/THREADS.md#t-002), [`T-001`](Batches/THREADS.md#t-001) |
 | [A12](Batches/A12-2026-09-09-the-second-seam-defined.md) | 2026-09-09 | The second seam defined | [`T-002`](Batches/THREADS.md#t-002), [`T-001`](Batches/THREADS.md#t-001) |
+| [A13](Batches/A13-2026-09-09-the-seam-carries-the-driving-map.md) | 2026-09-09 | The seam carries the driving map | [`T-001`](Batches/THREADS.md#t-001), [`T-002`](Batches/THREADS.md#t-002) |

@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Memory |
 |---|---|
-| Version | `0.1.1.10-pre-alpha` |
+| Version | `0.1.1.11-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `MEMORY.md` |
 | Status | ACTIVE - index of every root document and its standing. |
