@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Mutation System |
 |---|---|
-| Version | `0.1.1.9-pre-alpha` |
+| Version | `0.1.1.10-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `MUTATION.md` |
 | Status | CANONICAL - the system as the operator defined it on 2026-09-09. Specifics not yet ratified into `DECISION_REGISTRY.md` are marked. |
@@ -197,10 +197,45 @@ person becomes ZAO's while remaining inside the sister's county - in a
 house, holding bonds, being argued over. The sister's machinery for
 houses, standing, fear and temperament reaches a body this project owns.
 
+## The second seam, defined
+
+The seam *Where this lives* opened. Ruled on by the operator on
+2026-09-09, under one principle of their own framing: three
+repositories, one project, and each machinery runs what it owns.
+
+**SAO executes the afflicted.** A person again is a person - the four
+pillars run them, the house argues over them because they never left
+the county's machinery, and their bonds and records keep their
+provenance.
+
+**This project owns the pathogen state on an afflicted body.** The
+susceptibility to crossed, the passive infection, the identity-decay
+dials - what the pathogen did and still threatens is here, and the
+behavior is the sister's to run. The state is the boundary the claim
+surface lives on, and its concrete shape stays with F-012 until mod
+code is near.
+
+**This project executes the crossed.** They came through death as the
+risen did, and exactly one controller runs any body.
+
+**The crossed's vocabulary is a bidirectional goal.** The direction is
+ratified: read the sister's action machinery, stripped of what
+humanity gave it, copying no files - the turn's pattern extended from
+the record to the living vocabulary. The sister has not mapped
+driving yet, so the seam runs two ways in time: what the crossed need
+from driving, explosives and loudspeakers feeds forward into the
+sister's mapping of them, and neither side invents its half alone.
+
+**How the crossed hold ground is variable, and the variability is the
+design.** They still enjoy things and have leisure, differently. Their
+shifted needs reshape how they live in a space they have decided is
+valuable to them. Some groups settle; some stay nomadic. Which one a
+crossed group does is what its drives did, never a placement - DR-037's
+law, applied to them as to every arrangement in the county.
+
 ## What is not defined yet
 
 - The names of anything a player sees. Strain names are the operator's.
 - How many mutations sit on the gradient, and what each one is.
 - The numbers behind every dial above.
 - How an afflicted settlement is held, once one forms.
-- Whether the crossed hold ground the way a house does, or differently.
