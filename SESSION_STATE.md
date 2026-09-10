@@ -1,13 +1,34 @@
 | Document | Zombie Awareness Overhaul Session State |
 |---|---|
-| Version | `0.1.1.9-pre-alpha` |
+| Version | `0.1.1.10-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `SESSION_STATE.md` |
 | Status | CANONICAL - where the work actually stands. |
 
 # Session state
 
-**As of** 2026-09-09, `[A11]` close - the mutation system defined.
+**As of** 2026-09-09, `[A12]` close - the second seam defined.
+`[A11]` opened it; the operator has ruled on its shape. The ruling
+principle is their own frame: three repositories, one project, and
+each machinery runs what it owns.
+
+**SAO executes the afflicted**, because a person again is a person
+- the four pillars run them and the house argues over them because
+they never left the county's machinery. **This project owns the
+pathogen state on an afflicted body** - the susceptibility to
+crossed, the passive infection, the identity-decay dials - and that
+state is the boundary the claim surface lives on, its concrete shape
+staying with F-012 until mod code is near. **This project executes
+the crossed**, who came through death as the risen did. **The
+crossed's vocabulary is a bidirectional goal**: read the sister's
+action machinery stripped of what humanity gave it, and what the
+crossed need from driving feeds forward into the sister's not-yet
+mapping of it. **How the crossed hold ground is variable, and the
+variability is the design**: they still enjoy things and have
+leisure, differently; some groups settle and some stay nomadic, and
+which one happens is what their drives did, never a placement.
+
+**Before that**, `[A11]` - the mutation system defined.
 `ROADMAP.md` had said *draft owed* against the mutation-axes fork since
 `[A2]`. `MUTATION.md` answers it, and it is a definition rather than a
 draft: the operator defined the system directly and the document records
