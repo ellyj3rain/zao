@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Mutation System |
 |---|---|
-| Version | `0.1.1.10-pre-alpha` |
+| Version | `0.1.1.11-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `MUTATION.md` |
 | Status | CANONICAL - the system as the operator defined it on 2026-09-09. Specifics not yet ratified into `DECISION_REGISTRY.md` are marked. |
@@ -221,10 +221,14 @@ risen did, and exactly one controller runs any body.
 **The crossed's vocabulary is a bidirectional goal.** The direction is
 ratified: read the sister's action machinery, stripped of what
 humanity gave it, copying no files - the turn's pattern extended from
-the record to the living vocabulary. The sister has not mapped
-driving yet, so the seam runs two ways in time: what the crossed need
-from driving, explosives and loudspeakers feeds forward into the
-sister's mapping of them, and neither side invents its half alone.
+the record to the living vocabulary. The sister has mapped driving:
+`[C82]`, at their `F-067`, found no gate on the wheel path that
+requires a player - every identity gate exists to exclude the blocked
+local player - so the doorway is surface-mapped and its live receipt
+is owed, no shipped code exercising it. What the crossed need from
+driving rides in the record as named consumers of that map;
+explosives and loudspeakers remain unmapped, so the seam still runs
+two ways in time for them, and neither side invents its half alone.
 
 **How the crossed hold ground is variable, and the variability is the
 design.** They still enjoy things and have leisure, differently. Their
