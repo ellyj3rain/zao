@@ -1,14 +1,25 @@
 | Document | Zombie Awareness Overhaul Session State |
 |---|---|
-| Version | `0.1.1.11-pre-alpha` |
+| Version | `0.1.1.12-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `SESSION_STATE.md` |
 | Status | CANONICAL - where the work actually stands. |
 
 # Session state
 
-**As of** 2026-09-09, `[A13]` close - the seam carries the driving
-map. The sister's `[C82]` landed and this repository's canonical
+**As of** 2026-09-11, `[A14]` close - the invented gate is removed.
+A rule in this repository said ZAO's mechanics stay closed until one
+watched turn exists. That rule was written by an assistant at `[A3]`,
+carried into DR-013's consequences and `ENGINE_CONTRACT.md` §10.1, and
+presented as the operator's. The operator ruled on 2026-09-11 that they
+never made it and that it blocks itself: ZAO has no game code, so a
+watched turn inside ZAO cannot happen yet, and work that waits for it
+can never start. The rule is gone from the living records. The watched
+turn is still wanted evidence for the identity handoff, and it arrives
+when the operator plays. Records only, no mod code, so patch.
+
+**Before that**, `[A13]` - the seam carries the driving map.
+The sister's `[C82]` landed and this repository's canonical
 clause on the seam went stale in the same turn: `MUTATION.md` said
 the sister has not mapped driving yet, and the map now exists. What
 the sister's map holds, at their `F-067`: every identity gate along
@@ -178,22 +189,19 @@ decision `[A6]` handed the operator, because a mod under MIT can be
 read as source rather than named at runtime. That adds an option to the
 fork rather than deciding it. `A10` is the next batch.
 
-No mod code exists, by design of the gate below.
+No mod code exists yet.
 
-## The gate
+## The wanted turn evidence
 
-**ZAO's mechanics stay closed until the turn has one live receipt** — a
-bitten SAO survivor witnessed dying, leaving a named corpse, rising with
-`SAOPersonId` intact, and being recognized. The operator is play-testing
-SAO 1.11.2.0 now; the receipt is expected from those sessions. Until it
-lands, ZAO work is evidence, contracts, and paper only
-(`ENGINE_CONTRACT.md` §10.1; DR-013 consequences). The next session
-inherits this gate.
+One watched turn is wanted: a bitten SAO survivor dying, leaving a named
+corpse, rising with `SAOPersonId` intact, and being recognized. It is
+evidence for the identity handoff (`ENGINE_CONTRACT.md` §10.1). It is not
+a gate, and no ZAO work waits for it.
 
 ## Open items
 
 The interrelation draft for Knox, decay, and mutation awaits operator
-ratification behind the gate; nothing of it is inscribed. The design axes
+ratification; nothing of it is inscribed. The design axes
 are ZAO's own and new — engine fields are actuators (F-005, as corrected);
 inverse/mirror axes are in the operator's direction. The fork ledger keeps
 what stays reserved: mutation axes, strain names, rarity, enable defaults,

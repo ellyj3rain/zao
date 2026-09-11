@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Engine Contract |
 |---|---|
-| Version | `0.1.1.11-pre-alpha` |
+| Version | `0.1.1.12-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `ENGINE_CONTRACT.md` |
 | Status | CANONICAL, INCOMPLETE - the verified engine mechanics the turned require; nothing here is live-verified. |
@@ -303,12 +303,12 @@ trait-scaled), on `hoursSurvived` for `IsoPlayer` characters.
 
 Everything above is structural. Still owed, each a named gap:
 
-1. LIVE — **the gate on all ZAO mechanics**: one witnessed turn — a bitten
-   SAO survivor dying, leaving a named corpse, rising with `SAOPersonId`
-   intact, and being recognized. Expected from the operator's current SAO
-   1.11.2.0 play sessions. (The [A2] sub-question "does the corpse inherit
-   the character's modData?" is CLOSED structurally by F-007; the live
-   witness remains.)
+1. LIVE — one witnessed turn: a bitten SAO survivor dying, leaving a named
+   corpse, rising with `SAOPersonId` intact, and being recognized. It is
+   wanted evidence for the identity handoff. It does not gate ZAO work,
+   and it arrives when the operator plays. (The [A2] sub-question "does
+   the corpse inherit the character's modData?" is CLOSED structurally by
+   F-007; the live witness remains.)
 2. `LuaManager$Exposer` field exposure (§9) — decides Lua vs Java control.
 3. `BodyDamage.Update()` infection→zombify branch (§7).
 4. Per-state field reads (§4); `initializeStates()` registration order.
