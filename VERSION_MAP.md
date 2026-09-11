@@ -16,9 +16,9 @@ the machine. Names, dates, and threads below come from
 | Form | `major.minor.kohai.patch-maturity` |
 | Hard caps | minor 12; kohai 16; patch 24 |
 | Replay start | `0.1.0.0-pre-alpha` |
-| Current version | `0.1.1.12-pre-alpha` |
-| Closed chronology | `A1-A14` |
-| Next batch | `A15` |
+| Current version | `0.1.1.13-pre-alpha` |
+| Closed chronology | `A1-A15` |
+| Next batch | `A16` |
 | Executable source | [`tools/version_replay.py`](tools/version_replay.py) |
 
 ## Tier meanings
@@ -49,6 +49,7 @@ the machine. Names, dates, and threads below come from
 | `A12` | 2026-09-09 | patch | `0.1.1.10-pre-alpha` | The second seam defined | The second seam defined: [A11] opened it - a person becoming this project's while staying inside the sister's county - and the operator has ruled on its shape. The ruling principle is their own frame, the project's definition stated plain: three repositories, one project, separation of concerns, each machinery running what it owns. SAO executes the afflicted, because a person again is a person - the four pillars run them, the house argues over them because they never left the county's machinery, and their bonds and records keep their provenance. This project owns the pathogen state on an afflicted body - the susceptibility to crossed, the passive infection, the identity-decay dials - and that state is the boundary the claim surface lives on, so the claim-surface question as put dissolved rather than answered: the concrete shape stays with F-012 until mod code is near, where the ledger already notes it is cheap only while none exists. This project executes the crossed, who came through death as the risen did, exactly one controller running any body. The crossed's vocabulary is a bidirectional goal: the direction is ratified - read the sister's action machinery stripped of what humanity gave it, the turn's pattern extended - and the sister has not mapped driving yet, so what the crossed need from driving, explosives and loudspeakers feeds forward into the sister's mapping of them, a standing goal between the two repositories and never a dependency in either direction. How the crossed hold ground is variable, and the variability is the design: they still enjoy things and have leisure, differently; their shifted needs reshape how they live in a space they have decided is valuable to them; some groups settle and some stay nomadic; and which one a crossed group does is what its drives did, never a placement - DR-037's law applied to them as to every arrangement in the county. MUTATION.md gains the section and loses the ground-holding fork from its not-yet list; the sister's PROJECTS.md moves in the same turn in its own repository. Definition and documents only, no mod code, so patch. |
 | `A13` | 2026-09-09 | patch | `0.1.1.11-pre-alpha` | The seam carries the driving map | The seam carries the driving map: the same-turn move [A12] owed when the sister's [C82] landed. MUTATION.md's second-seam section had said the sister has not mapped driving yet, and that clause went stale the moment C82 - no player at the wheel - merged in the sister: disassembled method by method off the installed jar, every identity gate along the driving path exists to exclude the blocked local player and none requires one, the doorway being seat 0 via enter(seat, char), the public control fields standing as written, an engine start bounded by the same keys, hotwire, sandbox and condition rules a player faces, and the physics tick holding no driver-identity gate at all - F-067 holds the finding there, and no shipped code exercises the doorway, so the surface is mapped and the live receipt is owed. The canonical paragraph now says so: what the crossed need from driving rides in the record as named consumers of the sister's map, explosives and loudspeakers remain unmapped so the seam still runs two ways in time for them, and neither side invents its half alone - a standing goal between the two repositories, never a dependency in either direction. Reference and documents only, no mod code, so patch. |
 | `A14` | 2026-09-11 | patch | `0.1.1.12-pre-alpha` | The invented gate is removed | The invented gate is removed: the rule that ZAO's mechanics stay closed until one watched turn exists was written at [A3] by an assistant, carried into DR-013's consequences and ENGINE_CONTRACT.md 10.1, and presented as the operator's. The operator ruled on 2026-09-11 that they never made it and that it blocks itself - ZAO has no game code, so the watched turn cannot happen inside ZAO yet, and work that waits for it can never start. The rule is removed from the living records; the watched turn stays wanted evidence for the identity handoff; play stays later, when the operator says. Records only, no mod code, so patch. |
+| `A15` | 2026-09-11 | patch | `0.1.1.13-pre-alpha` | The remaining gate claims are removed | The remaining gate claims are removed: [A14] took the blocking rule out of the living records and left three sentences behind - the README still said no mod code exists because the gate order asks for it, the engine contract's header still said live receipts close G0 which closed at [A6] on structural evidence, and the session state's retelling of [A6] carried the same no-code claim. The gate ladder does not require the absence of code: G1 is passed on observed behavior, and observing ZAO take a body needs ZAO code. The three sentences now state facts - no mod code exists yet, and ENGINE_CONTRACT.md section 10 lists what remains unverified. The sister's standing table carried the same claim in its ZAO row and moves in the same turn in the sister's repository. Records only, no mod code, so patch. |
 
 ## Maturity
 
@@ -58,11 +59,11 @@ says.
 
 ## Next movement
 
-`A15` is the next batch. Its content determines its tier after it
+`A16` is the next batch. Its content determines its tier after it
 exists:
 
-| If A15 is | Result |
+| If A16 is | Result |
 |---|---|
-| patch or hotfix | `0.1.1.13-pre-alpha` |
+| patch or hotfix | `0.1.1.14-pre-alpha` |
 | kohai | `0.1.2.0-pre-alpha` |
 | minor | `0.2.0.0-pre-alpha` |

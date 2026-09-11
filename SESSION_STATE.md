@@ -1,13 +1,25 @@
 | Document | Zombie Awareness Overhaul Session State |
 |---|---|
-| Version | `0.1.1.12-pre-alpha` |
+| Version | `0.1.1.13-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `SESSION_STATE.md` |
 | Status | CANONICAL - where the work actually stands. |
 
 # Session state
 
-**As of** 2026-09-11, `[A14]` close - the invented gate is removed.
+**As of** 2026-09-11, `[A15]` close - the remaining gate claims are
+removed. `[A14]` took the blocking rule out of the living records and
+left three sentences behind. The README still said no mod code exists
+because the gate order asks for it. The engine contract's header still
+said live receipts close G0, which closed at `[A6]` on structural
+evidence. This file's retelling of `[A6]` still carried the same no-code
+claim. All three now state facts: no mod code exists yet, and
+`ENGINE_CONTRACT.md` section 10 lists what remains unverified. The
+sister's standing table carried the same claim in its ZAO row and moves
+in the same turn in the sister's repository. Records only, no mod code,
+so patch.
+
+**Before that**, `[A14]` - the invented gate is removed.
 A rule in this repository said ZAO's mechanics stay closed until one
 watched turn exists. That rule was written by an assistant at `[A3]`,
 carried into DR-013's consequences and `ENGINE_CONTRACT.md` §10.1, and
@@ -161,8 +173,7 @@ sixty-seven sandbox options every one prefixed `lgd_antibodies_194_`.
 Three things go to the operator unresolved: reading it names a mod in
 code against the house discipline, its mutation options already model
 what DR-008 reserves, and every option name carries the mod's version.
-G0 is closed and no mod code exists, which is what the gate ladder asks
-for at this point. The README
+G0 is closed and no mod code exists. The README
 points at `../survivor-awareness/PROJECTS.md`, which now holds the
 architecture across the three repositories and names the edge from
 here to Speakeasy. `[A7]` records the arrival of a second claimant on

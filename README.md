@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul |
 |---|---|
-| Version | `0.1.1.12-pre-alpha` |
+| Version | `0.1.1.13-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `README.md` |
 | Status | CANONICAL - human entry point. |
@@ -36,7 +36,7 @@ Two mechanisms, litigated separately and never merged:
 
 ## Status
 
-No mod code yet, which is what the gate order asks for at this point.
+No mod code yet.
 
 G0 closed at `[A6]`: the engine's turn surface is established from the
 installed build with file-and-line evidence, in F-001 through F-011.
