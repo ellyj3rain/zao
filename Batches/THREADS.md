@@ -16,7 +16,8 @@ design.
 The gate, its borders, the version machine, and the repository's own
 discipline.
 
-**Batches**: `A1`, `A2`, `A3`, `A4`, `A5`, `A6`
+**Batches**: `A1`, `A2`, `A3`, `A4`, `A5`, `A6`, `A7`, `A8`, `A9`,
+`A10`, `A11`, `A12`, `A13`, `A14`
 
 **Owes**: a Lua structural border the moment the first Lua lands; a control
 for every border as it is born.
@@ -26,7 +27,8 @@ for every border as it is born.
 Instruments and audits measured against the genuine artifact, engine or
 code — the installed jar, the shipped trees, the sister's actual sources.
 
-**Batches**: `A2`, `A3`, `A5`, `A6`
+**Batches**: `A2`, `A3`, `A5`, `A6`, `A7`, `A8`, `A9`, `A10`, `A11`,
+`A12`, `A13`, `A14`
 
-**Owes**: the G0 ledger in `ENGINE_CONTRACT.md` §10, every item; the live
-turn receipt above all (it gates ZAO's mechanics entirely).
+**Owes**: the G0 ledger in `ENGINE_CONTRACT.md` §10, every item; the
+witnessed turn among them.

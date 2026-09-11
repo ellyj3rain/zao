@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Decision Registry |
 |---|---|
-| Version | `0.1.1.11-pre-alpha` |
+| Version | `0.1.1.12-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `DECISION_REGISTRY.md` |
 | Status | CANONICAL, APPEND-ONLY - ratified decisions. |
@@ -376,3 +376,29 @@ The half of this that belongs to the living county rather than the
 turned is the sister's, under its own DR-037. This entry fixes the
 posture toward placement and toward the mod; it does not design the
 mechanism.
+
+---
+
+## DR-016 — ZAO work does not wait for a watched turn
+
+**Date** 2026-09-11
+**Status** RATIFIED (operator-directed)
+
+**Decision.** No rule blocks ZAO's mechanics until a watched turn exists.
+The rule that said so was written by an assistant at `[A3]`, carried into
+DR-013's consequences and `ENGINE_CONTRACT.md` §10.1, and presented as
+the operator's. The operator ruled on 2026-09-11 that they never made it.
+A watched turn — a bitten SAO survivor dying, leaving a named corpse,
+rising with `SAOPersonId` intact, and being recognized — is wanted
+evidence for the identity handoff.
+
+**Rationale.** The rule blocked itself. ZAO has no game code, so a
+watched turn inside ZAO cannot happen yet, and work that waits for it
+can never start. The rule also attributed a ruling to the operator that
+they never made.
+
+**Consequences.** This entry supersedes the gate sentence in DR-013's
+consequences; the rest of DR-013 stands. ZAO work does not wait for the
+watched turn. Play is still later, one project at a time, when the
+operator says. Closed batch records keep their text; this entry is the
+correction.

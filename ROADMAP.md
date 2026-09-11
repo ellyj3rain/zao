@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Roadmap |
 |---|---|
-| Version | `0.1.1.11-pre-alpha` |
+| Version | `0.1.1.12-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `ROADMAP.md` |
 | Status | CANONICAL - gate order and the open-fork ledger. |
