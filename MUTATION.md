@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Mutation System |
 |---|---|
-| Version | `0.1.1.13-pre-alpha` |
+| Version | `0.1.1.14-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `MUTATION.md` |
 | Status | CANONICAL - the system as the operator defined it on 2026-09-09. Specifics not yet ratified into `DECISION_REGISTRY.md` are marked. |
@@ -51,6 +51,18 @@ Two kinds of thing sit on it, reached differently:
 
 A body that leaps and a body that is merely very fast are both on the
 gradient, arrived at by different routes.
+
+**The forms enter through a source port.** The mutants mod's forms and
+animations are raw material for this gradient. Attributes and forms are
+distinct but linked: a bruiser can look the part and be the part, and
+attributes and animations can also be conferred non-physiognomically.
+Attribution lands in `CREDITS.md` when source is used, and every ported
+capability is re-caused under this project's own ontology (DR-014).
+
+**The contents are enumerated from what is possible.** What sits on the
+gradient is enumerated from what can be made possible, using the ported
+forms and the suggested concepts as the basis for variety among the
+known types and for expanding beyond them.
 
 ## Death is not always required
 
@@ -120,6 +132,14 @@ the edges. Both drives are real.
 outcome, never a placement. This is DR-037's law in the sister, applied
 here: a settlement is what these people did, or it does not exist.
 
+**What holds a settlement together is necessity.** When one forms, the
+members stay because they need it, and the mechanics of holding follow
+from what they need.
+
+**A returned mutant is one of the afflicted.** A mutant-form body can
+come back, and a returned mutant diversifies how the afflicted present
+and the capabilities they carry forward.
+
 ## The crossed
 
 **They organise**, and that is what makes them the worst thing in the
@@ -144,14 +164,15 @@ through a mechanism that already exists.
 
 ## Identity decay
 
-Alongside the physiological decay already modeled, an afflicted body
-loses hold of who it was.
+The turning and the return already fracture and disorganize a person's
+memory. Not every afflicted body loses more over time.
 
-**Which axis it loses varies per body.** Some forget who they were and
-keep what they can do. Some remember everything - the house, the people
+**Where further loss occurs, which axis it loses varies per body.** Some
+forget who they were and keep what they can do. Some remember
+everything - the house, the people
 who turned them away - and lose the ability to act on any of it.
 
-**And the decay itself is episodic rather than steady.** How often an
+**And the further decay itself is episodic rather than steady.** How often an
 episode happens, and how much it fragments when it does, are both dials.
 Beyond them the process is genuinely random.
 
@@ -239,7 +260,9 @@ law, applied to them as to every arrangement in the county.
 
 ## What is not defined yet
 
-- The names of anything a player sees. Strain names are the operator's.
-- How many mutations sit on the gradient, and what each one is.
-- The numbers behind every dial above.
-- How an afflicted settlement is held, once one forms.
+- The names a player sees. The substance is defined by the forms
+  themselves; the words are not yet chosen.
+- The enumeration of the gradient's contents: what can be made possible,
+  from the ported forms and the suggested concepts.
+- The numbers behind every dial above, extrapolated from the operator's
+  suggested numbers.

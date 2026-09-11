@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Batch Log |
 |---|---|
-| Version | `0.1.1.13-pre-alpha` |
+| Version | `0.1.1.14-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `BATCH_LOG.md` |
 | Status | REGULATORY - chronological batch index. |
@@ -31,3 +31,4 @@ history tree. The last row below is the tip.
 | [A13](Batches/A13-2026-09-09-the-seam-carries-the-driving-map.md) | 2026-09-09 | The seam carries the driving map | [`T-001`](Batches/THREADS.md#t-001), [`T-002`](Batches/THREADS.md#t-002) |
 | [A14](Batches/A14-2026-09-11-the-invented-gate-is-removed.md) | 2026-09-11 | The invented gate is removed | [`T-001`](Batches/THREADS.md#t-001), [`T-002`](Batches/THREADS.md#t-002) |
 | [A15](Batches/A15-2026-09-11-the-remaining-gate-claims-are-removed.md) | 2026-09-11 | The remaining gate claims are removed | [`T-001`](Batches/THREADS.md#t-001), [`T-002`](Batches/THREADS.md#t-002) |
+| [A16](Batches/A16-2026-09-11-the-operators-mutation-rulings-are-recorded.md) | 2026-09-11 | The operator's mutation rulings are recorded | [`T-001`](Batches/THREADS.md#t-001), [`T-002`](Batches/THREADS.md#t-002) |
