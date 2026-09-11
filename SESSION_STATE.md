@@ -1,14 +1,30 @@
 | Document | Zombie Awareness Overhaul Session State |
 |---|---|
-| Version | `0.1.1.13-pre-alpha` |
+| Version | `0.1.1.14-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `SESSION_STATE.md` |
 | Status | CANONICAL - where the work actually stands. |
 
 # Session state
 
-**As of** 2026-09-11, `[A15]` close - the remaining gate claims are
-removed. `[A14]` took the blocking rule out of the living records and
+**As of** 2026-09-11, `[A16]` close - the operator's mutation rulings are
+recorded. The operator answered seven questions on the mutation system on
+2026-09-11, and this batch carries the rulings into the living records.
+The mutants mod's forms enter through a source port, with attributes and
+forms distinct but linked, and a mutant-form body can come back as one of
+the afflicted (DR-017). The gradient's contents are enumerated from what
+can be made possible (DR-018). The dial numbers extrapolate from numbers
+the operator has already suggested (DR-019). Afflicted memory is fractured
+at the turn and the return, and further loss is not universal (DR-020).
+Necessity holds an afflicted settlement (DR-021). The rarity fork is split
+into its two concerns, and the strain-names fork is answered in substance
+by the forms. The assistant's remaining six questions were withdrawn by
+the caller after the operator ruled that they carried ungrounded
+presuppositions; the seven answers stand. Records only, no mod code, so
+patch.
+
+**Before that**, `[A15]` - the remaining gate claims are removed.
+`[A14]` took the blocking rule out of the living records and
 left three sentences behind. The README still said no mod code exists
 because the gate order asks for it. The engine contract's header still
 said live receipts close G0, which closed at `[A6]` on structural

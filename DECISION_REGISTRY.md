@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Decision Registry |
 |---|---|
-| Version | `0.1.1.13-pre-alpha` |
+| Version | `0.1.1.14-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `DECISION_REGISTRY.md` |
 | Status | CANONICAL, APPEND-ONLY - ratified decisions. |
@@ -402,3 +402,100 @@ consequences; the rest of DR-013 stands. ZAO work does not wait for the
 watched turn. Play is still later, one project at a time, when the
 operator says. Closed batch records keep their text; this entry is the
 correction.
+
+---
+
+## DR-017 — The mutants source port supplies the forms of the gradient
+
+**Date** 2026-09-11
+**Status** RATIFIED (operator-directed)
+
+**Decision.** The mutants mod's forms and animations are usable through a
+source port and are raw material for the mutation gradient. Attributes
+and forms are distinct but linked: a bruiser can look the part and be the
+part, and attributes and animations can also be conferred
+non-physiognomically. A mutant-form body can come back as one of the
+afflicted, and a returned mutant diversifies how the afflicted present and
+the capabilities they carry forward.
+
+**Rationale.** The middle outcomes of the gradient are defined in
+substance by forms that already exist, rather than by a separate list of
+strain names.
+
+**Consequences.** Ported capabilities are re-caused under this project's
+own ontology (DR-014) and attributed in `CREDITS.md` when source is used.
+`MUTATION.md` carries the port and the returned-mutant ruling.
+
+---
+
+## DR-018 — The gradient's contents are enumerated from what is possible
+
+**Date** 2026-09-11
+**Status** RATIFIED (operator-directed)
+
+**Decision.** The contents of the gradient are enumerated from what can be
+made possible, using the mutants and the suggested concepts as the basis
+for variety among the currently known types and for expanding beyond them.
+
+**Rationale.** The count and contents of the gradient follow from
+enumerating the possible, not from picking a number first.
+
+**Consequences.** The enumeration of the gradient's contents is named work:
+what can be made possible, from the ported forms and the suggested
+concepts. `MUTATION.md` carries the direction.
+
+---
+
+## DR-019 — The dial numbers extrapolate from the operator's suggested numbers
+
+**Date** 2026-09-11
+**Status** RATIFIED (operator-directed)
+
+**Decision.** The numbers behind the dial table are extrapolated from
+numbers the operator has already suggested, to produce default-level
+configurations.
+
+**Rationale.** The defaults come from the operator's own suggestions rather
+than from values an assistant invents.
+
+**Consequences.** Extracting the suggested numbers into the tree is named
+work; no dial value is authored by the assistant. `MUTATION.md` names the
+source of the dial numbers.
+
+---
+
+## DR-020 — Afflicted memory is fractured at the turn, not necessarily decaying after it
+
+**Date** 2026-09-11
+**Status** RATIFIED (operator-directed)
+
+**Decision.** Not every afflicted body loses memory over time. The original
+premise is that memory was already fractured or disorganized by the
+turning process and the return. Further loss is possible for some bodies
+and is episodic where it occurs, governed by the existing dials and
+genuinely random beyond them.
+
+**Rationale.** The identity-decay premise had drifted from what was already
+established; the correction grounds it in the turning and the return.
+
+**Consequences.** `MUTATION.md`'s identity-decay section is corrected: the
+fracture is at the turn, further loss is not universal, and the episodic
+dials apply where further loss occurs.
+
+---
+
+## DR-021 — Necessity holds an afflicted settlement
+
+**Date** 2026-09-11
+**Status** RATIFIED (operator-directed)
+
+**Decision.** What holds a cast-out afflicted settlement together is
+necessity. Success stays unencoded: a settlement is what these people
+did, or it does not exist.
+
+**Rationale.** The holding principle follows what the members need, and the
+mechanics of holding follow from that need.
+
+**Consequences.** `MUTATION.md` states the holding principle beside the
+never-encoded law. The mechanics of holding remain work that follows from
+the principle.
