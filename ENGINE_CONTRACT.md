@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Engine Contract |
 |---|---|
-| Version | `0.1.1.12-pre-alpha` |
+| Version | `0.1.1.13-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `ENGINE_CONTRACT.md` |
 | Status | CANONICAL, INCOMPLETE - the verified engine mechanics the turned require; nothing here is live-verified. |
@@ -14,7 +14,8 @@ The verified surface for a mod that owns zombies, from the installed game at
 reads of the shipped Lua. No decompiled source tree exists locally; bytecode
 offsets are the citations. Sections marked HAND-CHECKED were re-derived in
 this repository's own pass ([A2]), not taken from a sweep's word. Everything
-is structurally verified and live-unverified; live receipts are G0's close.
+is structurally verified and live-unverified; section 10 lists what remains
+unverified.
 
 ## 1 · The reanimation path (HAND-CHECKED)
 
