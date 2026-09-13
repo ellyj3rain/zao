@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Mutation System |
 |---|---|
-| Version | `0.1.1.14-pre-alpha` |
+| Version | `0.2.0.1-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `MUTATION.md` |
 | Status | CANONICAL - the system as the operator defined it on 2026-09-09. Specifics not yet ratified into `DECISION_REGISTRY.md` are marked. |
@@ -63,6 +63,48 @@ capability is re-caused under this project's own ontology (DR-014).
 gradient is enumerated from what can be made possible, using the ported
 forms and the suggested concepts as the basis for variety among the
 known types and for expanding beyond them.
+
+## Integration with the branching graph
+
+The pathogen owns the mutation roll. The living branching graph does not
+choose a form.
+
+- The default roll is uniform across the gradient; sandbox settings may
+  weight it.
+- The pathogen also owns the roll for form performance.
+- Crossed is a terminal pathogen state. A crossed body does not mutate
+  further and does not organize around forms. A crossed body may
+  instrumentalize or value a unique form in another body.
+- Retained form traits are state, not new branches.
+- Capability forms and attribute mutations stack.
+- A form is a visible fact. It enters Perception and changes pressure
+  inside the branching graph.
+
+## Implemented enumeration
+
+The runtime gradient carries two enumerated kinds:
+
+- **Capability forms:** Puker, Husk, Skitter, Wrecker, Leaper, and Weeper.
+- **Attribute mutations:** Speed, Strength, Toughness, and Hearing.
+
+A pathogen event can give a body one capability form and one attribute
+mutation. Capability forms and attribute mutations therefore stack. A
+body without a capability form can still carry an attribute mutation, so
+an ordinary turned body can express a partial ability before it embodies
+a final form.
+
+The state is event-driven. Infection, death, and turn create it; daily
+advancement grows the form, decays human capability, advances passive
+decay, and can revert a mutant to afflicted. Reversion is a random event,
+with the retained ability inversely related to the performance the body
+had reached.
+
+Recovery is an event too. A body that survives keeps the state the pathogen
+already changed; survival does not erase the fact that the pathogen acted.
+
+Both kinds are visible facts. A capability form and its attribute mutations
+enter Perception together and change pressure inside the living branching
+graph.
 
 ## Death is not always required
 
@@ -190,21 +232,32 @@ they can regress into afflicted, and they live with what either means.
 
 ## The dials
 
-Everything below is controllable. Defaults are named where the operator
-stated one.
+Everything below is controllable. The defaults are the operator's
+(DR-019, ratified 2026-09-11): resistance at **2** survived infections,
+immunity at **5**, mutation odds **10%-or-lower** at baseline, crossed
+rarity **2.5%** as the per-infection variable, afflicted susceptibility
+**5×**, identity decay rare and mild.
 
 | Dial | Default |
 |---|---|
-| infections survived before resistance | operator's |
-| infections survived before immunity | operator's |
-| odds of each mutation on the gradient | uniform at baseline |
-| odds of crossed | rarer than the rest |
-| the per-infection random variable | rare |
-| an afflicted body's susceptibility to crossed | higher than anyone's |
+| infections survived before resistance | 2 |
+| infections survived before immunity | 5 |
+| odds of each mutation on the gradient | 10% or lower (0.10), uniform at baseline |
+| odds of crossed | 2.5%, the per-infection random variable |
+| an afflicted body's susceptibility to crossed | 5× |
 | whether an afflicted body can return further than afflicted | no |
 | whether the crossed engage the dead | they do not |
-| how often an identity-decay episode happens | operator's |
-| how much it fragments when it does | operator's |
+| how often an identity-decay episode happens | 1% per advanced day |
+| how much it fragments when it does | 0.10 off one or two axes |
+| odds a lingering turned group forms a settlement | 2% |
+
+The daily advancement follows the registry's extrapolation rule from the
+baseline odds, and each rate is its own dial: growth runs at the
+baseline odds (**0.10**), passive decay at a tenth of it (**0.01**),
+reversion at a tenth (**0.01**), the outlier correction at a fifth
+(**0.02**). Which capability form a mutation lands on is a weighted
+roll - uniform at baseline (every form weight **1.0**), weightable per
+form in the sandbox.
 
 ## Where this lives
 
@@ -262,7 +315,11 @@ law, applied to them as to every arrangement in the county.
 
 - The names a player sees. The substance is defined by the forms
   themselves; the words are not yet chosen.
-- The enumeration of the gradient's contents: what can be made possible,
-  from the ported forms and the suggested concepts.
-- The numbers behind every dial above, extrapolated from the operator's
-  suggested numbers.
+
+The numbers are defined (DR-019 above), and the gradient's contents are
+enumerated in the runtime as the six capability forms and four attribute
+mutations. What remains open is the second seam's far side: the crossed's
+living vocabulary - driving is mapped (`C82`, surface-mapped at the
+sister's `F-067`), explosives and loudspeakers are not - and ZAO's half
+of that seam is the named consumers in the record, never an invented
+implementation.

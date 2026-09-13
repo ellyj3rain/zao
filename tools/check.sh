@@ -9,6 +9,17 @@
 # Exit non-zero on any failure, so the pre-commit hook can refuse.
 set -u
 cd "$(dirname "$0")/.." || exit 2
+# The Windows path of the repo root, for the one step that needs
+# PowerShell. `pwd -W` is the Git Bash spelling; `wslpath` is the WSL
+# one. Either shell runs this gate, and neither has the other's tool,
+# so the two are tried in order and the build's location never rides
+# on whichever shell happened to invoke the gate - a launch that
+# inherited the right cwd by accident worked, but the error it
+# printed on every run was the gate betting on that accident.
+WINROOT="$(pwd -W 2>/dev/null || true)"
+if [ -z "$WINROOT" ]; then
+    WINROOT="$(wslpath -w "$(pwd)" 2>/dev/null || true)"
+fi
 
 PY=python
 command -v python >/dev/null 2>&1 || PY=python3
@@ -52,6 +63,18 @@ fi
 # 3. Border 2 - the version is a machine.
 if ! "$PY" tools/version_replay.py; then
     note "BORDER 2 REFUSED: version replay"
+    fail=1
+fi
+
+# 3. Border 3 - state producer mapping and precedence.
+if ! "$PY" tools/state_dump_test.py; then
+    note "BORDER 3 REFUSED: state dump"
+    fail=1
+fi
+
+# 4. Build and install the Java bridge.
+if ! powershell.exe -NoProfile -Command "Set-Location -LiteralPath '$WINROOT'; python tools\\build_java.py; exit \$LASTEXITCODE"; then
+    note "BORDER 4 REFUSED: Java bridge"
     fail=1
 fi
 

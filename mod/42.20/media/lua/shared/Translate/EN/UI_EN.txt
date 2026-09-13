@@ -1,0 +1,8 @@
+    UI_optionscreen_binding_ZAOInspect = "ZAO: toggle the state panel",
+    ZombieAwareness_Enable = "Enable Zombie Awareness Overhaul",
+    ZombieAwareness_MutationOdds = "Mutation odds",
+    ZombieAwareness_Controller = "Drive turned bodies",
+    ZombieAwareness_Overlay = "Show form overlay",
+    ZombieAwareness_Mind = "Enable the turned mind",
+    ZombieAwareness_Settlement = "Enable turned settlements",
+    ZombieAwareness_Recovery = "Enable recovery input",

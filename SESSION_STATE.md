@@ -1,15 +1,108 @@
 | Document | Zombie Awareness Overhaul Session State |
 |---|---|
-| Version | `0.1.1.14-pre-alpha` |
+| Version | `0.2.0.1-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `SESSION_STATE.md` |
 | Status | CANONICAL - where the work actually stands. |
 
 # Session state
 
-**As of** 2026-09-11, `[A16]` close - the operator's mutation rulings are
-recorded. The operator answered seven questions on the mutation system on
-2026-09-11, and this batch carries the rulings into the living records.
+**As of 2026-09-12**, `[A30]` close - the Sandbox prefix is the engine's
+lookup, never the title. The operator clarified that ZAO's sandbox
+configuration does not need "sandbox" literally prefixed in its title; the
+engine's own bytecode (disassembled from the installed jar) answers that the
+`Sandbox_` prefix on `Sandbox.json`'s KEYS is applied by the engine at read
+time - `getTranslatedName()` is `getText("Sandbox_" .. translation)`,
+`getTooltip()` is `getTextOrNull("Sandbox_" .. translation .. "_tooltip")`,
+and `ServerSettingsScreen.lua` names a custom page by
+`getText("Sandbox_" .. page.name)` - so the prefix never displays. The
+player reads "~ Zombie Awareness" as the page title and each dial's own
+name and tooltip; `[A29]`'s `Sandbox.json` is the live mechanism, now
+verified rather than assumed. The seven pre-A29 names in `UI_EN.txt` are
+inert fallback-path entries, named as such in the record. No code changed.
+
+**Before that**, `[A29]` - the runtime passes its own dials. Every dial
+DR-019 reserved is declared in the sandbox and defaulted to the operator's
+numbers. Identity decay is episodic on both sides - the steady per-tick decay
+is gone from Lua and Java alike. Recovery is read from the sister's record
+and moves only an infected body back to afflicted. Settlements form from
+where turned bodies actually linger, and necessity is reckoned from what the
+members need. The county's own dead carry derived pathogen records (DR-011).
+Each form performs its signature act in `ZAO_Behaviors.lua` on public engine
+APIs, performance-scaled. The crossed prefer the afflicted and ignore the
+dead unless the dial says otherwise. The bridge carries the configured dials
+and one shared course per person, fed by the pathogen's event boundary. The
+per-outcome player-side answers (DR-012) are stated in the batch record. The
+gate, build, deploy, and test are deferred to the end pass by the operator's
+standing order.
+
+**Before that**, the pathogen state is event-driven. Infection, death,
+and turn create it; daily advancement grows forms and attributes, decays
+human capability, and can revert a mutant to afflicted. Mutation knowledge is
+no longer derived from a hash.
+
+**As of** 2026-09-11, `[A28]` close - the Java bridge is built. `ZAO.jar` owns
+the per-body actuators, applies each form's speed, strength, cognition,
+memory, sight, and hearing, and drives the body through the engine's own
+target and path methods.
+
+**Before that**, `[A27]` - the controller check is corrected.
+`ZAO_Controller.lua` reads the actual `instanceof` result and only drives
+`IsoZombie` objects.
+
+**Before that**, `[A26]` - the defaults are chosen. Forms are on, the mutation
+odds are 10%, the runtime controller is on, the world-space overlay is on, and
+the state panel is bound to **O**.
+
+**Before that**, `[A25]` - the claim surface is published. Other mods can ask
+`ZAO.owns`, `ZAO.formOf`, and `ZAO.performanceOf` without reaching into
+private state.
+
+**Before that**, `[A24]` - the mod id is chosen. The stable id is
+`ZombieAwareness`, and the clean loadout name is **Zombie Awareness
+Overhaul**.
+
+**Before that**, `[A23]` - the turned body is driven.
+`ZAO_Controller.lua` claims every zombie that carries `SAOPersonId`, writes
+the ZAO ownership mark into its modData, and drives the body according to its
+form. Puker holds range, Skitter flanks, and the remaining forms close on the
+target.
+
+**Before that**, `[A22]` - the form overlay. `ZAO_Overlay.lua` draws the current
+form and its normalized performance above every nearby body that carries one,
+and the form roll is gated on infection, death, or turn.
+
+**Before that**, `[A21]` - the development loadout. The temporary mod id is
+`ZombieAwarenessDev`, **O** opens the ZAO state panel, and `tools/deploy.sh`
+installs the development build to the game's mods directory.
+
+**Before that**, `[A20]` - the form registry and the pathogen roll. The six
+source-port forms are Puker, Husk, Skitter, Wrecker, Leaper, and Weeper. The
+pathogen owns the roll, a turned body has a 10 percent chance of taking one of
+the six forms, and performance is a normalized state value between 0 and 1.
+
+**Before that**, `[A19]` - the state surface. `ZAO_State.lua` is the runtime
+state surface, and `tools/state_dump.py` emits the same mapping from SAO
+rows. A body with no assigned form is in the `none` form, its performance is
+zero, and its decay state follows the facts SAO already records.
+
+**Before that**, `[A18]` - the ZAO state producer. `tools/state_dump.py`
+emits one ZAO pathogen-state row per SAO decision moment, keyed by the SAO
+person id and the decision hour. The state carries the pathogen facts SAO
+already records, and the ZAO-specific mutation fields stay null until ZAO has
+a real state surface to read them from.
+
+**Before that**, `[A17]` - the pathogen and the branching graph are
+integrated. The operator answered six integration questions, and the batch
+records the rulings: the pathogen owns the mutation roll and the roll for form
+performance, crossed is terminal and does not organize around forms, retained
+form traits are state rather than new branches, forms and attribute mutations
+stack, and forms enter Perception as visible facts. The mutation system is now
+joined to the living branching graph without a second planner.
+
+**Before that**, `[A16]` - the operator's mutation rulings are recorded.
+The operator answered seven questions on the mutation system on 2026-09-11,
+and this batch carries the rulings into the living records.
 The mutants mod's forms enter through a source port, with attributes and
 forms distinct but linked, and a mutant-form body can come back as one of
 the afflicted (DR-017). The gradient's contents are enumerated from what
@@ -216,7 +309,8 @@ decision `[A6]` handed the operator, because a mod under MIT can be
 read as source rather than named at runtime. That adds an option to the
 fork rather than deciding it. `A10` is the next batch.
 
-No mod code exists yet.
+Mod code has existed since `[A20]`; the standing above ends at `[A9]`
+because it retells the early batches, not the tip.
 
 ## The wanted turn evidence
 
@@ -233,7 +327,7 @@ are ZAO's own and new — engine fields are actuators (F-005, as corrected);
 inverse/mirror axes are in the operator's direction. The fork ledger keeps
 what stays reserved: mutation axes, strain names, rarity, enable defaults,
 mod id, publication. Per-outcome player calls (DR-012) land at the batches
-that build the outcomes.
+that build the outcomes; `[A29]` states them for the outcomes it builds.
 
 ## Instruments
 

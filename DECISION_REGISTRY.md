@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Decision Registry |
 |---|---|
-| Version | `0.1.1.14-pre-alpha` |
+| Version | `0.2.0.1-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `DECISION_REGISTRY.md` |
 | Status | CANONICAL, APPEND-ONLY - ratified decisions. |
@@ -499,3 +499,93 @@ mechanics of holding follow from that need.
 **Consequences.** `MUTATION.md` states the holding principle beside the
 never-encoded law. The mechanics of holding remain work that follows from
 the principle.
+
+---
+
+## DR-022 — The pathogen owns the mutation roll, and forms feed the branching graph
+
+**Date** 2026-09-11
+**Status** RATIFIED (operator-directed)
+
+**Decision.** The pathogen owns the mutation roll and the roll for form
+performance. The default roll is uniform across the gradient, and sandbox
+settings may weight it. Crossed is a terminal pathogen state: a crossed
+body does not mutate further and does not organize around forms. Retained
+form traits are state, not new branches. Capability forms and attribute
+mutations stack. Forms are visible facts that enter Perception and change
+pressure inside the living branching graph.
+
+**Rationale.** The six integration questions were answered together because
+they describe one seam: how ZAO's pathogen state meets SAO's branching
+graph.
+
+**Consequences.** `MUTATION.md` carries the integration section. The
+cross-module row contract in Speakeasy is proposed against this ruling.
+
+---
+
+## DR-023 — The stable mod id is ZombieAwareness
+
+**Date** 2026-09-11
+**Status** RATIFIED (operator-directed)
+
+**Decision.** The stable mod id is `ZombieAwareness`.
+
+**Rationale.** The mod's name and repository make the id unambiguous, and a
+development suffix would leave the loadout unclear.
+
+**Consequences.** Both `mod.info` files use the id, and the deploy path is
+`Zomboid/mods/ZombieAwareness`.
+
+---
+
+## DR-024 — ZAO publishes a read-only claim surface
+
+**Date** 2026-09-11
+**Status** RATIFIED (operator-directed)
+
+**Decision.** ZAO publishes `ZAO.owns(zombie)`, `ZAO.formOf(zombie)`, and
+`ZAO.performanceOf(zombie)` as a read-only query surface.
+
+**Rationale.** Other mods need a stable way to ask who owns a body and what
+form it carries without reaching into ZAO's private state.
+
+**Consequences.** `ZAO_API.lua` is the public surface, and the claim-surface
+fork is closed.
+
+---
+
+## DR-025 — ZAO's playable defaults are chosen
+
+**Date** 2026-09-11
+**Status** RATIFIED (operator-directed)
+
+**Decision.** The playable defaults are: forms on, 10% mutation odds, runtime
+controller on, world-space overlay on, and the state panel bound to **O**.
+
+**Rationale.** These are the defaults the current runtime ships with, and they
+make the new pathogen surface visible and playable without configuration.
+
+**Consequences.** The enable-defaults fork is closed.
+
+---
+
+## DR-026 — Pathogen state and mutation knowledge are event-driven
+
+**Date** 2026-09-12
+**Status** RATIFIED (operator-directed)
+
+**Decision.** A body's pathogen state and a survivor's mutation knowledge
+come from simulated events: infection, death, turn, daily advancement,
+carrier exposure, encounter, and testimony. No form, performance value,
+attribute mutation, or knowledge is derived from a person id, a clock, or a
+hash at read time.
+
+**Rationale.** World generation is emergent. Precomputing a later world's
+pathogen history would replace the simulation with a deterministic table.
+
+**Consequences.** `ZAO_Pathogen.lua` owns event creation and daily
+advancement. `SAO_PathogenEvents.lua` emits SAO's infection, death, and turn
+events and derives knowledge only from proximity or testimony. The
+Speakeasy state producer reads event-derived state and reports absence
+honestly for rows that predate it.
