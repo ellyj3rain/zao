@@ -29,6 +29,15 @@ def run(command: list[str]) -> None:
 
 
 def main() -> int:
+    # The probe the gate uses to tell "cannot run here" (exit 2) from
+    # "ran and failed" (exit 1). The build reads this machine's JDK and
+    # the game's own jars; a machine without them - the forge's runner -
+    # must see the border SKIP, never pass, per the sister's [C56] law.
+    if "--can-build" in sys.argv[1:]:
+        if not JDK.is_dir() or not PZ_JAR.is_file() or not ZB_JAR.is_file():
+            return 2
+        return 0
+
     if not JDK.is_dir():
         print("FAULT: JetBrains JDK not found")
         return 1
