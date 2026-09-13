@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Architecture |
 |---|---|
-| Version | `0.1.1.14-pre-alpha` |
+| Version | `0.2.0.1-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `ARCHITECTURE.md` |
 | Status | ACTIVE - ratified framework shape. Engine surfaces claimed here are unverified until `FINDINGS.md` carries them. |
@@ -85,6 +85,21 @@ The pathogen's own mechanics, litigated separately from intelligence
   mechanism one.
 - **Existing art first.** Where a mutated or recovering body needs to read
   on screen and existing moodle art already reads, use it.
+
+### State surface
+
+`ZAO_State.lua` is the runtime state surface. It reads the event-driven state
+produced by `ZAO_Pathogen.lua`: terminal state, current form, form
+performance, attribute mutations, decay state, retained ability, and visible
+forms. A body with no assigned form is in the `none` form, and its performance
+is zero. No state is derived from a person id or a clock.
+
+### Java bridge
+
+`ZAO.jar` owns the per-body actuators. It applies each form's speed,
+strength, cognition, memory, sight, and hearing to the engine's own public
+`IsoZombie` fields, then drives the body through the engine's own target and
+path methods. Lua reaches it as `ZAOJavaBridge`.
 
 ## What is not ratified
 

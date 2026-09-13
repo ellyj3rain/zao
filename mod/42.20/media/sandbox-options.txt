@@ -1,0 +1,145 @@
+VERSION = 1,
+
+option ZombieAwareness.Enable {
+    type = boolean, default = true,
+    page = ZombieAwareness, translation = ZombieAwareness_Enable,
+}
+
+option ZombieAwareness.MutationOdds {
+    type = double, min = 0.0, max = 1.0, default = 0.10,
+    page = ZombieAwareness, translation = ZombieAwareness_MutationOdds,
+}
+
+option ZombieAwareness.Controller {
+    type = boolean, default = true,
+    page = ZombieAwareness, translation = ZombieAwareness_Controller,
+}
+
+option ZombieAwareness.Overlay {
+    type = boolean, default = true,
+    page = ZombieAwareness, translation = ZombieAwareness_Overlay,
+}
+
+option ZombieAwareness.Mind {
+    type = boolean, default = true,
+    page = ZombieAwareness, translation = ZombieAwareness_Mind,
+}
+
+option ZombieAwareness.Settlement {
+    type = boolean, default = true,
+    page = ZombieAwareness, translation = ZombieAwareness_Settlement,
+}
+
+option ZombieAwareness.Recovery {
+    type = boolean, default = true,
+    page = ZombieAwareness, translation = ZombieAwareness_Recovery,
+}
+
+/*
+ * The pathogen dials (DR-019). The defaults below the operator's own:
+ * resistance 2, immunity 5, crossed rare at 2.5% per infection, an
+ * afflicted body 5x more susceptible than anyone else, mutation odds
+ * 10% or lower at baseline. Growth, passive decay, reversion, and the
+ * outlier effect carry the operator's baseline extrapolated per the
+ * registry rule: growth runs at the baseline odds, the two slow
+ * processes at a tenth of it, the outlier correction at a fifth.
+ */
+
+option ZombieAwareness.CrossedOdds {
+    type = double, min = 0.0, max = 1.0, default = 0.025,
+    page = ZombieAwareness, translation = ZombieAwareness_CrossedOdds,
+}
+
+option ZombieAwareness.AfflictedSusceptibility {
+    type = double, min = 0.0, max = 100.0, default = 5.0,
+    page = ZombieAwareness, translation = ZombieAwareness_AfflictedSusceptibility,
+}
+
+option ZombieAwareness.GrowthRate {
+    type = double, min = 0.0, max = 1.0, default = 0.10,
+    page = ZombieAwareness, translation = ZombieAwareness_GrowthRate,
+}
+
+option ZombieAwareness.PassiveDecayRate {
+    type = double, min = 0.0, max = 1.0, default = 0.01,
+    page = ZombieAwareness, translation = ZombieAwareness_PassiveDecayRate,
+}
+
+option ZombieAwareness.ReversionOdds {
+    type = double, min = 0.0, max = 1.0, default = 0.01,
+    page = ZombieAwareness, translation = ZombieAwareness_ReversionOdds,
+}
+
+option ZombieAwareness.OutlierEffect {
+    type = double, min = 0.0, max = 1.0, default = 0.02,
+    page = ZombieAwareness, translation = ZombieAwareness_OutlierEffect,
+}
+
+option ZombieAwareness.IdentityDecayOdds {
+    type = double, min = 0.0, max = 1.0, default = 0.01,
+    page = ZombieAwareness, translation = ZombieAwareness_IdentityDecayOdds,
+}
+
+option ZombieAwareness.IdentityDecayDepth {
+    type = double, min = 0.0, max = 1.0, default = 0.10,
+    page = ZombieAwareness, translation = ZombieAwareness_IdentityDecayDepth,
+}
+
+option ZombieAwareness.ResistanceInfections {
+    type = integer, min = 1, max = 100, default = 2,
+    page = ZombieAwareness, translation = ZombieAwareness_ResistanceInfections,
+}
+
+option ZombieAwareness.ImmunityInfections {
+    type = integer, min = 1, max = 100, default = 5,
+    page = ZombieAwareness, translation = ZombieAwareness_ImmunityInfections,
+}
+
+/* The crossed ignore the dead by default (MUTATION.md); this is the dial. */
+option ZombieAwareness.CrossedEngageDead {
+    type = boolean, default = false,
+    page = ZombieAwareness, translation = ZombieAwareness_CrossedEngageDead,
+}
+
+/*
+ * Turned-settlement formation is rare on purpose (DR-006) and its
+ * rarity numbers are reserved to the operator - this is the dial.
+ */
+option ZombieAwareness.SettlementOdds {
+    type = double, min = 0.0, max = 1.0, default = 0.02,
+    page = ZombieAwareness, translation = ZombieAwareness_SettlementOdds,
+}
+
+/*
+ * The form-direction roll is uniform across the gradient by default;
+ * these weights are the sandbox's handle on it (DR-022).
+ */
+option ZombieAwareness.FormWeightPuker {
+    type = double, min = 0.0, max = 10.0, default = 1.0,
+    page = ZombieAwareness, translation = ZombieAwareness_FormWeightPuker,
+}
+
+option ZombieAwareness.FormWeightHusk {
+    type = double, min = 0.0, max = 10.0, default = 1.0,
+    page = ZombieAwareness, translation = ZombieAwareness_FormWeightHusk,
+}
+
+option ZombieAwareness.FormWeightSkitter {
+    type = double, min = 0.0, max = 10.0, default = 1.0,
+    page = ZombieAwareness, translation = ZombieAwareness_FormWeightSkitter,
+}
+
+option ZombieAwareness.FormWeightWrecker {
+    type = double, min = 0.0, max = 10.0, default = 1.0,
+    page = ZombieAwareness, translation = ZombieAwareness_FormWeightWrecker,
+}
+
+option ZombieAwareness.FormWeightLeaper {
+    type = double, min = 0.0, max = 10.0, default = 1.0,
+    page = ZombieAwareness, translation = ZombieAwareness_FormWeightLeaper,
+}
+
+option ZombieAwareness.FormWeightWeeper {
+    type = double, min = 0.0, max = 10.0, default = 1.0,
+    page = ZombieAwareness, translation = ZombieAwareness_FormWeightWeeper,
+}

@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Credits |
 |---|---|
-| Version | `0.1.1.14-pre-alpha` |
+| Version | `0.2.0.1-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `CREDITS.md` |
 | Status | CANONICAL - attribution and integration status per source. |
@@ -43,8 +43,9 @@ sublicense, with the notice retained. GPL-3.0 compatible.
 classes at runtime, exposes Java to Lua, and loads a mod's own jar from
 `media/java/`.
 
-*Status:* not integrated here - ZAO has no mod code. In use in the
-sister, which states it as a requirement.
+*Status:* in use since `[A28]` - `ZAO.jar` loads through it and the
+bridge reaches Lua through its exposer. Also in use in the sister,
+which states it as a requirement.
 
 ## Antibodies
 lonegamedev. https://github.com/lonegamedev/pz_mod_antibodies - **MIT**.
@@ -73,7 +74,17 @@ file, and the description carries no reuse statement. Its own credits
 note the sound effects were produced with ElevenLabs, whose terms
 travel with them.
 
-*Used for:* nothing taken yet. Read at `[A7]`; F-012 records it.
+*Used for:* the capability shapes, at the behavior level (DR-017). The
+six forms' signature acts - what triggers them, their phase
+structures, their effects - were studied from the installed mod and
+re-implemented from scratch in this project's own code on public
+engine APIs at `[A29]`. **No code, media, or sounds are taken**: the
+work here is a re-implementation, the names and categories are not
+carried across, and the source mod's files appear nowhere in this
+tree. Every engine call is this project's own reading of the engine's
+public surface, and where the source act is animation-driven this
+project states its pathing substitute rather than hiding it
+(`[A29]`, Honest limits).
 
 *How it fits:* the valuable part is the engineering - a body that
 leaps a fence, charges in a line, resists a bullet, cries where it
@@ -83,11 +94,14 @@ and how far the rot has gone, never from a species-level table
 (DR-002, DR-008), so the question this project answers is which
 capability a particular body ended up with and why - and a worked
 implementation of the capability itself is exactly the expensive thing
-worth having. Where his work is used it is named here precisely, entry
-by entry, with permission settled by the operator before anything
-lands.
+worth having.
 
-*Status:* **not integrated. Nothing is ported.**
+*Status:* **re-implemented, not ported.** The forms enter through the
+operator-ratified source port (DR-017): capability shapes re-caused
+under this project's own ontology, zero files copied. The author's
+work is credited as the origin of the six forms' behavioral design,
+and this entry is the precise, entry-by-entry naming the posture
+requires.
 
 ## Bandits
 Slayer (Piotr Pawłowski). Workshop `3268487204`, mod id `Bandits2`.

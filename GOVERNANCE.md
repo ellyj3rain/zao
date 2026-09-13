@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Governance |
 |---|---|
-| Version | `0.1.1.14-pre-alpha` |
+| Version | `0.2.0.1-pre-alpha` |
 | Design authority | ellyj3rain |
 | Repository | `GOVERNANCE.md` |
 | Status | ACTIVE - operating discipline for this repository. |

@@ -1,0 +1,241 @@
+package com.zao.bridge;
+
+import com.zao.ZAOAgent;
+import com.zao.engine.ZAOBodyState;
+import com.zao.engine.ZAOControllerStore;
+import com.zao.engine.ZAODomainController;
+import com.zao.engine.ZAOSandboxPolicy;
+import zombie.characters.IsoZombie;
+import zombie.iso.IsoMovingObject;
+
+public final class ZAOBridge {
+    public static final ZAOBridge INSTANCE = new ZAOBridge();
+
+    private final ZAOControllerStore controllers = new ZAOControllerStore();
+
+    private ZAOBridge() {
+    }
+
+    public String version() {
+        return "0.1.5.4-pre-alpha";
+    }
+
+    /**
+     * The dials cross here, once, before the first bridge use. The
+     * Lua policy pushes what the sandbox options read; until it does,
+     * the defaults hold. Thresholds arrive as the engine's own numbers
+     * and are rounded to the course's integers.
+     */
+    public boolean configure(
+            boolean enabled,
+            double mutationOdds,
+            boolean controller,
+            boolean overlay,
+            double crossedOdds,
+            double afflictedSusceptibility,
+            double resistanceInfections,
+            double immunityInfections) {
+        try {
+            ZAOSandboxPolicy.configure(new ZAOSandboxPolicy(
+                enabled,
+                mutationOdds,
+                controller,
+                overlay,
+                crossedOdds,
+                afflictedSusceptibility,
+                (int) Math.round(Math.max(1.0, resistanceInfections)),
+                (int) Math.round(Math.max(1.0, immunityInfections))));
+            ZAOAgent.log("bridge configured crossedOdds=" + crossedOdds
+                + " susceptibility=" + afflictedSusceptibility
+                + " resistance=" + (int) Math.round(resistanceInfections)
+                + " immunity=" + (int) Math.round(immunityInfections));
+            return true;
+        } catch (Throwable throwable) {
+            ZAOAgent.log("configure threw: " + throwable);
+            return false;
+        }
+    }
+
+    /**
+     * The course events, fired by the pathogen's own event boundary
+     * on the Lua side: an infection feeds the course, a survival
+     * counts toward resistance and immunity, the per-infection
+     * variable that carries a body past death is the course's
+     * pass-death. Each event lands on the person's one shared course.
+     */
+    public boolean courseInfect(Object personId) {
+        try {
+            String id = String.valueOf(personId);
+            controllers.courseFor(id).infect();
+            ZAOAgent.log("course infect person=" + id);
+            return true;
+        } catch (Throwable throwable) {
+            ZAOAgent.log("courseInfect threw: " + throwable);
+            return false;
+        }
+    }
+
+    public boolean courseSurvive(Object personId) {
+        try {
+            String id = String.valueOf(personId);
+            controllers.courseFor(id).survive();
+            ZAOAgent.log("course survive person=" + id);
+            return true;
+        } catch (Throwable throwable) {
+            ZAOAgent.log("courseSurvive threw: " + throwable);
+            return false;
+        }
+    }
+
+    public boolean coursePassDeath(Object personId) {
+        try {
+            String id = String.valueOf(personId);
+            controllers.courseFor(id).passDeath();
+            ZAOAgent.log("course passDeath person=" + id);
+            return true;
+        } catch (Throwable throwable) {
+            ZAOAgent.log("coursePassDeath threw: " + throwable);
+            return false;
+        }
+    }
+
+    public boolean isZombie(Object object) {
+        return object instanceof IsoZombie;
+    }
+
+    public boolean owns(Object object) {
+        try {
+            if (!(object instanceof IsoZombie zombie)) {
+                return false;
+            }
+            ZAODomainController controller = controllers.get(zombie);
+            return controller != null && controller.owns(zombie);
+        } catch (Throwable throwable) {
+            ZAOAgent.log("owns threw: " + throwable);
+            return false;
+        }
+    }
+
+    public String formOf(Object object) {
+        try {
+            if (!(object instanceof IsoZombie zombie)) {
+                return null;
+            }
+            ZAODomainController controller = controllers.get(zombie);
+            return controller == null ? null : controller.formOf(zombie);
+        } catch (Throwable throwable) {
+            ZAOAgent.log("formOf threw: " + throwable);
+            return null;
+        }
+    }
+
+    public double performanceOf(Object object) {
+        try {
+            if (!(object instanceof IsoZombie zombie)) {
+                return 0.0;
+            }
+            ZAODomainController controller = controllers.get(zombie);
+            return controller == null ? 0.0 : controller.performanceOf(zombie);
+        } catch (Throwable throwable) {
+            ZAOAgent.log("performanceOf threw: " + throwable);
+            return 0.0;
+        }
+    }
+
+    public void apply(
+            Object object,
+            String form,
+            double performance,
+            String terminalState,
+            String decayState,
+            String attributes) {
+        try {
+            if (!(object instanceof IsoZombie zombie)) {
+                return;
+            }
+            ZAODomainController controller = controllers.ensure(zombie);
+            if (controller != null) {
+                controller.apply(
+                    zombie,
+                    form,
+                    performance,
+                    terminalState,
+                    decayState,
+                    attributes);
+            }
+        } catch (Throwable throwable) {
+            ZAOAgent.log("apply threw: " + throwable);
+        }
+    }
+
+    public void drive(
+            Object object,
+            Object targetObject,
+            String form,
+            double performance,
+            String terminalState,
+            String decayState,
+            String attributes) {
+        try {
+            if (!(object instanceof IsoZombie zombie)
+                || !(targetObject instanceof IsoMovingObject target)) {
+                return;
+            }
+            ZAODomainController controller = controllers.ensure(zombie);
+            if (controller != null) {
+                controller.apply(
+                    zombie,
+                    form,
+                    performance,
+                    terminalState,
+                    decayState,
+                    attributes);
+                controller.drive(zombie, target, 0);
+            }
+        } catch (Throwable throwable) {
+            ZAOAgent.log("drive threw: " + throwable);
+        }
+    }
+
+    public void release(Object object) {
+        try {
+            if (!(object instanceof IsoZombie zombie)) {
+                return;
+            }
+            ZAODomainController controller = controllers.get(zombie);
+            if (controller != null) {
+                controller.release(zombie);
+            }
+            controllers.remove(zombie);
+        } catch (Throwable throwable) {
+            ZAOAgent.log("release threw: " + throwable);
+        }
+    }
+
+    public String stats(Object object) {
+        try {
+            if (!(object instanceof IsoZombie zombie)) {
+                return "";
+            }
+            ZAODomainController controller = controllers.get(zombie);
+            ZAOBodyState state = controller == null ? null : controller.stateOf(zombie);
+            if (state == null) {
+                return "unowned";
+            }
+            return "form=" + state.currentForm()
+                + "|performance=" + state.formPerformance()
+                + "|terminal=" + state.terminalState()
+                + "|decay=" + state.decayState()
+                + "|attributes=" + zombie.getModData().rawget("ZAOAttributes")
+                + "|speed=" + zombie.speedType
+                + "|strength=" + zombie.strength
+                + "|cognition=" + zombie.cognition
+                + "|memory=" + zombie.memory
+                + "|sight=" + zombie.sight
+                + "|hearing=" + zombie.hearing;
+        } catch (Throwable throwable) {
+            ZAOAgent.log("stats threw: " + throwable);
+            return "";
+        }
+    }
+}

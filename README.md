@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul |
 |---|---|
-| Version | `0.1.1.14-pre-alpha` |
+| Version | `0.2.0.1-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `README.md` |
 | Status | CANONICAL - human entry point. |
@@ -36,14 +36,24 @@ Two mechanisms, litigated separately and never merged:
 
 ## Status
 
-No mod code yet.
+ZAO now ships a complete mod tree.
+
+The runtime controller claims every zombie that carries `SAOPersonId`, drives
+it according to its form, and writes the form and performance into modData for
+Perception. Puker holds range, Skitter flanks, and the remaining forms close on
+the target. The Java bridge applies per-form speed, strength, cognition,
+memory, sight, and hearing, and exposes the same ownership, form, and
+performance queries to Lua.
 
 G0 closed at `[A6]`: the engine's turn surface is established from the
 installed build with file-and-line evidence, in F-001 through F-011.
 `[A7]` to `[A9]` read the mods that already run behaviour on turned
 bodies and set what this project does with them. G1 — one controller
-per body, proven by observation — is gated on three decisions in the
-fork ledger.
+per body — is built: the runtime controller shipped at `[A23]` and
+drives every claimed body according to its form. Its proof by
+observation is owed with the era's play receipts. Two forks stand open
+in the ledger: Rarity (the spread's tails; how often a settlement of
+the turned forms) and Publication.
 
 [`SESSION_STATE.md`](SESSION_STATE.md) holds where the work stands and
 [`ROADMAP.md`](ROADMAP.md) holds the gate order and the open forks.
@@ -59,3 +69,13 @@ why. The gate is `tools/check.sh`; the version is
 [`tools/version_replay.py`](tools/version_replay.py)'s output.
 
 Licensed GPL-3.0.
+
+## Loading the build
+
+Run `tools/deploy.sh` with the game closed. In the mods list, enable
+**Zombie Awareness Overhaul**. Press **O** to open the ZAO state panel.
+
+With SAO enabled, the ZAO overlay also appears in the world. Every nearby
+body that carries a form is labelled with that form and its normalized
+performance. Healthy survivors are not labelled, because a body only carries a
+form after the pathogen has acted on it: infected, dead, or turned.

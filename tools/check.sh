@@ -55,6 +55,30 @@ if ! "$PY" tools/version_replay.py; then
     fail=1
 fi
 
+# 3. Border 3 - state producer mapping and precedence.
+if ! "$PY" tools/state_dump_test.py; then
+    note "BORDER 3 REFUSED: state dump"
+    fail=1
+fi
+
+# 4. Build and install the Java bridge. The build reads this machine's
+#    JDK and the game's own jars, so on any machine without them - the
+#    forge's runner - the border reports SKIPPED rather than passing: a
+#    check that cannot run must never look like a check that passed
+#    (the sister's [C56] law, stated in her ci-verify.yml). The
+#    powershell.exe detour this replaces ran only on Windows and made
+#    the forge's own gate refuse on its first CI run; it was also
+#    unnecessary, because the build resolves its own root from its
+#    __file__ and never rode on the invoking shell's cwd.
+if "$PY" tools/build_java.py --can-build; then
+    if ! "$PY" tools/build_java.py; then
+        note "BORDER 4 REFUSED: Java bridge"
+        fail=1
+    fi
+else
+    note "BORDER 4 SKIPPED: Java bridge (no JDK or game jars on this machine)"
+fi
+
 if [ "$fail" -ne 0 ]; then
     note "GATE REFUSED"
 else
