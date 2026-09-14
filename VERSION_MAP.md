@@ -16,9 +16,9 @@ the machine. Names, dates, and threads below come from
 | Form | `major.minor.kohai.patch-maturity` |
 | Hard caps | minor 12; kohai 16; patch 24 |
 | Replay start | `0.1.0.0-pre-alpha` |
-| Current version | `0.2.0.1-pre-alpha` |
-| Closed chronology | `A1-A30` |
-| Next batch | `A31` |
+| Current version | `0.2.0.2-pre-alpha` |
+| Closed chronology | `A1-A31` |
+| Next batch | `A32` |
 | Executable source | [`tools/version_replay.py`](tools/version_replay.py) |
 
 ## Tier meanings
@@ -65,6 +65,7 @@ the machine. Names, dates, and threads below come from
 | `A28` | 2026-09-11 | kohai | `0.1.6.0-pre-alpha` | The Java bridge is built | The Java bridge is built: ZAO.jar owns the per-body actuators, applies each form's speed, strength, cognition, memory, sight, and hearing, and drives the body through the engine's own target and path methods. A coherent runtime capability, so kohai. |
 | `A29` | 2026-09-12 | minor | `0.2.0.0-pre-alpha` | The runtime passes its own dials | The runtime passes its own dials: every dial DR-019 reserved is declared, defaulted, read and consumed - eighteen new sandbox options after the seven that existed, episodic identity decay (DR-020) in the pathogen's daily advance, recovery read from where it lives, settlements by lingering (DR-021), derived ambient dead (DR-011), all six per-form behaviors, the crossed fear-work, the bridge course events, and the configured Java policy. The whole missing runtime, a new player-visible simulation capability, so minor. |
 | `A30` | 2026-09-12 | patch | `0.2.0.1-pre-alpha` | The Sandbox prefix is the engine's lookup, never the title | The Sandbox prefix is the engine's lookup, never the title: read from the engine's own disassembled code that the prefix lands at read time inside the option classes and never reaches the player. A verification record, no code change, so patch. |
+| `A31` | 2026-09-13 | patch | `0.2.0.2-pre-alpha` | A rebuild of the same source is the same jar | A rebuild of the same source is the same jar: the readiness sweep found the gate's own build step dirtying a clean tree - jar entries stamped with the build's current time, so every check run left a meaning-free jar diff - and the jar stamp is now held to the county's calendar anchor (July 9 1993), making the build deterministic. A build repair, no capability boundary moved, so patch. |
 
 ## Maturity
 
@@ -74,11 +75,11 @@ says.
 
 ## Next movement
 
-`A31` is the next batch. Its content determines its tier after it
+`A32` is the next batch. Its content determines its tier after it
 exists:
 
-| If A31 is | Result |
+| If A32 is | Result |
 |---|---|
-| patch or hotfix | `0.2.0.2-pre-alpha` |
+| patch or hotfix | `0.2.0.3-pre-alpha` |
 | kohai | `0.2.1.0-pre-alpha` |
 | minor | `0.3.0.0-pre-alpha` |

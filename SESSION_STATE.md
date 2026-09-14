@@ -1,14 +1,31 @@
 | Document | Zombie Awareness Overhaul Session State |
 |---|---|
-| Version | `0.2.0.1-pre-alpha` |
+| Version | `0.2.0.2-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `SESSION_STATE.md` |
 | Status | CANONICAL - where the work actually stands. |
 
 # Session state
 
-**As of 2026-09-12**, `[A30]` close - the Sandbox prefix is the engine's
-lookup, never the title. The operator clarified that ZAO's sandbox
+**As of 2026-09-13**, `[A31]` close - a rebuild of the same source is
+the same jar. The readiness sweep (Speakeasy RECORD.md 46) ran the gate
+at the tip and found the gate's own build step dirtying the tree it was
+checking: `jar.exe` stamps entries with the current time, so every gate
+run - the pre-commit hook included - left a meaning-free jar diff in
+the working tree. The stamp is now held to a declared constant, the
+county's calendar anchor `1993-07-09T00:00:00Z` (July 9 1993, the day
+the Knox Event schedule starts, named on the sister's ratified sandbox
+surface), and two independent builds from clean state produce
+byte-identical jars (md5 `50540a3b...`). Entry-level comparison against
+the pre-fix jar: 32 entries, no additions, no removals, no content
+differences - metadata only, shipped behavior unchanged. The jar was
+rebuilt under the stamp, the gate is clean, and the tree stays clean
+after the gate's own rebuild. Deployed and md5-verified
+repo-tree-to-install. The sister's build carries the same latent
+non-determinism but her gate never builds, so nothing of hers produces
+this defect; named in the sweep record, not fixed here.
+
+**Before that**, `[A30]` - the Sandbox prefix is the engine's lookup, never the title. The operator clarified that ZAO's sandbox
 configuration does not need "sandbox" literally prefixed in its title; the
 engine's own bytecode (disassembled from the installed jar) answers that the
 `Sandbox_` prefix on `Sandbox.json`'s KEYS is applied by the engine at read
