@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Engine Contract |
 |---|---|
-| Version | `0.2.0.2-pre-alpha` |
+| Version | `0.3.0.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `ENGINE_CONTRACT.md` |
 | Status | CANONICAL, INCOMPLETE - the verified engine mechanics the turned require; nothing here is live-verified. |

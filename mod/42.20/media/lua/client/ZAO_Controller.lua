@@ -346,10 +346,15 @@ function Ctl.tick(now)
                         end
 
                         -- Where turned bodies linger, formation is
-                        -- possible. Nothing is placed.
+                        -- possible. Nothing is placed. The crossed
+                        -- linger too ([A32], [MUTATION.md]: some
+                        -- crossed groups settle, and which one a
+                        -- group does is what its drives did) - the
+                        -- same roll, never another placement.
                         if (not policy or policy.settlement)
                             and ZAO.Settlement
-                            and state.terminalState == "turned" then
+                            and (state.terminalState == "turned"
+                                or state.terminalState == "crossed") then
                             local formed = ZAO.Settlement.notePresence(
                                 placeKeyOf(obj), personId, day)
                             if formed then
@@ -391,7 +396,41 @@ function Ctl.tick(now)
                             local target = nearestTarget(
                                 obj:getX(), obj:getY(),
                                 preferAfflicted, engageDead)
-                            driveForm(obj, state, target, now, hours)
+
+                            -- The crossed are executed ([A32]): the
+                            -- pass consumes the mind and commits
+                            -- deliberate movement; where it commits,
+                            -- the ordinary walk stands down for the
+                            -- scan. The hunt's ground is stamped as
+                            -- plain coordinates so a kin body can
+                            -- share the same hunt without any engine
+                            -- object crossing bodies.
+                            local committed = false
+                            if state.terminalState == "crossed"
+                                and mind
+                                and mind.execution.canMove
+                                and ZAO.Crossed
+                                and ZAO.Crossed.decide then
+                                local okCrossed, didCommit = pcall(
+                                    function()
+                                        return ZAO.Crossed.decide(
+                                            obj, personId, state, mind,
+                                            target, now, hours)
+                                    end)
+                                committed = okCrossed
+                                    and didCommit == true
+                                if target then
+                                    data.ZAOCrossedHuntX = target:getX()
+                                    data.ZAOCrossedHuntY = target:getY()
+                                else
+                                    data.ZAOCrossedHuntX = nil
+                                    data.ZAOCrossedHuntY = nil
+                                end
+                            end
+
+                            if not committed then
+                                driveForm(obj, state, target, now, hours)
+                            end
                         end
                     end
                 end

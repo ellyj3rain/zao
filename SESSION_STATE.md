@@ -1,13 +1,33 @@
 | Document | Zombie Awareness Overhaul Session State |
 |---|---|
-| Version | `0.2.0.2-pre-alpha` |
+| Version | `0.3.0.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `SESSION_STATE.md` |
 | Status | CANONICAL - where the work actually stands. |
 
 # Session state
 
-**As of 2026-09-13**, `[A31]` close - a rebuild of the same source is
+**As of 2026-09-13**, `[A32]` close - the crossed are executed. The
+operator ruled the biggest oversight in the runtime was the crossed's
+consciousness, and the totality sweeps verified the gap: the
+four-pillar mind was built ([A19]) and nothing consumed it beyond
+gating stamps. `ZAO_Crossed.lua` is the consumer - the deliberate
+half of a crossed body's life from the mind's own pillars, with the
+strips ([MUTATION.md], [A11]/[A12]) as omissions, never gates: the
+dead are gathered as a tool on the engine's own world-sound channel
+(`WorldSoundManager.addSound`, the new `ZAOBridge.noise` verb), kin
+share a hunt and drift together, the person's home is held ground
+(crossed lingering now takes the same settlement roll the turned
+take), and the sister's driving map is called as [A13] named it -
+`driveBegin` with the verdict honored, `NOT_A_SHELL` meaning the body
+walks until her half of the seam widens the map. Toughness, the one
+enumerated attribute the sweeps found without a consumer, is
+consumed; `record.verbs`, the seam's empty content, is named as the
+sister's stamp to make. The two halves owed across the seam: the
+map's widening and the verbs stamp - both recorded in both repos'
+records; both wait on play receipts with everything else runtime.
+
+**Before that**, `[A31]` close - a rebuild of the same source is
 the same jar. The readiness sweep (Speakeasy RECORD.md 46) ran the gate
 at the tip and found the gate's own build step dirtying the tree it was
 checking: `jar.exe` stamps entries with the current time, so every gate
