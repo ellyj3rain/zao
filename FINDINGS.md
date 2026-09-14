@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Findings |
 |---|---|
-| Version | `0.3.0.0-pre-alpha` |
+| Version | `0.3.1.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `FINDINGS.md` |
 | Status | CANONICAL, APPEND-ONLY - verified engine findings from F-001. |
