@@ -1,13 +1,35 @@
 | Document | Zombie Awareness Overhaul Session State |
 |---|---|
-| Version | `0.3.0.0-pre-alpha` |
+| Version | `0.3.1.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `SESSION_STATE.md` |
 | Status | CANONICAL - where the work actually stands. |
 
 # Session state
 
-**As of 2026-09-13**, `[A32]` close - the crossed are executed. The
+**As of 2026-09-13**, `[A33]` close - the corpse is laid down. The
+sister's `[C116]` built her half of the afflicted return (a person
+whose pathogen state says afflicted is minted back where their risen
+corpse stands, through her own materialize), and her record named this
+side's half as owed: ZAO owns the turned body, and until this batch
+the risen corpse stayed driven and stamped while its person stood in
+the county beside it - two bodies for one person, both records honest
+about the doubling. The controller's scan now lays the corpse down
+when the facts say to: a body whose state says afflicted and whose
+person her registry holds again (`SAO.Body.get`, the minted returnee)
+is released - removal, never a kill, the sister's own despawn pair
+(F-008), her law "never removeFromWorld a corpse" holding on her side
+while this, the turned body this repo owns, goes only because its
+person stands in the county as themselves. The claim is forgotten
+with the body; the county's ground-dead are never touched (the gate is
+her registry and they hold no entry in it); a reverted body whose
+person has not been re-adopted stays exactly as it was. No dial gates
+the release, by the same law her adoption is ungated: the pathogen's
+own fact, and the county does not vote on it. Version 0.3.1.0
+(kohai - the integration completing her minor's capability boundary).
+Both wait on play receipts with everything else runtime.
+
+**Before that**, `[A32]` close - the crossed are executed. The
 operator ruled the biggest oversight in the runtime was the crossed's
 consciousness, and the totality sweeps verified the gap: the
 four-pillar mind was built ([A19]) and nothing consumed it beyond

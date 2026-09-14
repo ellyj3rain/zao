@@ -11,6 +11,9 @@
 -- bodies actually linger, and the rare formation roll is the
 -- settlement's own. A recovery is lawful only where the pathogen was
 -- still a course - survival never resurrects a dead or turned body.
+-- [A33] A reverted body whose person the sister has re-adopted is
+-- laid down when her registry says the person stands in the county
+-- again: removal, never a kill - the death already ran.
 
 ZAO = ZAO or {}
 ZAO.Controller = ZAO.Controller or {}
@@ -330,7 +333,34 @@ function Ctl.tick(now)
                         state = ZAO.Pathogen.stateOf(personId)
                     end
 
-                    if state then
+                    -- [A33] The corpse is laid down when the county
+                    -- holds the person again. A reverted body whose
+                    -- person the sister has re-adopted (a live body
+                    -- stands in her registry) is no longer ours to
+                    -- drive: the release is a fact-reading, not a
+                    -- decision - the same law the sister's return
+                    -- follows ([C116]: the pathogen licensed the
+                    -- reversion, the adoption followed the state),
+                    -- and the laying-down is removal, never a kill -
+                    -- the person's death already ran its funnel, and
+                    -- no death event fires here. The despawn pair is
+                    -- the sister's own idiom (F-008), and her law
+                    -- "never removeFromWorld a corpse" holds on her
+                    -- side: this is the turned body this repo owns,
+                    -- and it goes only because its person stands in
+                    -- the county as themselves.
+                    local released = false
+                    if state and state.terminalState == "afflicted"
+                        and SAO.Body and SAO.Body.get(personId) then
+                        Ctl.controlled[personId] = nil
+                        pcall(function() obj:removeFromWorld() end)
+                        pcall(function() obj:removeFromSquare() end)
+                        released = true
+                        log(personId
+                            .. " laid down - the county holds them again")
+                    end
+
+                    if state and not released then
                         -- Membership is a formation event or a
                         -- restored one, never a placement. A group
                         -- that no longer holds is left behind.

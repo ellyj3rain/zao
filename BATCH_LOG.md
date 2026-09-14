@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Batch Log |
 |---|---|
-| Version | `0.3.0.0-pre-alpha` |
+| Version | `0.3.1.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `BATCH_LOG.md` |
 | Status | REGULATORY - chronological batch index. |
@@ -48,3 +48,4 @@ history tree. The last row below is the tip.
 | [A30](Batches/A30-2026-09-12-the-sandbox-prefix-is-the-engines-lookup-never-the-title.md) | 2026-09-12 | The Sandbox prefix is the engine's lookup, never the title | [`T-002`](Batches/THREADS.md#t-002) |
 | [A31](Batches/A31-2026-09-13-a-rebuild-of-the-same-source-is-the-same-jar.md) | 2026-09-13 | A rebuild of the same source is the same jar | [`T-001`](Batches/THREADS.md#t-001) |
 | [A32](Batches/A32-2026-09-13-the-crossed-are-executed.md) | 2026-09-13 | The crossed are executed | [`T-001`](Batches/THREADS.md#t-001), [`T-002`](Batches/THREADS.md#t-002) |
+| [A33](Batches/A33-2026-09-13-the-corpse-is-laid-down.md) | 2026-09-13 | The corpse is laid down | [`T-001`](Batches/THREADS.md#t-001), [`T-002`](Batches/THREADS.md#t-002) |
