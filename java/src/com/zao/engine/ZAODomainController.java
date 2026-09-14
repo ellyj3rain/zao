@@ -362,6 +362,15 @@ public final class ZAODomainController implements ZAOClaimSurface {
                 zombie.strength = scale(zombie.strength, performance);
             } else if ("Hearing".equals(name)) {
                 zombie.hearing = scale(zombie.hearing, performance);
+            } else if ("Toughness".equals(name)) {
+                // The one enumerated attribute the readiness-era
+                // sweeps found without a consumer: toughness is what
+                // it takes to put the body down, so the health rides
+                // the same ±25% band every other attribute rides,
+                // applied the day the body is claimed, never
+                // retroactively.
+                zombie.setHealth((float) (zombie.getHealth()
+                    * (0.75 + 0.5 * bounded(performance))));
             }
         }
     }

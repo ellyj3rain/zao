@@ -5,6 +5,7 @@ import com.zao.engine.ZAOBodyState;
 import com.zao.engine.ZAOControllerStore;
 import com.zao.engine.ZAODomainController;
 import com.zao.engine.ZAOSandboxPolicy;
+import zombie.WorldSoundManager;
 import zombie.characters.IsoZombie;
 import zombie.iso.IsoMovingObject;
 
@@ -194,6 +195,34 @@ public final class ZAOBridge {
             }
         } catch (Throwable throwable) {
             ZAOAgent.log("drive threw: " + throwable);
+        }
+    }
+
+    /**
+     * The crossed use the dead ([MUTATION.md], [A32]): the body makes
+     * noise on the engine's own world-sound channel - the same channel
+     * zombie hearing consumes - and every dead thing in radius comes
+     * toward it. A shout's worth by default; the caller scales the
+     * radius from the body's own drives. The dead are a tool and the
+     * channel is the county's; nothing is synthesized.
+     */
+    public boolean noise(Object object, int radius, int volume) {
+        try {
+            if (!(object instanceof IsoZombie zombie)) {
+                return false;
+            }
+            WorldSoundManager.instance.addSound(
+                zombie,
+                (int) zombie.getX(),
+                (int) zombie.getY(),
+                (int) zombie.getZ(),
+                radius,
+                volume);
+            ZAOAgent.log("noise r=" + radius + " v=" + volume);
+            return true;
+        } catch (Throwable throwable) {
+            ZAOAgent.log("noise threw: " + throwable);
+            return false;
         }
     }
 
