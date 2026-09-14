@@ -77,9 +77,24 @@ def main() -> int:
     built_jar = JAVA_DIST / "ZAO.jar"
     if built_jar.exists():
         built_jar.unlink()
+    # [A31] The entry stamp every jar carries, fixed. The readiness
+    # sweep of 2026-09-13 found the gate's own build step dirtying a
+    # clean tree: the gate rebuilds the bridge on every run, and a
+    # rebuild of unchanged source produced a jar that differed from
+    # the committed one only in its zip entry timestamps - the classes
+    # were entry-for-entry identical - so every check, including the
+    # pre-commit hook, left the tree modified. With the stamp fixed, a
+    # rebuild of the same source is the same jar and the gate leaves a
+    # clean tree clean. The date is the county's own calendar anchor,
+    # July 9 1993 - the day the Knox Event schedule starts, named on
+    # the sister's ratified sandbox surface - so every jar is stamped
+    # as of the world it ships into.
+    jar_stamp = "1993-07-09T00:00:00Z"
     run([
         str(jar),
         "--create",
+        "--date",
+        jar_stamp,
         "--file",
         str(built_jar),
         "--manifest",

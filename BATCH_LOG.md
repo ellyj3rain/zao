@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Batch Log |
 |---|---|
-| Version | `0.2.0.1-pre-alpha` |
+| Version | `0.2.0.2-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `BATCH_LOG.md` |
 | Status | REGULATORY - chronological batch index. |
@@ -46,3 +46,4 @@ history tree. The last row below is the tip.
 | [A28](Batches/A28-2026-09-11-the-java-bridge-is-built.md) | 2026-09-11 | The Java bridge is built | [`T-001`](Batches/THREADS.md#t-001), [`T-002`](Batches/THREADS.md#t-002) |
 | [A29](Batches/A29-2026-09-12-the-runtime-passes-its-own-dials.md) | 2026-09-12 | The runtime passes its own dials | [`T-001`](Batches/THREADS.md#t-001), [`T-002`](Batches/THREADS.md#t-002) |
 | [A30](Batches/A30-2026-09-12-the-sandbox-prefix-is-the-engines-lookup-never-the-title.md) | 2026-09-12 | The Sandbox prefix is the engine's lookup, never the title | [`T-002`](Batches/THREADS.md#t-002) |
+| [A31](Batches/A31-2026-09-13-a-rebuild-of-the-same-source-is-the-same-jar.md) | 2026-09-13 | A rebuild of the same source is the same jar | [`T-001`](Batches/THREADS.md#t-001) |

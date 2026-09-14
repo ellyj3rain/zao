@@ -83,6 +83,7 @@ UNITS = [
     ("A28", "kohai", "The Java bridge is built: ZAO.jar owns the per-body actuators, applies each form's speed, strength, cognition, memory, sight, and hearing, and drives the body through the engine's own target and path methods. A coherent runtime capability, so kohai."),
     ("A29", "minor", "The runtime passes its own dials: every dial DR-019 reserved is declared, defaulted, read and consumed - eighteen new sandbox options after the seven that existed, episodic identity decay (DR-020) in the pathogen's daily advance, recovery read from where it lives, settlements by lingering (DR-021), derived ambient dead (DR-011), all six per-form behaviors, the crossed fear-work, the bridge course events, and the configured Java policy. The whole missing runtime, a new player-visible simulation capability, so minor."),
     ("A30", "patch", "The Sandbox prefix is the engine's lookup, never the title: read from the engine's own disassembled code that the prefix lands at read time inside the option classes and never reaches the player. A verification record, no code change, so patch."),
+    ("A31", "patch", "A rebuild of the same source is the same jar: the readiness sweep found the gate's own build step dirtying a clean tree - jar entries stamped with the build's current time, so every check run left a meaning-free jar diff - and the jar stamp is now held to the county's calendar anchor (July 9 1993), making the build deterministic. A build repair, no capability boundary moved, so patch."),
 ]
 
 TIER_MEANINGS = [
