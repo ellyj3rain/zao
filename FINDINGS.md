@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Findings |
 |---|---|
-| Version | `0.3.1.2-pre-alpha` |
+| Version | `0.3.1.3-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `FINDINGS.md` |
 | Status | CANONICAL, APPEND-ONLY - verified engine findings from F-001. |
@@ -592,3 +592,19 @@ ownership transfer, loaded/dormant persistence and observed consequences all
 need one causal chain. The sister's R5, R7-R9 and R10 work now name those
 pieces. A35/R1 establishes a returned Afflicted person and does not claim to
 repair the later Crossed interaction.
+
+## F-018 | 2026-09-19 | Native bodies and global ModData occupy distinct save/load phases
+
+**Verified** [A36], structural and controlled. Installed Build 42.20 bytecode
+places `GlobalModData.init` and `GlobalModData.load` before
+`ReanimatedPlayers.loadReanimatedPlayers` during world initialization. During
+save, the Lua `OnSave` trigger precedes `IsoCell.save`, and native cell/body
+persistence precedes `GlobalModData.save`. The A36 weave verification rejects a
+build that omits either side of this order.
+
+The calls are synchronous, but the host catches some save failures and can
+continue, so synchronous order is not atomicity. A return transaction that
+touches both surfaces must recover native-old/global-new as well as
+native-new/global-old. Border 8 executes those two mixed cases and both matching
+cases through the production generation journal. A completed round trip alone
+does not establish this contract.

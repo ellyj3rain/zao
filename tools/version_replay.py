@@ -88,6 +88,7 @@ UNITS = [
     ("A33", "kohai", "The corpse is laid down: a reverted body whose person the sister has re-adopted (her [C116] return minted them back through her own materialize) is released in the controller's scan - removal, never a kill, the sister's own despawn pair, the claim forgotten with the body, and the county's ground-dead never touched because the gate is her registry and they hold no entry in it. A coherent integration of the sister's adoption with this repo's body ownership; the capability boundary, the return itself, was her minor, so kohai."),
     ("A34", "patch", "Pathogen begin uses a table walk supported by the installed Kahlua VM; Border 5 reproduces the original missing-next failure and verifies durable mutation state. An in-place runtime correction."),
     ("A35", "patch", "Repaired the existing Afflicted-return integration with exact turned-source ownership, durable removal acknowledgment and critical viable physiology that preserves injuries. The audit also corrects A32's unreachable and incomplete Crossed execution claim rather than treating it as part of this repair."),
+    ("A36", "patch", "Reconstructed runtime controllers, courses, settlements and Java maps from durable owners across new environments and worlds; completed the existing Afflicted-return seam with a generation journal that reconciles interrupted native/global saves."),
 ]
 
 TIER_MEANINGS = [

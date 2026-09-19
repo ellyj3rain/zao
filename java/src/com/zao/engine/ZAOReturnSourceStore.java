@@ -11,12 +11,14 @@ import zombie.iso.IsoGridSquare;
 import zombie.iso.IsoWorld;
 import zombie.world.moddata.GlobalModData;
 
-/** Completed-save ownership for pending sources only. GlobalModData
- * and the engine population file are not a crash-atomic save generation.
- * The table holds no Java objects. SAO retains domain transaction authority.
+/** Pending-source ownership across the native population files and GlobalModData.
+ * ZAOSaveGeneration supplies the pre-native write-ahead generation; this table
+ * supplies the per-incarnation snapshot and native reconciliation. The table
+ * holds no Java objects. SAO retains domain transaction authority.
  */
 public final class ZAOReturnSourceStore {
     private static final String STORE = "ZombieAwareness_State", KEY = "returnSources";
+    private static final String GENERATION = "ZAOReturnGeneration";
     private static final int MAX_SOURCES = 4096;
     // GameWindow.StringUTF stores a signed-short byte length. Base64 is ASCII.
     private static final int STRING_PART = 16000;
@@ -28,6 +30,25 @@ public final class ZAOReturnSourceStore {
     private static boolean nativeRestoreActive;
     private static boolean reconciling;
     private ZAOReturnSourceStore() { }
+
+    /**
+     * Drop native receipts from preceding cells while leaving the durable
+     * returnSources table untouched. Same-cell Lua reload retains material
+     * receipts because native reanimated inventory may only be restored at
+     * its load boundary.
+     */
+    public static void resetRuntimeForWorld() {
+        IsoCell cell = IsoWorld.instance == null ? null : IsoWorld.instance.currentCell;
+        MATERIALS.entrySet().removeIf(entry -> cell == null
+            || entry.getKey() == null || entry.getKey().getCell() != cell);
+        if (failureCell != cell) {
+            FAILURES.clear();
+            globalFailure = null;
+            failureCell = cell;
+        }
+        nativeRestoreActive = false;
+        reconciling = false;
+    }
 
     private static void failureWorld() {
         if (failureCell != IsoWorld.instance.currentCell) {
@@ -109,6 +130,11 @@ public final class ZAOReturnSourceStore {
             && Objects.equals(record.rawget("token"), body.getModData().rawget("ZAOReturnToken"));
     }
 
+    private static boolean sameGeneration(KahluaTable record, IsoZombie body) {
+        Object generation = record == null ? null : record.rawget("generation");
+        return generation == null || Objects.equals(generation, body.getModData().rawget(GENERATION));
+    }
+
     public static boolean owns(IsoZombie body) {
         if (body == null || !ZAOReturnBody.hasHold(body)) return false;
         KahluaTable record = entry(marker(body, "SAOPersonId"));
@@ -120,15 +146,20 @@ public final class ZAOReturnSourceStore {
         KahluaTable record = entry(id);
         if (record == null || "retired".equals(record.rawget("phase"))) return null;
         checkedRecord(record);
-        // A native reanimated checkpoint is a material overlay. Its physical
-        // owner must be found in native loaded/preserved registries, never
-        // inferred absent and replaced merely because a handle is missing.
-        if (Boolean.TRUE.equals(record.rawget("nativeReanimated"))) return null;
+        // Ordinarily a native reanimated checkpoint is only an overlay on the
+        // engine registry. A current write-ahead generation is stronger: if a
+        // partial native save omitted that registry owner, its checked snapshot
+        // reconstructs the same incarnation into the preserved registry.
+        boolean nativeReanimated = Boolean.TRUE.equals(record.rawget("nativeReanimated"));
+        if (nativeReanimated && !ZAOSaveGeneration.authoritative(id, record)) return null;
         IsoZombie source = null;
         try {
             source = ZAOReturnSourceSnapshot.restore(packed(record), IsoWorld.instance.currentCell);
             checkedIdentity(record, source);
-            ZAOReturnBody.ownDecoded(source, id, (String)record.rawget("token"));
+            MATERIALS.put(source, packed(record));
+            if (nativeReanimated)
+                ZAOReturnBody.ownPreservedDecoded(source, id, (String)record.rawget("token"));
+            else ZAOReturnBody.ownDecoded(source, id, (String)record.rawget("token"));
             record.rawset("phase", "heldDormant");
             return source;
         } catch (IOException | RuntimeException error) {
@@ -138,9 +169,13 @@ public final class ZAOReturnSourceStore {
     }
 
     private static void checkedRecord(KahluaTable record) {
-        if (!Double.valueOf(1).equals(record.rawget("version"))
+        Object version = record.rawget("version");
+        if ((!Double.valueOf(1).equals(version) && !Double.valueOf(2).equals(version))
                 || (!"heldLoaded".equals(record.rawget("phase")) && !"heldDormant".equals(record.rawget("phase"))))
             throw new IllegalStateException("Unsupported source entry version/phase");
+        if (Double.valueOf(2).equals(version)
+                && (!(record.rawget("generation") instanceof String generation) || generation.isBlank()))
+            throw new IllegalStateException("Missing source save generation");
         for (String key : List.of("personId", "token", "incarnation"))
             if (!(record.rawget(key) instanceof String text) || text.isBlank() || text.length() > 256)
                 throw new IllegalStateException("Invalid source entry identity");
@@ -180,7 +215,13 @@ public final class ZAOReturnSourceStore {
                 try {
                     requireHealthy(marker(body, "SAOPersonId"));
                     KahluaTable record = entry((String)id);
-                    if (record != null && !"retired".equals(record.rawget("phase"))) restoreNativeMaterials(record, body);
+                    if (record != null && !"retired".equals(record.rawget("phase"))) {
+                        if ((!same(record, body) || !sameGeneration(record, body))
+                                && ZAOSaveGeneration.authoritative((String)id, record)) {
+                            ZAOReturnBody.discardGenerationBody(body);
+                            resolveDetached((String)id);
+                        } else restoreNativeMaterials(record, body);
+                    }
                 } catch (RuntimeException error) {
                     automaticFailure(id, error);
                     try { ZAOReturnBody.guardLoadedSource(body); }
@@ -214,8 +255,11 @@ public final class ZAOReturnSourceStore {
             ZAOReturnSourceSnapshot.preflight(packed, IsoWorld.instance.currentCell);
             if (previous == null && records().size() >= MAX_SOURCES) throw new IllegalStateException("Return source store full");
             KahluaTable next = LuaManager.platform.newTable();
-            next.rawset("version", 1.0); next.rawset("personId", id); next.rawset("incarnation", incarnation);
+            Object generation = body.getModData().rawget(GENERATION);
+            next.rawset("version", generation instanceof String ? 2.0 : 1.0);
+            next.rawset("personId", id); next.rawset("incarnation", incarnation);
             next.rawset("token", token); next.rawset("packed", fragments(packed));
+            if (generation instanceof String) next.rawset("generation", generation);
             next.rawset("nativeReanimated", body.isReanimatedPlayer());
             next.rawset("phase", previous != null && "heldDormant".equals(previous.rawget("phase")) ? "heldDormant" : "heldLoaded");
             next.rawset("x", (double) body.getX()); next.rawset("y", (double) body.getY()); next.rawset("z", (double) body.getZ());
@@ -237,6 +281,37 @@ public final class ZAOReturnSourceStore {
      * temporary native body, so it must never run inside a live list iterator. */
     public static void beforePopulationSave() {
         for (IsoZombie body : ZAOReturnBody.loadedAndPending()) checkpoint(body);
+    }
+
+    /** Stamp every pending native owner before ZAOSaveGeneration snapshots it. */
+    static void prepareGeneration(String generation) {
+        for (KahluaTable record : records()) {
+            Object phase = record.rawget("phase");
+            if (!"heldLoaded".equals(phase) && !"heldDormant".equals(phase)) continue;
+            String id = (String)record.rawget("personId");
+            IsoZombie body = ZAOReturnBody.find(id);
+            if (body == null) throw new IllegalStateException("Pending source has no generation owner: " + id);
+            body.getModData().rawset(GENERATION, generation);
+        }
+        refreshGeneration(generation);
+    }
+
+    /** Include a resumed ordinary source in the native side of the generation. */
+    static void stampGeneration(Set<String> ids, String generation) {
+        for (IsoZombie body : ZAOReturnBody.loadedAndPending()) {
+            Object id = body.getModData().rawget("SAOPersonId");
+            if (id instanceof String personId && ids.contains(personId))
+                body.getModData().rawset(GENERATION, generation);
+        }
+    }
+
+    /** Recheckpoint held bodies after all generation markers are installed. */
+    static void refreshGeneration(String generation) {
+        beforePopulationSave();
+        for (KahluaTable record : records()) {
+            record.rawset("version", 2.0);
+            record.rawset("generation", generation);
+        }
     }
 
     public static void dormant(IsoZombie body) {
@@ -309,16 +384,30 @@ public final class ZAOReturnSourceStore {
                             || !index.equals(record.rawget("personId"))) throw new IllegalStateException("Malformed return source index");
                     requireHealthy(index);
                     Object phase = record.rawget("phase");
-                    if ("retired".equals(phase)) continue;
+                    IsoZombie loaded = ZAOReturnBody.findLoaded(index);
+                    if ("retired".equals(phase)) {
+                        if (loaded != null && ZAOSaveGeneration.authoritative(index, record))
+                            ZAOReturnBody.discardGenerationBody(loaded);
+                        continue;
+                    }
                     checkedRecord(record);
                     String id = (String)record.rawget("personId"), token = (String)record.rawget("token");
-                    IsoZombie loaded = ZAOReturnBody.findLoaded(id);
                     if (loaded != null) {
-                        if (!same(record, loaded)) throw new IllegalStateException("Loaded source incarnation differs");
+                        if (!same(record, loaded) || !sameGeneration(record, loaded)) {
+                            if (!ZAOSaveGeneration.authoritative(id, record))
+                                throw new IllegalStateException("Loaded source incarnation/generation differs");
+                            ZAOReturnBody.discardGenerationBody(loaded);
+                            loaded = null;
+                        }
+                    }
+                    if (loaded != null) {
                         restoreNativeMaterials(record, loaded);
                         continue;
                     }
-                    if (Boolean.TRUE.equals(record.rawget("nativeReanimated"))) continue;
+                    if (Boolean.TRUE.equals(record.rawget("nativeReanimated"))) {
+                        if (ZAOSaveGeneration.authoritative(id, record)) resolveDetached(id);
+                        continue;
+                    }
                     int x = (int)Math.floor((Double)record.rawget("x")), y = (int)Math.floor((Double)record.rawget("y"));
                     int z = (int)Math.floor((Double)record.rawget("z"));
                     IsoGridSquare square = cell.getGridSquare(x, y, z);

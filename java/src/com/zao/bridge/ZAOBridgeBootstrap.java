@@ -32,6 +32,7 @@ public final class ZAOBridgeBootstrap {
         int stableLoaded = -1;
         int polls = 0;
         Object exposedInto = null;
+        Object resetForEnv = null;
         long lastFailLog = 0L;
 
         while (!Thread.currentThread().isInterrupted()) {
@@ -66,6 +67,12 @@ public final class ZAOBridgeBootstrap {
                 Object current = invoke(env, "rawget", new Class<?>[]{Object.class}, GLOBAL_NAME);
                 if (env == exposedInto && current == ZAOBridge.INSTANCE) {
                     continue;
+                }
+
+                if (exposedInto != null && env != exposedInto && env != resetForEnv) {
+                    ZAOBridge.INSTANCE.resetRuntimeForWorld();
+                    resetForEnv = env;
+                    ZAOAgent.log("runtime projections cleared for new Lua environment");
                 }
 
                 invoke(exposer, "setExposed", new Class<?>[]{Class.class}, ZAOBridge.class);

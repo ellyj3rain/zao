@@ -15,6 +15,16 @@ public final class ZAOCourse {
         this.immunityThreshold = Math.max(this.resistanceThreshold + 1, immunityThreshold);
     }
 
+    /** Rebuild this runtime mirror from the durable recovery/pathogen facts. */
+    public void restore(int survived, String terminalState) {
+        infectionsSurvived = Math.max(infectionsSurvived, Math.max(0, survived));
+        resistant = infectionsSurvived >= resistanceThreshold;
+        immune = infectionsSurvived >= immunityThreshold;
+        infected = "infected".equals(terminalState) && !immune;
+        crossed = "crossed".equals(terminalState);
+        afflicted = "afflicted".equals(terminalState);
+    }
+
     public void infect() {
         infected = !immune;
     }

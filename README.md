@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul |
 |---|---|
-| Version | `0.3.1.2-pre-alpha` |
+| Version | `0.3.1.3-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `README.md` |
 | Status | CANONICAL - human entry point. |
@@ -44,6 +44,13 @@ Perception. Puker holds range, Skitter flanks, and the remaining forms close on
 the target. The Java bridge applies per-form speed, strength, cognition,
 memory, sight, and hearing, and exposes the same ownership, form, and
 performance queries to Lua.
+
+A35/A36 also establish the durable Afflicted-return boundary with SAO. ZAO holds
+the exact old source until the living destination is committed, reconstructs
+runtime controllers and courses from durable records, and uses a generation
+journal to reconcile interrupted saves across the engine's separate native and
+global persistence surfaces. This closes return ownership and reconstruction;
+the canonical Crossed human action system remains open in the sister roadmap.
 
 G0 closed at `[A6]`: the engine's turn surface is established from the
 installed build with file-and-line evidence, in F-001 through F-011.

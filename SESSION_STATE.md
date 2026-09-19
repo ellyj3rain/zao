@@ -1,30 +1,32 @@
 | Document | Zombie Awareness Overhaul Session State |
 |---|---|
-| Version | `0.3.1.2-pre-alpha` |
+| Version | `0.3.1.3-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `SESSION_STATE.md` |
 | Status | CANONICAL - where the work actually stands. |
 
 # Session state
 
-**Working implementation, 2026-09-19:** A35 on `neo/a35-afflicted-return`
-supports the sister's R1/C52 return repair. ZAO owns death-sequence-bound
-reversion events, observed loaded reanimation, held source bodies and checked
-terminal removal. Native hooks install synchronously before the Lua bridge to
-protect held sources after reload. Pending ordinary/fake-dead sources have native
-checkpoints and streaming reconciliation; reanimated sources retain their native
-registry owner and recover held equipment at its loader's exit. Both paths can
-finish an authorized return offscreen. Long checkpoint strings are fragmented
-for the engine's table serializer. DR-028 now supplies the selected physical
-rule: clear native lethal/fake Knox state, restore critical viability, preserve
-actual injuries, treatment, ordinary wound infection, statistics and experience,
-and retain ZAO's Afflicted state as systemic-dormant Knox. The installed-engine
-health probe and four defect controls pass; the full seven-border gate passes.
-Automatic native callbacks isolate failed
-checkpoints from other identities and ordinary item processing; explicit
-operations refuse the failed identities until a fresh world load. A35 is the
-closed tip and remains undeployed. The sister's evidence record is
-`../survivor-awareness/artifacts/audits/20260919-0735Z-0035PST-r1-return-evidence/README.md`.
+**Working implementation, 2026-09-19:** A36 on
+`neo/a36-runtime-reconstruction` supports the sister's R4/C55 closure. Durable
+pathogen, recovery, settlement and return-source records reconstruct into fresh
+controllers, courses, settlement groups and Java runtime maps. New-world setup
+clears the previous world's maps before either environment advances.
+
+The return seam now survives interruption between the engine's separate native
+and global save surfaces. A narrow write-ahead generation journal captures only
+identities that entered the Afflicted-return protocol. It is checksummed, forced
+and atomically replaced after Lua `OnSave` and before native body persistence.
+Replay runs after global data loads and before native reanimated players load,
+then reconciles the exact source receipt or tombstone by person, event,
+incarnation and token. Existing unmarked saves remain readable.
+
+Border 8 verifies the installed engine lifecycle and all four old/new
+native/global pairings, including missing and stale native sources, retirement,
+cancellation, repeated saves, and missing or corrupt current-journal refusal.
+The runtime reconstruction probe covers a fresh Lua environment and a second
+world. A36 is the closed tip and remains undeployed; loaded-world play
+acceptance remains open.
 
 The same audit found that A32's Crossed execution claim is false (F-017).
 Normal Crossed states have `currentForm = "none"`, while the controller gates
@@ -37,7 +39,16 @@ back to a ZAO Crossed owner. There is no spontaneous Afflicted conversion.
 The sister's R5, R7-R9 and R10 contracts own the complete repair; A35/R1 does
 not claim it.
 
-**As of 2026-09-19**, `[A35]` close - authorized Afflicted return.
+**As of 2026-09-19**, `[A36]` close - durable/runtime reconstruction.
+Runtime controllers, courses, settlement groups and Java registries are rebuilt
+from durable state without retaining a prior world. The return source is bound
+to the same save generation as the participating SAO and ZAO records before the
+engine writes its native body surface. Replay precedes native body load and
+reconciles every mixed-generation pairing. The eight-border gate passes with
+mutation controls. These are controlled engine/VM receipts, not a loaded-world
+play observation.
+
+**Before that, 2026-09-19**, `[A35]` close - authorized Afflicted return.
 The exact turned source remains ZAO-owned until SAO has prepared and restored
 the one living destination. Native holding, removal acknowledgment, reload and
 offscreen recovery are durable. Return health reaches critical viability while

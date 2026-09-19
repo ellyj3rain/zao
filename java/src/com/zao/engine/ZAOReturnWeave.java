@@ -23,9 +23,11 @@ public final class ZAOReturnWeave {
     private static final String POPULATION = "zombie.popman.ZombiePopulationManager";
     private static final String CHUNK = "zombie.iso.IsoChunk";
     private static final String PRESERVED = "zombie.ReanimatedPlayers";
+    private static final String GLOBAL = "zombie.world.moddata.GlobalModData";
     private static final String HELPER = "com/zao/engine/ZAOReturnBody";
     private static final String STORE = "com/zao/engine/ZAOReturnSourceStore";
-    private static final int REQUIRED = 1023;
+    private static final String GENERATION = "com/zao/engine/ZAOSaveGeneration";
+    private static final int REQUIRED = 4095;
     private static volatile int verifiedMask;
     private static volatile boolean installed;
     private static volatile String failure;
@@ -66,6 +68,12 @@ public final class ZAOReturnWeave {
     public static final class PreservedLoad {
         @Advice.OnMethodExit public static void exit() { ZAOReturnSourceStore.restorePreservedMaterials(); }
     }
+    public static final class SaveBoundary {
+        @Advice.OnMethodEnter public static void enter() { ZAOSaveGeneration.prepare(); }
+    }
+    public static final class GenerationLoad {
+        @Advice.OnMethodExit public static void exit() { ZAOSaveGeneration.recover(); }
+    }
 
     public static boolean isAvailable() { return installed && failure == null && verifiedMask == REQUIRED; }
     public static String report() { return "return-hooks=" + verifiedMask + "/" + REQUIRED + ";installed=" + installed + ";error=" + failure; }
@@ -81,6 +89,7 @@ public final class ZAOReturnWeave {
             Class.forName(POPULATION, false, ClassLoader.getSystemClassLoader());
             Class.forName(CHUNK, false, ClassLoader.getSystemClassLoader());
             Class.forName(PRESERVED, false, ClassLoader.getSystemClassLoader());
+            Class.forName(GLOBAL, false, ClassLoader.getSystemClassLoader());
             verifiedMask = 0; failure = null;
             new AgentBuilder.Default()
                 .disableClassFormatChanges()
@@ -96,7 +105,8 @@ public final class ZAOReturnWeave {
                             boolean loaded, Throwable error) { failure = name + ": " + error; }
                 })
                 .type(ElementMatchers.named(ZOMBIE).or(ElementMatchers.named(CELL))
-                        .or(ElementMatchers.named(POPULATION)).or(ElementMatchers.named(CHUNK)).or(ElementMatchers.named(PRESERVED)))
+                        .or(ElementMatchers.named(POPULATION)).or(ElementMatchers.named(CHUNK))
+                        .or(ElementMatchers.named(PRESERVED)).or(ElementMatchers.named(GLOBAL)))
                 .transform((builder, type, loader, module, domain) -> decorate(builder, type.getName()))
                 .installOn(instrumentation);
             installed = true;
@@ -114,11 +124,16 @@ public final class ZAOReturnWeave {
                     .and(ElementMatchers.takesArguments(0)).and(ElementMatchers.returns(void.class))));
         }
         if (CELL.equals(name)) return builder.visit(Advice.to(Reconstruct.class).on(ElementMatchers.named("ProcessRemoveItems")
-                .and(ElementMatchers.takesArguments(java.util.Iterator.class)).and(ElementMatchers.returns(void.class))));
+                .and(ElementMatchers.takesArguments(java.util.Iterator.class)).and(ElementMatchers.returns(void.class))))
+                .visit(Advice.to(SaveBoundary.class).on(ElementMatchers.named("save")
+                    .and(ElementMatchers.takesArguments(java.io.DataOutputStream.class, boolean.class))
+                    .and(ElementMatchers.returns(void.class))));
         if (CHUNK.equals(name)) return builder.visit(Advice.to(ChunkUnload.class).on(ElementMatchers.named("removeFromWorld")
                 .and(ElementMatchers.takesArguments(0)).and(ElementMatchers.returns(void.class))));
         if (PRESERVED.equals(name)) return builder.visit(Advice.to(PreservedLoad.class).on(ElementMatchers.named("loadReanimatedPlayers")
                 .and(ElementMatchers.takesArguments(java.nio.ByteBuffer.class)).and(ElementMatchers.returns(void.class))));
+        if (GLOBAL.equals(name)) return builder.visit(Advice.to(GenerationLoad.class).on(ElementMatchers.named("load")
+                .and(ElementMatchers.takesArguments(0)).and(ElementMatchers.returns(void.class))));
         return builder.visit(Advice.to(BeforeSave.class).on(ElementMatchers.named("beginSaveRealZombies").and(ElementMatchers.takesArguments(0))
                     .or(ElementMatchers.named("requestSaveCell").and(ElementMatchers.takesArguments(int.class, int.class)))))
                 .visit(Advice.to(Virtualize.class).on(ElementMatchers.named("virtualizeZombie")
@@ -161,14 +176,16 @@ public final class ZAOReturnWeave {
 
     /** Offline bytecode is inspected using the same exact method/call mask. */
     public static byte[] weave(String name, byte[] original) throws Exception {
-        if (!ZOMBIE.equals(name) && !CELL.equals(name) && !POPULATION.equals(name) && !CHUNK.equals(name) && !PRESERVED.equals(name))
+        if (!ZOMBIE.equals(name) && !CELL.equals(name) && !POPULATION.equals(name)
+                && !CHUNK.equals(name) && !PRESERVED.equals(name) && !GLOBAL.equals(name))
             throw new IllegalArgumentException("Unexpected return target");
         ClassFileLocator locator = new ClassFileLocator.Compound(ClassFileLocator.Simple.of(name, original),
                 ClassFileLocator.ForClassLoader.ofSystemLoader(),
                 ClassFileLocator.ForClassLoader.of(ZAOReturnWeave.class.getClassLoader()));
         TypeDescription type = TypePool.Default.of(locator).describe(name).resolve();
         byte[] bytes = decorate(new ByteBuddy().redefine(type, locator), name).make().getBytes();
-        int expected = ZOMBIE.equals(name) ? 7 : CELL.equals(name) ? 8 : CHUNK.equals(name) ? 128 : PRESERVED.equals(name) ? 512 : 368;
+        int expected = ZOMBIE.equals(name) ? 7 : CELL.equals(name) ? 1032 : CHUNK.equals(name) ? 128
+                : PRESERVED.equals(name) ? 512 : GLOBAL.equals(name) ? 2048 : 368;
         if (inspect(name, bytes) != expected) throw new IllegalStateException("Native return weave mask mismatch");
         return bytes;
     }
@@ -182,8 +199,11 @@ public final class ZAOReturnWeave {
                         ? switch (method) { case "preupdate" -> 1; case "update" -> 2; case "postupdate" -> 4; default -> 0; }
                         : CELL.equals(name) && "ProcessRemoveItems".equals(method)
                           && "(Ljava/util/Iterator;)V".equals(desc) ? 8
+                        : CELL.equals(name) && "save".equals(method)
+                          && "(Ljava/io/DataOutputStream;Z)V".equals(desc) ? 1024
                         : CHUNK.equals(name) && "removeFromWorld".equals(method) && "()V".equals(desc) ? 128
                         : PRESERVED.equals(name) && "loadReanimatedPlayers".equals(method) && "(Ljava/nio/ByteBuffer;)V".equals(desc) ? 512
+                        : GLOBAL.equals(name) && "load".equals(method) && "()V".equals(desc) ? 2048
                         : POPULATION.equals(name) ? switch (method + desc) {
                             case "beginSaveRealZombies()V" -> 16;
                             case "requestSaveCell(II)V" -> 32;
@@ -206,6 +226,10 @@ public final class ZAOReturnWeave {
                             if (bit == 64 && "virtualize".equals(call) && "(Lzombie/characters/IsoZombie;)Z".equals(descriptor)) result[0] |= bit;
                             if ((bit == 128 || bit == 256) && "beforeChunkUnload".equals(call) && "(Ljava/lang/Object;)V".equals(descriptor)) result[0] |= bit;
                             if (bit == 512 && "restorePreservedMaterials".equals(call) && "()V".equals(descriptor)) result[0] |= bit;
+                        }
+                        if (opcode == Opcodes.INVOKESTATIC && GENERATION.equals(owner)) {
+                            if (bit == 1024 && "prepare".equals(call) && "()V".equals(descriptor)) result[0] |= bit;
+                            if (bit == 2048 && "recover".equals(call) && "()V".equals(descriptor)) result[0] |= bit;
                         }
                     }
                     @Override public void visitEnd() { if (selection && preparation) result[0] |= bit; }

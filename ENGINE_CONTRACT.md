@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Engine Contract |
 |---|---|
-| Version | `0.3.1.2-pre-alpha` |
+| Version | `0.3.1.3-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `ENGINE_CONTRACT.md` |
 | Status | CANONICAL, INCOMPLETE - the verified engine mechanics the turned require; nothing here is live-verified. |
@@ -73,8 +73,12 @@ Male/FemaleZombie (1035-1064). `getDescriptor()` is a bare field read.
 Persistence: `zombie.ReanimatedPlayers` (`addReanimatedPlayersToChunk`,
 `save/loadReanimatedPlayers`) keeps reanimated players across chunk load;
 the save carries a top-level `reanimated.bin`
-(`media/lua/client/OptionScreens/LoadGameScreen.lua:240`). Format Java-side,
-UNCHECKED.
+(`media/lua/client/OptionScreens/LoadGameScreen.lua:240`). A36 verifies the
+relevant lifecycle order in installed Build 42.20 bytecode: global mod data
+initializes and loads before `ReanimatedPlayers.loadReanimatedPlayers`; during
+save, Lua `OnSave` runs before `IsoCell.save`, which runs before
+`GlobalModData.save`. The native file format beyond the exercised source record
+remains Java-side.
 
 Lua reach: `body:reanimateNow()` (shipped:
 `DebugUIs/DebugContextMenu.lua:680-688` — its menu also shows the shipped
