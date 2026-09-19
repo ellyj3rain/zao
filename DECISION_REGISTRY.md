@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Decision Registry |
 |---|---|
-| Version | `0.3.1.1-pre-alpha` |
+| Version | `0.3.1.2-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `DECISION_REGISTRY.md` |
 | Status | CANONICAL, APPEND-ONLY - ratified decisions. |
@@ -589,3 +589,85 @@ advancement. `SAO_PathogenEvents.lua` emits SAO's infection, death, and turn
 events and derives knowledge only from proximity or testimony. The
 Speakeasy state producer reads event-derived state and reports absence
 honestly for rows that predate it.
+
+## DR-027 | 2026-09-19 08:14 UTC / 01:14 PST | Native ownership during an authorized return
+
+**Status.** Closed implementation record for A35/R1. DR-028
+now defines the separately ratified recovery physiology.
+
+**Ownership.** ZAO retains the exact turned source while SAO's durable return
+transaction prepares a living destination. Native source holding survives Lua
+reload, streaming and serialization. Terminal removal is acknowledged only
+after the source has left physical, scheduling, inventory-processing and native
+retention owners. Ordinary, fake-dead and reanimated flags retain their native
+meanings.
+
+**Required engine access.** In installed Build 42.20 / world version 249,
+`IsoZombie.removeFromWorld` can enqueue reuse before cleanup completes;
+`ReanimatedPlayers.removeReanimatedPlayerFromWorld` preserves a living source
+for later reinsertion. Neither the private `ReanimatedPlayers.zombies` list nor
+`VirtualZombieManager.reusedThisFrame` has a public terminal-forget operation.
+The helper therefore removes only the exact transaction object from those
+collections after using the engine's ordinary cleanup methods. The preserved
+registry also supplies a concrete offscreen owner for identity lookup; a missing
+handle never proves that a person has no body.
+
+Native update guards cover `IsoZombie.preupdate`, `update` and `postupdate`.
+`IsoCell.ProcessRemoveItems` reconstructs holds before item processing. Lua's
+zombie/tick callbacks occur too late to protect the first native update after
+load. The ordinary population writers retain reduced zombie state, so exact
+selection hooks in `beginSaveRealZombies` and `requestSaveCell` exclude held,
+checkpoint-owned sources. `virtualizeZombie`, `IsoChunk.removeFromWorld` and
+`ZombiePopulationManager.removeChunkFromWorld` preserve that same ownership
+through streaming. A registry-load exit hook restores held reanimated material
+state onto the existing native owner because its serializer omits a hand
+reference. Hook installation and exact transformed method coverage are checked
+before new returns are enabled.
+
+**Persistence.** `ZombieAwareness_State.returnSources` stores identity,
+incarnation, token, phase and a validated native/material snapshot. Payloads
+use bounded string fragments because native Kahlua string lengths are signed
+shorts. Completed native/table round trips and failure controls are covered by
+`tools/return_removal_test.py`. A running-world save/reopen and interrupted-save
+atomicity remain separate evidence boundaries; R4 owns coordinated save
+generations and replay.
+
+**Failure isolation.** Automatic registry-load and item-processing callbacks
+isolate each source's restoration failure. The failed identity remains held and
+unavailable, its prior checkpoint bytes remain unchanged, and unrelated sources
+and native items continue processing. Explicit source operations refuse a failed
+identity until a fresh current-cell/world load; save and chunk guards still
+refuse an uncheckpointable held source. The final six-border gate includes 37
+compiled native controls, including malformed records, absent item scripts and
+invalid saved hold flags.
+
+## DR-028 | 2026-09-19 09:06 UTC / 02:06 PST | An Afflicted return is viable, injured and systemically dormant
+
+**Status.** RATIFIED (operator-directed through Crucible on 2026-09-19).
+
+**Decision.** Returning as Afflicted clears the native lethal and fake Knox
+flags and restores only enough aggregate body-part health for critical stable
+life. Actual wounds, treatment state, fractures, ordinary wound infection,
+adverse statistics and experience remain. ZAO's Afflicted state owns the Knox
+condition after return as systemic and dormant; it is not erased merely because
+the native lethal course was overcome.
+
+The return does not introduce a spontaneous Afflicted-to-Crossed roll. The
+existing Crossed-carrier exposure state transition remains the only current
+route, and F-017 records that its intentional action producer and completed
+body-ownership transfer are unfinished.
+
+**Rationale.** Installed-engine evidence shows that native death has already
+merged Knox loss and unrelated trauma into body-part health. Clearing infection
+flags leaves the saved body dead; restoring the scalar overall-health field is
+overwritten; full native restoration erases unrelated injuries. Exact
+attribution is unavailable for existing snapshots. The selected compatibility
+rule preserves every distinguishable physical consequence while supplying the
+viability that a return requires.
+
+**Consequences.** `ZAOReturnHealth` clears only lethal/fake Knox state and
+raises weighted body-part health to the return floor. The sister stamps
+`ZAODormantKnox` and refuses publication unless the ZAO-owned health operation
+succeeds under the authorized return event. Installed-engine production and
+defect controls cover viability, injury/stat/XP preservation, native infection
+clearance and the next `BodyDamage.Update`.

@@ -18,10 +18,10 @@ discipline.
 
 **Batches**: `A1`, `A2`, `A3`, `A4`, `A5`, `A6`, `A7`, `A8`, `A9`,
 `A10`, `A11`, `A12`, `A13`, `A14`, `A15`, `A16`, `A17`, `A18`, `A19`, `A20`, `A21`, `A22`, `A23`, `A24`, `A25`, `A26`, `A27`, `A28`, `A29`,
-`A31`, `A32`, `A33`
+`A31`, `A32`, `A33`, `A34`, `A35`
 
-**Owes**: a Lua structural border the moment the first Lua lands; a control
-for every border as it is born.
+**Owes**: a control for every border as it is born; completion claims must
+remain reachable from canonical runtime state.
 
 ### <a id="t-002"></a>T-002 - Verification against the real artifact
 
@@ -30,9 +30,8 @@ code — the installed jar, the shipped trees, the sister's actual sources.
 
 **Batches**: `A2`, `A3`, `A5`, `A6`, `A7`, `A8`, `A9`, `A10`, `A11`,
 `A12`, `A13`, `A14`, `A15`, `A16`, `A17`, `A18`, `A19`, `A20`, `A21`, `A22`, `A23`, `A24`, `A25`, `A26`, `A27`, `A28`, `A29`, `A30`,
-`A32`, `A33`
+`A32`, `A33`, `A34`, `A35`
 
-**Owes**: the G0 ledger in `ENGINE_CONTRACT.md` §10, every item; the
-witnessed turn among them; the laying-down play receipt (a reverted
-person's risen corpse going down as the county takes them back -
-the release is built, `[A33]`, and the watching is the debt).
+**Owes**: the G0 ledger in `ENGINE_CONTRACT.md` section 10, every item; a
+loaded-world Afflicted return; and observed Crossed behavior only after its
+canonical retained-human action system and state/body transfer exist.

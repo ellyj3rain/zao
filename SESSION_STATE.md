@@ -1,13 +1,51 @@
 | Document | Zombie Awareness Overhaul Session State |
 |---|---|
-| Version | `0.3.1.1-pre-alpha` |
+| Version | `0.3.1.2-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `SESSION_STATE.md` |
 | Status | CANONICAL - where the work actually stands. |
 
 # Session state
 
-**As of 2026-09-18**, `[A34]` close - pathogen VM compatibility.
+**Working implementation, 2026-09-19:** A35 on `neo/a35-afflicted-return`
+supports the sister's R1/C52 return repair. ZAO owns death-sequence-bound
+reversion events, observed loaded reanimation, held source bodies and checked
+terminal removal. Native hooks install synchronously before the Lua bridge to
+protect held sources after reload. Pending ordinary/fake-dead sources have native
+checkpoints and streaming reconciliation; reanimated sources retain their native
+registry owner and recover held equipment at its loader's exit. Both paths can
+finish an authorized return offscreen. Long checkpoint strings are fragmented
+for the engine's table serializer. DR-028 now supplies the selected physical
+rule: clear native lethal/fake Knox state, restore critical viability, preserve
+actual injuries, treatment, ordinary wound infection, statistics and experience,
+and retain ZAO's Afflicted state as systemic-dormant Knox. The installed-engine
+health probe and four defect controls pass; the full seven-border gate passes.
+Automatic native callbacks isolate failed
+checkpoints from other identities and ordinary item processing; explicit
+operations refuse the failed identities until a fresh world load. A35 is the
+closed tip and remains undeployed. The sister's evidence record is
+`../survivor-awareness/artifacts/audits/20260919-0735Z-0035PST-r1-return-evidence/README.md`.
+
+The same audit found that A32's Crossed execution claim is false (F-017).
+Normal Crossed states have `currentForm = "none"`, while the controller gates
+the whole Crossed decision pass behind `currentForm ~= "none"`. The pass is
+therefore unreachable and, even if entered, does not carry the canonical
+human-looking body's retained combat, weapon, tool and general action
+vocabulary. The only Afflicted exposure caller is a daily three-tile proximity
+proxy; success changes pathogen state without transferring SAO's living body
+back to a ZAO Crossed owner. There is no spontaneous Afflicted conversion.
+The sister's R5, R7-R9 and R10 contracts own the complete repair; A35/R1 does
+not claim it.
+
+**As of 2026-09-19**, `[A35]` close - authorized Afflicted return.
+The exact turned source remains ZAO-owned until SAO has prepared and restored
+the one living destination. Native holding, removal acknowledgment, reload and
+offscreen recovery are durable. Return health reaches critical viability while
+preserving actual injuries and the next native BodyDamage update remains alive.
+The complete seven-border gate passes. F-017 corrects A32's unreachable and
+incomplete Crossed-execution claim; A35 does not claim that larger system.
+
+**Before that, 2026-09-18**, `[A34]` close - pathogen VM compatibility.
 The recovery audit reproduced the missing global `next` in the installed
 Build 42.20 Kahlua VM. Pathogen begin now tests table entries with `pairs`.
 Pathogen transitions also settle accrued prior-state time and prevent same-day
@@ -36,7 +74,7 @@ with the body; the county's ground-dead are never touched (the gate is
 her registry and they hold no entry in it); a reverted body whose
 person has not been re-adopted stays exactly as it was. No dial gates
 the release, by the same law her adoption is ungated: the pathogen's
-own fact, and the county does not vote on it. Version 0.3.1.1-pre-alpha
+own fact, and the county does not vote on it. Version 0.3.1.0-pre-alpha
 (kohai - the integration completing her minor's capability boundary).
 Both wait on play receipts with everything else runtime.
 

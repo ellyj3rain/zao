@@ -85,6 +85,20 @@ if ! "$PY" tools/pathogen_vm_test.py; then
     fail=1
 fi
 
+# 6. Native source holding, terminal removal and reload. Keep the exact-source
+# receipt beside the local build scratch for the batch evidence record.
+if ! "$PY" tools/return_removal_test.py --receipt _scratch/return-removal-last.json; then
+    note "BORDER REFUSED: native return ownership"
+    fail=1
+fi
+
+# 7. Returned afflicted people are critically viable while their actual
+# wounds, treatment state, ordinary wound infection, statistics and XP remain.
+if ! "$PY" tools/return_health_test.py --receipt _scratch/return-health-last.json; then
+    note "BORDER REFUSED: afflicted return physiology"
+    fail=1
+fi
+
 if [ "$fail" -ne 0 ]; then
     note "GATE REFUSED"
 else
