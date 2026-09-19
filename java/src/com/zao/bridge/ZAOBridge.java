@@ -17,6 +17,13 @@ public final class ZAOBridge {
     private ZAOBridge() {
     }
 
+    /** Clear process-resident projections while retaining ModData owners. */
+    void resetRuntimeForWorld() {
+        controllers.resetRuntimeForWorld();
+        com.zao.engine.ZAOReturnBody.resetRuntimeForWorld();
+        com.zao.engine.ZAOReturnSourceStore.resetRuntimeForWorld();
+    }
+
     public String version() {
         return "0.1.5.4-pre-alpha";
     }

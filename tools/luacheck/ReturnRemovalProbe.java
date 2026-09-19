@@ -166,14 +166,19 @@ public final class ReturnRemovalProbe {
         zombie.iso.WorldReuserThread.instance.stop();
         cell.setSafeToAdd(true);
         ReturnSourceProbe.setupItems();
-        for (String name : new String[]{"zombie.characters.IsoZombie", "zombie.iso.IsoCell", "zombie.popman.ZombiePopulationManager", "zombie.iso.IsoChunk", "zombie.ReanimatedPlayers"}) {
+        for (String name : new String[]{"zombie.characters.IsoZombie", "zombie.iso.IsoCell",
+                "zombie.popman.ZombiePopulationManager", "zombie.iso.IsoChunk",
+                "zombie.ReanimatedPlayers", "zombie.world.moddata.GlobalModData"}) {
             byte[] original;
             try (var stream = ClassLoader.getSystemResourceAsStream(name.replace('.', '/') + ".class")) {
                 original = stream.readAllBytes();
             }
             byte[] changed = ZAOReturnWeave.weave(name, original);
             check(!java.util.Arrays.equals(original, changed), "offline native weave made no change");
-            check(ZAOReturnWeave.inspect(name, changed) == (name.endsWith("IsoZombie") ? 7 : name.endsWith("IsoCell") ? 8 : name.endsWith("IsoChunk") ? 128 : name.endsWith("ReanimatedPlayers") ? 512 : 368), "offline native weave site mask");
+            check(ZAOReturnWeave.inspect(name, changed) == (name.endsWith("IsoZombie") ? 7
+                    : name.endsWith("IsoCell") ? 1032 : name.endsWith("IsoChunk") ? 128
+                    : name.endsWith("ReanimatedPlayers") ? 512
+                    : name.endsWith("GlobalModData") ? 2048 : 368), "offline native weave site mask");
             System.out.println("OFFLINE " + name + " mask=" + ZAOReturnWeave.inspect(name, changed)
                     + " sha256=" + java.util.HexFormat.of().formatHex(java.security.MessageDigest.getInstance("SHA-256").digest(changed)));
         }

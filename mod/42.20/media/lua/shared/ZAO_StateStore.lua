@@ -141,6 +141,15 @@ end
 function StateStore.restoreSettlements()
     local store = StateStore.store()
     if not store or not ZAO.Settlement then return false end
+    -- [A36] These are projections, not a second durable owner. Rebuilding in
+    -- one Lua environment must first remove the preceding world's groups and
+    -- its unfinished formation observations.
+    for key in pairs(ZAO.Settlement.groups) do
+        ZAO.Settlement.groups[key] = nil
+    end
+    for key in pairs(ZAO.Settlement.lingering) do
+        ZAO.Settlement.lingering[key] = nil
+    end
     for groupId, group in pairs(store.settlements) do
         local members = type(group) == "table"
             and type(group.members) == "table" and group.members
@@ -161,8 +170,12 @@ function StateStore.restoreSettlements()
     return true
 end
 
-Events.OnGameStart.Add(function()
+if StateStore.onGameStart then
+    Events.OnGameStart.Remove(StateStore.onGameStart)
+end
+StateStore.onGameStart = function()
     StateStore.restoreSettlements()
-end)
+end
+Events.OnGameStart.Add(StateStore.onGameStart)
 
 return StateStore

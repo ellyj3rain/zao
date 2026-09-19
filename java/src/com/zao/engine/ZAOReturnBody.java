@@ -55,6 +55,14 @@ public final class ZAOReturnBody {
 
     private ZAOReturnBody() { }
 
+    /** Retain same-cell handoffs across Lua reload; forget other worlds. */
+    public static void resetRuntimeForWorld() {
+        IsoCell cell = IsoWorld.instance == null ? null : IsoWorld.instance.currentCell;
+        PENDING.entrySet().removeIf(entry -> entry.getValue().cell != cell);
+        COMPLETED.entrySet().removeIf(entry -> entry.getValue().cell != cell);
+        pendingCell = cell;
+    }
+
     public static boolean isAvailable() { return ZAOReturnWeave.isAvailable(); }
 
     /** Gate new durable transfers; existing tokens still have native guards. */
@@ -72,6 +80,19 @@ public final class ZAOReturnBody {
     /** Native item-removal entry runs after streaming and before item updates. */
     public static void restoreLoadedHolds(Object value) {
         if (!(value instanceof IsoCell loaded) || loaded != IsoWorld.instance.currentCell) return;
+        // A journaled cancellation may be paired with the preceding native
+        // generation, whose body still carries a hold token. Resume it before
+        // ordinary reconstruction can recreate the deleted source receipt.
+        for (IsoZombie body : loadedAndPending()) {
+            if (!hasHold(body)) continue;
+            Object id = body.getModData().rawget("SAOPersonId");
+            if (!(id instanceof String personId) || !ZAOSaveGeneration.desiresNoSource(personId)) continue;
+            try {
+                IsoZombie owner = find(personId);
+                if (owner == body) resume(body, personId,
+                    (String)body.getModData().rawget(TOKEN));
+            } catch (RuntimeException error) { ZAOReturnSourceStore.automaticFailure(id, error); }
+        }
         ZAOReturnSourceStore.reconcile(loaded);
         Set<IsoZombie> bodies = Collections.newSetFromMap(new IdentityHashMap<>());
         bodies.addAll(loaded.getZombieList());
@@ -81,6 +102,7 @@ public final class ZAOReturnBody {
             if (!hasHold(body)) continue;
             Object id = body.getModData().rawget("SAOPersonId");
             Object token = body.getModData().rawget(TOKEN);
+            if (id instanceof String personId && ZAOSaveGeneration.desiresNoSource(personId)) continue;
             try {
                 guardLoadedSource(body);
                 if (!(id instanceof String personId)) throw new IllegalStateException("Held source lacks person identity");
@@ -190,6 +212,24 @@ public final class ZAOReturnBody {
             throw new IllegalStateException("Cannot adopt detached checkpoint source");
         Pending pending = new Pending(body, id, token); pending.checkpointDetached = true;
         PENDING.put(body, pending); quiesce(body);
+    }
+
+    /** Recreate a native reanimated owner omitted by an interrupted save. */
+    static void ownPreservedDecoded(IsoZombie body, String id, String token) {
+        if (!identity(body, id) || !token.equals(body.getModData().rawget(TOKEN))
+                || !ZAOReturnSourceStore.owns(body) || findLoaded(id) != null || PENDING.size() >= MAX_PENDING)
+            throw new IllegalStateException("Cannot adopt preserved generation source");
+        Pending pending = new Pending(body, id, token);
+        pending.checkpointDetached = true; pending.nativePreserved = true;
+        PENDING.put(body, pending); quiesce(body);
+        List<IsoZombie> preserved = retention(Retention.PRESERVED, ReanimatedPlayers.instance);
+        if (!preserved.contains(body)) preserved.add(body);
+    }
+
+    /** Remove only the stale physical incarnation selected by a newer journal. */
+    static void discardGenerationBody(IsoZombie body) {
+        if (body == null) return;
+        detachDecoded(body);
     }
 
     static Set<IsoZombie> loadedAndPending() {

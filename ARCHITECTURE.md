@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Architecture |
 |---|---|
-| Version | `0.3.1.2-pre-alpha` |
+| Version | `0.3.1.3-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `ARCHITECTURE.md` |
 | Status | ACTIVE - ratified framework shape. Engine surfaces claimed here are unverified until `FINDINGS.md` carries them. |
@@ -100,6 +100,17 @@ is zero. No state is derived from a person id or a clock.
 strength, cognition, memory, sight, and hearing to the engine's own public
 `IsoZombie` fields, then drives the body through the engine's own target and
 path methods. Lua reaches it as `ZAOJavaBridge`.
+
+### Persistence reconstruction
+
+Pathogen, recovery, settlement and return-source tables are durable authorities.
+Controllers, courses, settlement groups, loaded-body ownership and Java maps are
+runtime projections rebuilt for each world. Afflicted return additionally spans
+the engine's native body and global ModData surfaces. `ZAOSaveGeneration` writes
+a narrow generation journal after Lua save callbacks and before native body
+save; it replays after global data load and before native reanimated-player load.
+The journal contains only participating return identities and reconciles an
+exact source receipt or tombstone rather than duplicating general world state.
 
 ## What is not ratified
 

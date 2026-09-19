@@ -30,7 +30,7 @@ MUTATIONS = [
     ("weak-pending-ownership", "private static final Map<IsoZombie, Pending> PENDING = new IdentityHashMap<>();", "private static final Map<IsoZombie, Pending> PENDING = new java.util.WeakHashMap<>();", "pending source lost after Lua reload and GC"),
     ("no-failed-save-owner", "if (body.isReanimatedPlayer() && !body.isDead()", "if (false && body.isReanimatedPlayer() && !body.isDead()", "failed reanimated source has no native save owner"),
     ("no-native-update-guard", "return token instanceof String text && !text.isBlank();", "return false;", "loaded held source advanced before reconstruction"),
-    ("no-loaded-item-reconstruction", "if (!hasHold(body)) continue;", "if (true) continue;", "loaded held cargo not paused before processing"),
+    ("no-loaded-item-reconstruction", "for (IsoZombie body : bodies) {\n            if (!hasHold(body)) continue;", "for (IsoZombie body : bodies) {\n            if (true) continue;", "loaded held cargo not paused before processing"),
 ]
 WEAVE_MUTATIONS = [
     ("omit-native-postupdate-site", '.or(ElementMatchers.named("postupdate"))', '', "Native return weave mask mismatch"),
@@ -42,6 +42,8 @@ WEAVE_MUTATIONS = [
     ("omit-outer-chunk-guard", "public static void enter(@Advice.This Object chunk) {\n            ZAOReturnSourceStore.beforeChunkUnload(chunk);", "public static void enter(@Advice.This Object chunk) {\n            ;", "Native return weave mask mismatch"),
     ("omit-population-chunk-guard", "public static void enter(@Advice.Argument(0) Object chunk) {\n            ZAOReturnSourceStore.beforeChunkUnload(chunk);", "public static void enter(@Advice.Argument(0) Object chunk) {\n            ;", "Native return weave mask mismatch"),
     ("omit-preserved-load-boundary", "ZAOReturnSourceStore.restorePreservedMaterials();", ";", "Native return weave mask mismatch"),
+    ("omit-generation-prepare", "ZAOSaveGeneration.prepare();", ";", "Native return weave mask mismatch"),
+    ("omit-generation-recover", "ZAOSaveGeneration.recover();", ";", "Native return weave mask mismatch"),
 ]
 SOURCE_MUTATIONS = [
     ("restore-root-union", "snapshot", "if (roots.contains(item.id)) return false;", "if (true) return false;", "Source equipment/root restoration differs"),
@@ -53,12 +55,12 @@ SOURCE_MUTATIONS = [
     ("no-stream-detach", "store", "if (!ZAOReturnBody.detachForStreaming(body))", "if (false)", "native virtualization lost source checkpoint"),
     ("no-dormant-resolver", "body", "return loaded == null ? ZAOReturnSourceStore.resolveDetached(personId) : loaded;", "return loaded;", "checkpoint-backed dormant source did not resolve unpublished"),
     ("oversized-native-string", "store", "private static final int STRING_PART = 16000;", "private static final int STRING_PART = 40000;", "source checkpoint table serialization corrupted"),
-    ("accept-wrong-incarnation", "store", 'if (!same(record, loaded)) throw new IllegalStateException("Loaded source incarnation differs");', ";", "checkpoint incarnation mismatch accepted"),
+    ("accept-wrong-incarnation", "store", "if (!same(record, loaded) || !sameGeneration(record, loaded)) {", "if (!sameGeneration(record, loaded)) {", "checkpoint incarnation mismatch accepted"),
     ("omit-native-preserved-resolution", "body", 'if (body.isReanimatedPlayer() && body.getModData().rawget("SAOPersonId") instanceof String) candidates.add(body);', ";", "Native reanimated material restore missed load boundary"),
     ("omit-native-equipment-overlay", "store", "ZAOReturnSourceSnapshot.restoreMaterials(body, packed);", "if (packed.isEmpty()) ZAOReturnSourceSnapshot.restoreMaterials(body, packed);", "held reanimated equipment overlay lost"),
     ("no-native-load-isolation", "store", "automaticFailure(id, error);\n                    try { ZAOReturnBody.guardLoadedSource(body); }", "if (true) throw error;\n                    try { ZAOReturnBody.guardLoadedSource(body); }", "bad checkpoint escaped native registry callback"),
     ("no-record-isolation", "store", "} catch (RuntimeException error) { automaticFailure(key, error); }", "} catch (RuntimeException error) { throw error; }", "bad checkpoint prevented other native overlay"),
-    ("no-body-isolation", "body", "} catch (RuntimeException error) { ZAOReturnSourceStore.automaticFailure(id, error); }", "} catch (RuntimeException error) { throw error; }", "bad source escaped native item callback"),
+    ("no-body-isolation", "body", "hold(body, personId, (String) token);\n            } catch (RuntimeException error) { ZAOReturnSourceStore.automaticFailure(id, error); }", "hold(body, personId, (String) token);\n            } catch (RuntimeException error) { throw error; }", "bad source escaped native item callback"),
     ("allow-failed-native-material", "store", 'if (error != null) throw new IllegalStateException("Pending source unavailable: " + id, error);', 'if (error != null && !(error.getCause() instanceof java.io.IOException)) throw new IllegalStateException("Pending source unavailable: " + id, error);', "failed checkpoint identity remained accessible"),
 ]
 
@@ -77,6 +79,7 @@ def main():
     weave = root / "java/src/com/zao/engine/ZAOReturnWeave.java"
     snapshot = root / "java/src/com/zao/engine/ZAOReturnSourceSnapshot.java"
     store = root / "java/src/com/zao/engine/ZAOReturnSourceStore.java"
+    generation = root / "java/src/com/zao/engine/ZAOSaveGeneration.java"
     source_probe = root / "tools/luacheck/ReturnSourceProbe.java"
     receipt = {"results": [], "commands": [], "limits": "Actual headless engine objects; no chunks/game/saves. Incoming Lua actions and arbitrary foreign mutation remain caller checks."}
     def run(argv, cwd):
@@ -89,11 +92,12 @@ def main():
         if not all(p.is_file() for p in (PZ, ZB, JDK / "javac.exe", JDK / "java.exe")):
             print("SKIPPED native return removal: installed engine/JDK absent")
             return 0
-        receipt["hashes"] = {str(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in (PZ, ZB, source, weave, snapshot, store, source_probe, probe, Path(__file__), root / "java/src/com/zao/Main.java")}
+        receipt["hashes"] = {str(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in (PZ, ZB, source, weave, snapshot, store, generation, source_probe, probe, Path(__file__), root / "java/src/com/zao/Main.java")}
         original = source.read_text(encoding="utf-8-sig")
         original_weave = weave.read_text(encoding="utf-8-sig")
         original_snapshot = snapshot.read_text(encoding="utf-8-sig")
         original_store = store.read_text(encoding="utf-8-sig")
+        original_generation = generation.read_text(encoding="utf-8-sig")
         with tempfile.TemporaryDirectory(prefix="zao-return-removal-") as tmp:
             scratch = Path(tmp)
             for cls in ("zombie.characters.IsoZombie", "zombie.VirtualZombieManager", "zombie.ReanimatedPlayers", "zombie.MovingObjectUpdateScheduler", "zombie.iso.IsoMovingObject", "zombie.iso.IsoCell", "zombie.iso.IsoChunk", "zombie.iso.IsoWorld", "zombie.popman.ZombiePopulationManager", "zombie.iso.objects.IsoDeadBody", "zombie.GameWindow$StringUTF", "se.krka.kahlua.j2se.KahluaTableImpl"):
@@ -105,8 +109,9 @@ def main():
                 changed_weave = work / weave.name; changed_weave.write_text(weave_text, encoding="utf-8")
                 changed_snapshot = work / snapshot.name; changed_snapshot.write_text(snapshot_text, encoding="utf-8")
                 changed_store = work / store.name; changed_store.write_text(store_text, encoding="utf-8")
+                changed_generation = work / generation.name; changed_generation.write_text(original_generation, encoding="utf-8")
                 classes = work / "classes"; classes.mkdir()
-                compiled = run([JDK / "javac.exe", "-encoding", "UTF-8", "-cp", os.pathsep.join((str(PZ), str(ZB))), "-d", classes, changed, changed_weave, changed_snapshot, changed_store, probe, source_probe], work)
+                compiled = run([JDK / "javac.exe", "-encoding", "UTF-8", "-cp", os.pathsep.join((str(PZ), str(ZB))), "-d", classes, changed, changed_weave, changed_snapshot, changed_store, changed_generation, probe, source_probe], work)
                 if compiled.returncode: raise RuntimeError(f"{name} compile failed: {compiled.stderr}")
                 return run([JDK / "java.exe", "-XX:+EnableDynamicAgentLoading", f"-Duser.home={work}", "-cp", os.pathsep.join((str(classes), str(PZ), str(ZB))), "ReturnRemovalProbe"], work)
             production = case("production", original)

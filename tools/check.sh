@@ -99,6 +99,13 @@ if ! "$PY" tools/return_health_test.py --receipt _scratch/return-health-last.jso
     fail=1
 fi
 
+# 8. Durable pathogen/settlement state reconstructs disposable Lua and Java
+# projections, and a same-process world change releases prior-world handles.
+if ! "$PY" tools/runtime_reconstruction_test.py; then
+    note "BORDER 8 REFUSED: runtime reconstruction"
+    fail=1
+fi
+
 if [ "$fail" -ne 0 ]; then
     note "GATE REFUSED"
 else

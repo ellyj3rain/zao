@@ -43,19 +43,25 @@ public final class ZAOControllerStore {
             return null;
         }
 
+        ZAORecoveryInput recovery = ZAORecoveryReader.read(zombie);
+        ZAOCourse course = courseFor(identity.id());
+        Object terminal = zombie.getModData().rawget("ZAOTerminalState");
+        course.restore(recovery.repeatInfections(),
+            terminal == null ? null : String.valueOf(terminal));
+
         ZAODomainController controller = new ZAODomainController(
             identity,
             new ZAOPerception(),
             new ZAODisposition(0.5, 0.5, 0.5, 0.5, 0.5),
             new ZAOStanding(),
             new ZAOExecution(),
-            courseFor(identity.id()),
+            course,
             new ZAOMutation(),
             new ZAOSettlement(),
             new ZAOTelemetry(),
             ZAOSandboxPolicy.configured()
         );
-        controller.recoveryInput(ZAORecoveryReader.read(zombie));
+        controller.recoveryInput(recovery);
         controller.claim(zombie, 0);
         controllers.put(zombie, controller);
         return controller;
@@ -73,5 +79,11 @@ public final class ZAOControllerStore {
 
     public int size() {
         return controllers.size();
+    }
+
+    /** Controllers and courses are projections of one loaded world. */
+    public void resetRuntimeForWorld() {
+        controllers.clear();
+        courses.clear();
     }
 }
