@@ -104,6 +104,50 @@ public final class ZAOBridge {
         return object instanceof IsoZombie;
     }
 
+    public Object findReturnBody(String personId) {
+        return com.zao.engine.ZAOReturnBody.find(personId);
+    }
+
+    public boolean supportsReturnBody(Object object) {
+        return object instanceof IsoZombie zombie
+            && com.zao.engine.ZAOReturnBody.isSupportedSource(zombie);
+    }
+
+    public boolean isDormantReturnSource(Object object) {
+        return object instanceof IsoZombie zombie
+            && com.zao.engine.ZAOReturnBody.isDormantSource(zombie);
+    }
+
+    public boolean holdReturnBody(Object object, String personId, String token) {
+        return object instanceof IsoZombie zombie
+            && com.zao.engine.ZAOReturnBody.hold(zombie, personId, token);
+    }
+
+    public boolean resumeReturnBody(Object object, String personId, String token) {
+        return object instanceof IsoZombie zombie
+            && com.zao.engine.ZAOReturnBody.resume(zombie, personId, token);
+    }
+
+    public boolean removeReturnBody(Object object, String personId, String token) {
+        if (!(object instanceof IsoZombie zombie)) return false;
+        boolean removed = com.zao.engine.ZAOReturnBody.remove(zombie, personId, token);
+        if (removed) {
+            // Terminal removal has already cleared native AI and ownership.
+            controllers.remove(zombie);
+        }
+        return removed;
+    }
+
+    public boolean restoreReturnHealth(Object object) {
+        try {
+            return object instanceof zombie.characters.IsoPlayer person
+                && com.zao.engine.ZAOReturnHealth.restore(person);
+        } catch (Throwable throwable) {
+            ZAOAgent.log("restoreReturnHealth threw: " + throwable);
+            return false;
+        }
+    }
+
     public boolean owns(Object object) {
         try {
             if (!(object instanceof IsoZombie zombie)) {
@@ -154,6 +198,7 @@ public final class ZAOBridge {
             if (!(object instanceof IsoZombie zombie)) {
                 return;
             }
+            if (zombie.getModData().rawget("ZAOReturnToken") != null) return;
             ZAODomainController controller = controllers.ensure(zombie);
             if (controller != null) {
                 controller.apply(
@@ -182,6 +227,7 @@ public final class ZAOBridge {
                 || !(targetObject instanceof IsoMovingObject target)) {
                 return;
             }
+            if (zombie.getModData().rawget("ZAOReturnToken") != null) return;
             ZAODomainController controller = controllers.ensure(zombie);
             if (controller != null) {
                 controller.apply(

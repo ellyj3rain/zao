@@ -156,6 +156,9 @@ function Pathogen.begin(personId, terminalState, day, source, record)
         return state
     end
     state.personId = personId
+    if terminalState == "dead" or terminalState == "turned" then
+        state.deathSequence = record and (tonumber(record.deathSequence) or 0) or state.deathSequence
+    end
     state.terminalState = tostring(terminalState or "living")
     state.decayState = state.terminalState
 
@@ -265,6 +268,9 @@ local function advanceDay(state, day)
 
         if state.terminalState == "turned" and draw() < risk then
             state.terminalState = "afflicted"
+            state.returnSequence = (tonumber(state.returnSequence) or 0) + 1
+            state.returnEvent = { token = "reversion:" .. tostring(state.returnSequence),
+                day = day, deathSequence = state.deathSequence or 0 }
             state.decayState = "afflicted"
             state.retainedAbility = clamp01(1.0 - performance)
             state.formPerformance =

@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Findings |
 |---|---|
-| Version | `0.3.1.1-pre-alpha` |
+| Version | `0.3.1.2-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `FINDINGS.md` |
 | Status | CANONICAL, APPEND-ONLY - verified engine findings from F-001. |
@@ -540,3 +540,55 @@ with identical nonlinear transitions and random draws. Actual SAO death and
 recovery events could overwrite crossed; A34 preserves that terminal state
 and retains the incoming event in history. All five causal controls fail as
 required, and the full local gate passes without skips.
+
+## F-016 | 2026-09-19 07:35 UTC / 00:35 PST | Observed loaded reanimation did not reach mutation
+
+The controller could observe an SAO person's live reanimated body while deriving
+`dead` from its durable record. `State.terminalOf` also projected a saved turned
+state back to dead. Pathogen reversion only runs from turned, so a fixture that
+directly supplied an afflicted return event hid a missing causal producer.
+
+The A35/R1 repair uses the observed live IsoZombie to advance a dead record's
+pathogen state to turned and binds it to the current death sequence. The state
+projection retains that observed state without setting SAO's `turnedDormant`.
+The sister's `tools/afflicted_return_test.py` executes the real Forms, Pathogen,
+StateStore, State and Controller through observed turning, a controlled reversion
+draw and person transfer. Independent removal of the observation and projection
+changes makes the test fail at the missing turned-state assertion. This is a
+controlled A35 result; loaded-world observation remains open.
+
+## F-017 | 2026-09-19 09:06 UTC / 02:06 PST | The Crossed execution pass is unreachable and is not the retained human action system
+
+The published A32 claim that the Crossed are executed is false in the current
+runtime. `ZAO_Pathogen.begin` and `ZAO_Pathogen.expose` both set a Crossed
+state's `currentForm` to `none`. `ZAO_Controller.tick` puts target selection,
+`ZAO.Crossed.decide` and `driveForm` inside `if state.currentForm ~= "none"`.
+A normal Crossed state therefore never reaches the pass A32 called its
+consumer. No permanent border exercises `ZAO_Crossed.lua`.
+
+Removing that guard would expose a second, larger mismatch rather than repair
+the system. The current body remains an `IsoZombie`; the pass can prefer an
+Afflicted target, make noise, share target coordinates, path toward kin or home,
+and invoke the separate Crossed driving adapter. It has no retained human
+combat, weapon, tool, activity or wider action vocabulary. SAO stamps only the
+`drive` retained verb. The ordinary fallback sets the human target on an
+`IsoZombie`, allowing zombie attack behavior to resolve contact. That cannot
+represent the canonical human-looking, weapon-using, planning Crossed or the
+operator's specific rule that Afflicted are not food.
+
+The Afflicted conversion route is incomplete at both ends. The only caller of
+`ZAO.Pathogen.expose` is SAO's once-per-day three-tile proximity scan; no
+completed intentional action produces the exposure. On success the function
+changes durable pathogen state and fires the Java course flag, but it neither
+retires SAO's living Afflicted body/controller nor creates or transfers to a
+ZAO-owned Crossed representation. The stored probability is correctly scoped:
+only a Crossed carrier can expose an Afflicted target, at crossed odds times
+Afflicted susceptibility. There is no spontaneous Afflicted-to-Crossed roll.
+
+The repair is a multi-owner producer contract, not a target-selection patch:
+representation, retained experience and verbs, goal selection, human actions,
+the distinct non-feeding Afflicted interaction, exposure completion, body
+ownership transfer, loaded/dormant persistence and observed consequences all
+need one causal chain. The sister's R5, R7-R9 and R10 work now name those
+pieces. A35/R1 establishes a returned Afflicted person and does not claim to
+repair the later Crossed interaction.

@@ -92,11 +92,12 @@ local function terminalFromRecord(rec)
     return "living"
 end
 
-local function ensurePathogenState(personId, rec, day)
+local function ensurePathogenState(personId, rec, day, observedTurned)
     if not (ZAO.Pathogen and ZAO.StateStore) then return nil end
 
     local saved = ZAO.StateStore.read(personId)
     local recordTerminal = terminalFromRecord(rec)
+    if rec.dead and observedTurned then recordTerminal = "turned" end
     local savedTerminal = saved and saved.terminalState or nil
     local livePathogenTerminal =
         savedTerminal == "afflicted" or savedTerminal == "crossed"
@@ -226,7 +227,77 @@ local function driveForm(zombie, state, target, now, hours)
     end
 end
 
+-- Explicit source ownership for the sister's durable return transaction.
+-- The native finder verifies loaded identity, independently of scan order.
+function Ctl.returnSource(personId)
+    if not ZAOJavaBridge then error("return bridge unavailable") end
+    return ZAOJavaBridge:findReturnBody(personId)
+end
+
+function Ctl.canReturnSource(body)
+    return ZAOJavaBridge and ZAOJavaBridge:supportsReturnBody(body) == true
+end
+
+function Ctl.returnSourceDormant(personId, body, token)
+    local rec = SAO.Identity.get(personId)
+    local p = rec and rec.returnTransition
+    if not p or p.token ~= token then error("return ownership mismatch") end
+    return ZAOJavaBridge:isDormantReturnSource(body) == true
+end
+
+function Ctl.holdReturn(personId, body, token)
+    local rec = SAO.Identity.get(personId)
+    local p = rec and rec.returnTransition
+    local event = ZAO.StateStore.returnAuthorization(personId)
+    if not p or p.token ~= token or not event or event.token ~= p.event then return false end
+    Ctl.controlled[personId] = body
+    return ZAOJavaBridge:holdReturnBody(body, personId, token) == true
+end
+
+function Ctl.removeReturn(personId, body, token)
+    local rec = SAO.Identity.get(personId)
+    local p = rec and rec.returnTransition
+    if not p or p.token ~= token or not p.packed then return false end
+    if ZAOJavaBridge:removeReturnBody(body, personId, token) ~= true then return false end
+    Ctl.controlled[personId] = nil
+    return true
+end
+
+-- The native body holds the saved injuries. ZAO owns the biological event:
+-- native lethal Knox flags are cleared, enough aggregate body-part health is
+-- restored for a critical but stable life, and the afflicted state remains
+-- the authoritative systemic-dormant infection record.
+function Ctl.restoreReturnHealth(rec, body, eventToken)
+    if not (rec and body and ZAOJavaBridge and ZAO.StateStore) then return false end
+    local personId = tostring(rec.id or "")
+    local p = rec.returnTransition
+    local authorization = ZAO.StateStore.returnAuthorization(personId)
+    local state = ZAO.StateStore.read(personId)
+    if personId == "" or not p or p.event ~= eventToken
+        or not authorization or authorization.token ~= eventToken
+        or not state or state.terminalState ~= "afflicted" then
+        return false
+    end
+    local ok, data = pcall(function() return body:getModData() end)
+    if not ok or not data or tostring(data.SAOPersonId or "") ~= personId
+        or data.SAOReturnToken ~= p.token then return false end
+    return ZAOJavaBridge:restoreReturnHealth(body) == true
+end
+
+function Ctl.cancelReturn(personId, body, token)
+    local rec = SAO.Identity.get(personId)
+    local p = rec and rec.returnTransition
+    if not p or p.token ~= token or p.sourceRemoved then return false end
+    local data = body:getModData()
+    if data.ZAOReturnToken == nil then
+        if tostring(data.SAOPersonId) ~= personId or Ctl.returnSource(personId) ~= body then return false end
+    elseif ZAOJavaBridge:resumeReturnBody(body, personId, token) ~= true then return false end
+    Ctl.controlled[personId] = body
+    return true
+end
+
 function Ctl.tick(now)
+    if SAO and SAO.AfflictedReturn then SAO.AfflictedReturn.resumePending() end
     local policy = ZAO.Sandbox and ZAO.Sandbox.policy() or nil
     if policy and (not policy.enabled or not policy.controller) then
         return
@@ -285,13 +356,16 @@ function Ctl.tick(now)
                     personId = tostring(data.ZAODerivedId)
                 end
 
-                if personId and ZAO.Pathogen and ZAO.StateStore then
+                local returnHeld = data.ZAOReturnToken ~= nil
+                    or rec and rec.returnTransition ~= nil
+                if returnHeld and personId then Ctl.controlled[personId] = obj end
+                if personId and ZAO.Pathogen and ZAO.StateStore and not returnHeld then
                     data.ZAOOwned = true
 
                     local state = nil
                     local mind = nil
                     if rec then
-                        ensurePathogenState(personId, rec, day)
+                        ensurePathogenState(personId, rec, day, true)
                         state = ZAO.State.of(rec, hour)
                         mind = ZAO.Mind
                             and ZAO.Mind.of(rec, hour) or nil
@@ -333,34 +407,7 @@ function Ctl.tick(now)
                         state = ZAO.Pathogen.stateOf(personId)
                     end
 
-                    -- [A33] The corpse is laid down when the county
-                    -- holds the person again. A reverted body whose
-                    -- person the sister has re-adopted (a live body
-                    -- stands in her registry) is no longer ours to
-                    -- drive: the release is a fact-reading, not a
-                    -- decision - the same law the sister's return
-                    -- follows ([C116]: the pathogen licensed the
-                    -- reversion, the adoption followed the state),
-                    -- and the laying-down is removal, never a kill -
-                    -- the person's death already ran its funnel, and
-                    -- no death event fires here. The despawn pair is
-                    -- the sister's own idiom (F-008), and her law
-                    -- "never removeFromWorld a corpse" holds on her
-                    -- side: this is the turned body this repo owns,
-                    -- and it goes only because its person stands in
-                    -- the county as themselves.
-                    local released = false
-                    if state and state.terminalState == "afflicted"
-                        and SAO.Body and SAO.Body.get(personId) then
-                        Ctl.controlled[personId] = nil
-                        pcall(function() obj:removeFromWorld() end)
-                        pcall(function() obj:removeFromSquare() end)
-                        released = true
-                        log(personId
-                            .. " laid down - the county holds them again")
-                    end
-
-                    if state and not released then
+                    if state then
                         -- Membership is a formation event or a
                         -- restored one, never a placement. A group
                         -- that no longer holds is left behind.

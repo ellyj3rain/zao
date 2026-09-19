@@ -12,6 +12,10 @@ function State.terminalOf(record, saved)
     if savedTerminal == "crossed" or savedTerminal == "afflicted" then
         return savedTerminal
     end
+    if record.dead and savedTerminal == "turned"
+        and saved.deathSequence == (record.deathSequence or 0) then
+        return "turned"
+    end
     if record.turnedDormant then
         return "turned"
     elseif record.dead then

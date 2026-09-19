@@ -51,6 +51,9 @@ function StateStore.write(personId, state)
         lastAdvancedDay = state.lastAdvancedDay,
         source = state.source,
         history = history,
+        returnSequence = state.returnSequence or existing.returnSequence,
+        returnEvent = state.returnEvent or existing.returnEvent,
+        deathSequence = state.deathSequence or existing.deathSequence,
     }
 
     if state.settlementGroup then
@@ -76,6 +79,24 @@ function StateStore.read(personId)
     local store = StateStore.store()
     if not store then return nil end
     return store.people[personId]
+end
+
+-- A reversion event licenses one return. A still-afflicted state alone must
+-- not license another return after a later, unrelated death.
+function StateStore.returnAuthorization(personId)
+    local state = StateStore.read(personId)
+    if not state or state.terminalState ~= "afflicted" then return nil end
+    if not state.returnEvent then
+        for index = #(state.history or {}), 1, -1 do
+            local event = state.history[index]
+            if event.type == "reversion" then
+                state.returnEvent = { token = "legacy:" .. tostring(event.day)
+                    .. ":" .. tostring(state.startedDay), day = event.day }
+                break
+            end
+        end
+    end
+    return state.returnEvent
 end
 
 function StateStore.recoveryOf(personId)
