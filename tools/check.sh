@@ -79,6 +79,12 @@ else
     note "BORDER 4 SKIPPED: Java bridge (no JDK or game jars on this machine)"
 fi
 
+# 5. The real engine VM, including the original missing-next control.
+if ! "$PY" tools/pathogen_vm_test.py; then
+    note "BORDER 5 REFUSED: pathogen VM"
+    fail=1
+fi
+
 if [ "$fail" -ne 0 ]; then
     note "GATE REFUSED"
 else

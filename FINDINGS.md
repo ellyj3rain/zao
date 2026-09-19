@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Findings |
 |---|---|
-| Version | `0.3.1.0-pre-alpha` |
+| Version | `0.3.1.1-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `FINDINGS.md` |
 | Status | CANONICAL, APPEND-ONLY - verified engine findings from F-001. |
@@ -517,3 +517,26 @@ positive test carries the finding on its own, because five actuators
 with no accessor anywhere in the inheritance chain are unreachable by a
 method-based binding whatever else that binding does. The negative is
 recorded as corroboration, not as the evidence.
+
+## F-015 - Pathogen begin called a missing VM function
+
+The 2026-09-18 recovery audit ran the shipped Pathogen module in the installed
+Build 42.20 Kahlua VM. Global `next` is nil there; the original empty-table
+check throws before begin persists the state. Protected callers could hide
+the failure. The retained unfinished fix uses `pairs` to detect entries.
+Border 5 exercises actual empty, repeated, legacy and crossed states and
+mutates the source back to the original call, which fails in the actual VM.
+
+The actual Population/Pathogen seam additionally showed capability 0.9 and
+passive decay 0.01 at only 1.6 county hours after a day-zero begin. A34 stamps
+the event day, settles accrued prior-state time before transitions, and guards
+advance against repeated/backward days. Border 5 controls this temporal law.
+
+The controller's State projection also omitted both clocks and erased them on
+store write. Border 5 now executes the actual projection/write/advance path.
+A three-day gap previously applied one daily step; daily stepping produced
+capability 0.7265718 while the gap produced 0.9. A34 replays missing whole days
+with identical nonlinear transitions and random draws. Actual SAO death and
+recovery events could overwrite crossed; A34 preserves that terminal state
+and retains the incoming event in history. All five causal controls fail as
+required, and the full local gate passes without skips.

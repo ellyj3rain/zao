@@ -16,3 +16,7 @@ according to its form. `ZAO_API.lua` publishes the read-only claim surface:
 
 `build_java.py` compiles the Java bridge, packages `ZAO.jar`, and installs it
 into the mod tree. `make_art.py` generates the icon and poster.
+
+`pathogen_vm_test.py` runs pathogen state transitions in the installed game's
+Kahlua VM and requires the original missing-`next` implementation to fail.
+It reports a skip when the engine or JDK is absent.

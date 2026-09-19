@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Batch Log |
 |---|---|
-| Version | `0.3.1.0-pre-alpha` |
+| Version | `0.3.1.1-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `BATCH_LOG.md` |
 | Status | REGULATORY - chronological batch index. |
@@ -49,3 +49,4 @@ history tree. The last row below is the tip.
 | [A31](Batches/A31-2026-09-13-a-rebuild-of-the-same-source-is-the-same-jar.md) | 2026-09-13 | A rebuild of the same source is the same jar | [`T-001`](Batches/THREADS.md#t-001) |
 | [A32](Batches/A32-2026-09-13-the-crossed-are-executed.md) | 2026-09-13 | The crossed are executed | [`T-001`](Batches/THREADS.md#t-001), [`T-002`](Batches/THREADS.md#t-002) |
 | [A33](Batches/A33-2026-09-13-the-corpse-is-laid-down.md) | 2026-09-13 | The corpse is laid down | [`T-001`](Batches/THREADS.md#t-001), [`T-002`](Batches/THREADS.md#t-002) |
+| [A34](Batches/A34-2026-09-18-pathogen-vm-compatibility.md) | 2026-09-18 | Pathogen VM compatibility | [`T-001`](Batches/THREADS.md#t-001), [`T-002`](Batches/THREADS.md#t-002) |

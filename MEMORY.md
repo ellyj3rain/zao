@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Memory |
 |---|---|
-| Version | `0.3.1.0-pre-alpha` |
+| Version | `0.3.1.1-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `MEMORY.md` |
 | Status | ACTIVE - index of every root document and its standing. |
@@ -56,3 +56,5 @@ it is current. Nothing at the root is unclassified.
 |---|---|
 | `Batches/` | One alphanumeric batch sequence; one record per closed batch; the thread index. |
 | `tools/` | The evidence apparatus: the borders, `check.sh`, the version machine, the pre-commit hook. |
+
+`artifacts/docx/` holds generated readable exports; the corresponding Markdown remains the working source.
