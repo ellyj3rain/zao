@@ -76,6 +76,8 @@ function State.of(record, hour)
             and saved.identityAxes or {},
         history = saved and saved.history or {},
         source = saved and saved.source or nil,
+        startedDay = saved and saved.startedDay or nil,
+        lastAdvancedDay = saved and saved.lastAdvancedDay or nil,
         lastEvent = saved and saved.history
             and saved.history[#saved.history] or nil,
         settlementGroup = saved and saved.settlementGroup

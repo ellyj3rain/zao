@@ -1,13 +1,24 @@
 | Document | Zombie Awareness Overhaul Session State |
 |---|---|
-| Version | `0.3.1.0-pre-alpha` |
+| Version | `0.3.1.1-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `SESSION_STATE.md` |
 | Status | CANONICAL - where the work actually stands. |
 
 # Session state
 
-**As of 2026-09-13**, `[A33]` close - the corpse is laid down. The
+**As of 2026-09-18**, `[A34]` close - pathogen VM compatibility.
+The recovery audit reproduced the missing global `next` in the installed
+Build 42.20 Kahlua VM. Pathogen begin now tests table entries with `pairs`.
+Pathogen transitions also settle accrued prior-state time and prevent same-day
+growth from being charged twice. Border 5 runs the actual modules and rejects
+the original missing-function and broken-clock controls. The controller keeps
+clock fields through its projected-state write; missed days replay every daily
+step; later SAO events preserve terminal crossed. The full gate passes with
+all five borders, the installed game and JDK, and no skips. In-game body
+behavior remains unobserved.
+
+**Before that, 2026-09-13**, `[A33]` close - the corpse is laid down. The
 sister's `[C116]` built her half of the afflicted return (a person
 whose pathogen state says afflicted is minted back where their risen
 corpse stands, through her own materialize), and her record named this
@@ -25,7 +36,7 @@ with the body; the county's ground-dead are never touched (the gate is
 her registry and they hold no entry in it); a reverted body whose
 person has not been re-adopted stays exactly as it was. No dial gates
 the release, by the same law her adoption is ungated: the pathogen's
-own fact, and the county does not vote on it. Version 0.3.1.0
+own fact, and the county does not vote on it. Version 0.3.1.1-pre-alpha
 (kohai - the integration completing her minor's capability boundary).
 Both wait on play receipts with everything else runtime.
 
@@ -316,7 +327,7 @@ contract, the sister audit, findings F-001..F-006; the seam repairs went
 back to SAO as a portable prompt and ZAO held. `[A3]` is the operator's
 corrections and the sister's answer: the axes framing corrected (engine
 fields are actuators, not the axis set), the corpse-side ruled a gap and
-repaired over there, and — after SAO's hardening landed (its 1.11.2.0
+repaired over there, and — after SAO's hardening landed (its 0.3.1.1-pre-alpha
 tip) — two of this repository's own findings falsified and re-derived by
 hand (F-007: the character's modData reaches the corpse unconditionally,
 stamping the living body suffices; F-008: the corpse knows the name, the
@@ -390,11 +401,11 @@ that build the outcomes; `[A29]` states them for the outcomes it builds.
 
 ## Instruments
 
-Two borders, run by `tools/check.sh`, which the pre-commit hook runs:
-doc currency (`tools/doc_currency_test.py`, SAO Border 43's shape) and the
-version replay (`tools/version_replay.py`, DR-009). The Lua structural
-checker is carried (`tools/lua_check.py`) and joins the gate with the first
-Lua.
+Five borders run through `tools/check.sh`: document currency, version replay,
+state producer mapping, the Java bridge build, and pathogen behavior in the
+installed Kahlua VM. The gate also checks every Lua file structurally.
+The build and VM check report explicit skips where their engine or JDK is
+absent. Local A34 validation includes the installed game and the SAO event seam.
 
 ## The condition
 

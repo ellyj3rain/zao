@@ -16,9 +16,9 @@ the machine. Names, dates, and threads below come from
 | Form | `major.minor.kohai.patch-maturity` |
 | Hard caps | minor 12; kohai 16; patch 24 |
 | Replay start | `0.1.0.0-pre-alpha` |
-| Current version | `0.3.1.0-pre-alpha` |
-| Closed chronology | `A1-A33` |
-| Next batch | `A34` |
+| Current version | `0.3.1.1-pre-alpha` |
+| Closed chronology | `A1-A34` |
+| Next batch | `A35` |
 | Executable source | [`tools/version_replay.py`](tools/version_replay.py) |
 
 ## Tier meanings
@@ -68,6 +68,7 @@ the machine. Names, dates, and threads below come from
 | `A31` | 2026-09-13 | patch | `0.2.0.2-pre-alpha` | A rebuild of the same source is the same jar | A rebuild of the same source is the same jar: the readiness sweep found the gate's own build step dirtying a clean tree - jar entries stamped with the build's current time, so every check run left a meaning-free jar diff - and the jar stamp is now held to the county's calendar anchor (July 9 1993), making the build deterministic. A build repair, no capability boundary moved, so patch. |
 | `A32` | 2026-09-13 | minor | `0.3.0.0-pre-alpha` | The crossed are executed | The crossed are executed: ZAO_Crossed.lua consumes the four-pillar mind the runtime already built and runs the deliberate half of a crossed body's life - the strips are omissions (no trust gate, no protection, no noise-is-a-debt ceiling), the dead are gathered as a tool on the engine's own world-sound channel, kin share a hunt and cohere, the person's home is held ground where crossed lingering takes the same settlement roll the turned take, and the driving map is called as the rulings named it ([A11]/[A12]/[A13]). Toughness, the one enumerated attribute without a consumer, is consumed. A new player-visible simulation capability, so minor. |
 | `A33` | 2026-09-13 | kohai | `0.3.1.0-pre-alpha` | The corpse is laid down | The corpse is laid down: a reverted body whose person the sister has re-adopted (her [C116] return minted them back through her own materialize) is released in the controller's scan - removal, never a kill, the sister's own despawn pair, the claim forgotten with the body, and the county's ground-dead never touched because the gate is her registry and they hold no entry in it. A coherent integration of the sister's adoption with this repo's body ownership; the capability boundary, the return itself, was her minor, so kohai. |
+| `A34` | 2026-09-18 | patch | `0.3.1.1-pre-alpha` | Pathogen VM compatibility | Pathogen begin uses a table walk supported by the installed Kahlua VM; Border 5 reproduces the original missing-next failure and verifies durable mutation state. An in-place runtime correction. |
 
 ## Maturity
 
@@ -77,11 +78,11 @@ says.
 
 ## Next movement
 
-`A34` is the next batch. Its content determines its tier after it
+`A35` is the next batch. Its content determines its tier after it
 exists:
 
-| If A34 is | Result |
+| If A35 is | Result |
 |---|---|
-| patch or hotfix | `0.3.1.1-pre-alpha` |
+| patch or hotfix | `0.3.1.2-pre-alpha` |
 | kohai | `0.3.2.0-pre-alpha` |
 | minor | `0.4.0.0-pre-alpha` |

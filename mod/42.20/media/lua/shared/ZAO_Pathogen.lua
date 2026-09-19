@@ -15,6 +15,12 @@ local function clamp01(value)
     return value
 end
 
+local function hasEntries(t)
+    if type(t) ~= "table" then return false end
+    for _ in pairs(t) do return true end
+    return false
+end
+
 local function draw()
     if SAO and SAO.Rand and SAO.Rand.unit then
         local value = nil
@@ -121,7 +127,34 @@ function Pathogen.begin(personId, terminalState, day, source, record)
     local store = ZAO.StateStore and ZAO.StateStore.store() or nil
     if not store then return nil end
 
-    local state = store.people[personId] or {}
+    local prior = store.people[personId]
+    local state = prior or {}
+    local eventDay = math.floor(tonumber(day) or 0)
+    if type(state.attributeMutations) ~= "table" then
+        state.attributeMutations = {}
+    end
+    -- Accrued days belong to the previous state. The new terminal event
+    -- takes effect today and cannot receive another day's growth today.
+    if prior then Pathogen.advance(personId, eventDay) end
+    state.lastAdvancedDay = math.max(
+        tonumber(state.lastAdvancedDay) or eventDay, eventDay)
+    -- Crossed is terminal (DR-022). The living county may later report
+    -- death or recovery from its own course. Keep that event in history,
+    -- but it cannot restart mutation or send a survival to the bridge.
+    if prior and state.terminalState == "crossed" then
+        state.source = tostring(source or "pathogen")
+        remember(state, {
+            type = "begin",
+            day = eventDay,
+            source = state.source,
+            eventTerminalState = tostring(terminalState or "living"),
+            terminalState = state.terminalState,
+            form = state.currentForm,
+            performance = state.formPerformance,
+            attributes = state.attributeMutations,
+        })
+        return state
+    end
     state.personId = personId
     state.terminalState = tostring(terminalState or "living")
     state.decayState = state.terminalState
@@ -151,9 +184,6 @@ function Pathogen.begin(personId, terminalState, day, source, record)
     state.humanCapability = tonumber(state.humanCapability) or 1.0
     state.passiveDecay = tonumber(state.passiveDecay) or 0.0
     state.retainedAbility = tonumber(state.retainedAbility) or 0.0
-    if type(state.attributeMutations) ~= "table" then
-        state.attributeMutations = {}
-    end
     state.history = state.history or {}
 
     if state.terminalState == "crossed" then
@@ -175,7 +205,7 @@ function Pathogen.begin(personId, terminalState, day, source, record)
             end
         end
 
-        if next(state.attributeMutations) == nil and draw() < odds then
+        if not hasEntries(state.attributeMutations) and draw() < odds then
             local name = ZAO.Forms.pick("attribute", draw())
             if name then
                 state.attributeMutations[name] =
@@ -198,20 +228,7 @@ function Pathogen.begin(personId, terminalState, day, source, record)
     return state
 end
 
-function Pathogen.advance(personId, day)
-    personId = tostring(personId or "")
-    local store = ZAO.StateStore and ZAO.StateStore.store() or nil
-    local state = store and store.people[personId] or nil
-    if not state then return false end
-
-    day = tonumber(day) or 0
-    if state.lastAdvancedDay == day then return false end
-    state.lastAdvancedDay = day
-
-    if state.terminalState == "crossed" then
-        return false
-    end
-
+local function advanceDay(state, day)
     local odds = ZAO.Forms.mutationOdds()
     local growthRate = dial("growthRate", odds)
     local passiveRate = dial("passiveDecayRate", odds / 10.0)
@@ -275,6 +292,34 @@ function Pathogen.advance(personId, day)
         identityDecayEpisode(state, day)
     end
 
+end
+
+function Pathogen.advance(personId, day)
+    personId = tostring(personId or "")
+    local store = ZAO.StateStore and ZAO.StateStore.store() or nil
+    local state = store and store.people[personId] or nil
+    if not state then return false end
+
+    day = math.floor(tonumber(day) or 0)
+    local previous = tonumber(state.lastAdvancedDay) or tonumber(state.startedDay)
+    if previous == nil then
+        state.lastAdvancedDay = day
+        return false
+    end
+    previous = math.floor(previous)
+    if day <= previous then return false end
+    if state.terminalState == "crossed" then
+        state.lastAdvancedDay = day
+        return false
+    end
+
+    -- Unloaded bodies can return after several days. Each elapsed day
+    -- takes the same nonlinear growth and draws as daily observation;
+    -- reversion on one day changes what the following days advance.
+    for elapsedDay = previous + 1, day do
+        advanceDay(state, elapsedDay)
+        state.lastAdvancedDay = elapsedDay
+    end
     return true
 end
 
