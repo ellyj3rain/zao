@@ -106,6 +106,20 @@ if ! "$PY" tools/runtime_reconstruction_test.py; then
     fail=1
 fi
 
+# 9. A transferred living Crossed shell stays under ZAO; its death returns to
+# SAO's county death funnel, and a refused hand-back remains retryable.
+if ! "$PY" tools/external_crossed_test.py; then
+    note "BORDER 9 REFUSED: external Crossed lifecycle"
+    fail=1
+fi
+
+# 10. Only an interruptible live action can authorize the first Afflicted to
+# Crossed roll; exact receipt replay never rolls or transfers twice.
+if ! "$PY" tools/intentional_exposure_test.py; then
+    note "BORDER 10 REFUSED: intentional Crossed exposure"
+    fail=1
+fi
+
 if [ "$fail" -ne 0 ]; then
     note "GATE REFUSED"
 else

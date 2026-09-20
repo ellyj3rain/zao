@@ -296,8 +296,115 @@ function Ctl.cancelReturn(personId, body, token)
     return true
 end
 
+-- A successful Crossed transition keeps the living IsoPlayer shell and all
+-- of its equipment.  SAO exposes it through Body.foreign; ZAO is the sole
+-- controller from this point onward.
+function Ctl.acceptExternal(personId, body, token)
+    personId = tostring(personId or "")
+    local rec = SAO and SAO.Identity and SAO.Identity.get(personId) or nil
+    if not rec or rec.bodyOwner ~= "ZAO"
+        or tostring(rec.bodyOwnerToken or "") ~= tostring(token or "") then
+        return false
+    end
+    if body then
+        Ctl.controlled[personId] = body
+        local data = nil
+        pcall(function() data = body:getModData() end)
+        if data then
+            data.ZAOOwned = true
+            data.ZAOTerminalState = "crossed"
+        end
+    end
+    return true
+end
+
+local function processExternalCrossed(now, hours, day)
+    if not (SAO and SAO.Identity and SAO.Body and ZAO.Pathogen) then return end
+    local player = nil
+    pcall(function() player = getSpecificPlayer(0) end)
+    for personId, rec in pairs(SAO.Identity.all()) do
+        if rec.bodyOwner == "ZAO" then
+            personId = tostring(personId)
+            local state = ZAO.Pathogen.stateOf(personId)
+            if state and state.terminalState == "crossed" then
+                local body = SAO.Body.foreign[personId]
+                local deadBody = false
+                if body then
+                    local dead = false
+                    pcall(function() dead = body:isDead() == true end)
+                    if dead then
+                        deadBody = true
+                        if SAO.Controller and SAO.Controller.observeExternalDeath then
+                            pcall(function()
+                                SAO.Controller.observeExternalDeath(
+                                    personId, body, "ZAO")
+                            end)
+                        end
+                        Ctl.controlled[personId] = nil
+                        -- A failed hand-back remains in Body.foreign so the
+                        -- next tick can retry.  The corpse is never driven.
+                        body = nil
+                    end
+                end
+                local distanceToPlayer = nil
+                if not deadBody and player then
+                    pcall(function()
+                        local dx = (body and body:getX() or rec.x) - player:getX()
+                        local dy = (body and body:getY() or rec.y) - player:getY()
+                        distanceToPlayer = math.sqrt(dx * dx + dy * dy)
+                    end)
+                end
+                if not deadBody and not body and distanceToPlayer
+                    and distanceToPlayer <= CONTROL_RADIUS * 2.0 then
+                    pcall(function()
+                        body = SAO.Body.materializeExternal(rec, "ZAO",
+                            rec.bodyOwnerToken)
+                    end)
+                elseif not deadBody and body and distanceToPlayer
+                    and distanceToPlayer > CONTROL_RADIUS * 3.0
+                    and SAO.Body.canTransfer(body) then
+                    local slept = SAO.Body.hibernateExternal(rec, body, "ZAO",
+                        rec.bodyOwnerToken)
+                    if slept then
+                        Ctl.controlled[personId] = nil
+                        body = nil
+                    end
+                end
+                if not deadBody and body then
+                    Ctl.controlled[personId] = body
+                    pcall(function()
+                        rec.x, rec.y, rec.z = body:getX(), body:getY(), body:getZ()
+                    end)
+                    local data = nil
+                    pcall(function() data = body:getModData() end)
+                    if data then
+                        data.ZAOOwned = true
+                        data.ZAOTerminalState = "crossed"
+                        data.ZAOForm = state.currentForm or "none"
+                    end
+                    local mind = ZAO.Mind and ZAO.Mind.of(rec, hours) or nil
+                    local target = nearestTarget(body:getX(), body:getY(), true,
+                        false)
+                    if mind and mind.execution and mind.execution.canMove
+                        and ZAO.Crossed and ZAO.Crossed.decide then
+                        pcall(ZAO.Crossed.decide, body, personId, state, mind,
+                            target, now, hours)
+                    end
+                    ZAO.StateStore.write(personId, state)
+                else
+                    Ctl.controlled[personId] = nil
+                end
+            end
+        end
+    end
+end
+
 function Ctl.tick(now)
     if SAO and SAO.AfflictedReturn then SAO.AfflictedReturn.resumePending() end
+    if SAO and SAO.CrossedTransfer then SAO.CrossedTransfer.resumePending() end
+    if ZAO.Exposure and ZAO.Exposure.resumePending then
+        ZAO.Exposure.resumePending()
+    end
     local policy = ZAO.Sandbox and ZAO.Sandbox.policy() or nil
     if policy and (not policy.enabled or not policy.controller) then
         return
@@ -313,9 +420,6 @@ function Ctl.tick(now)
         pcall(function() ZAO.Sandbox.pushToBridge() end)
     end
 
-    local list = objectList()
-    if not list then return end
-
     local hour = 0
     pcall(function() hour = SAO.History.countyHours() end)
     local day = math.floor((tonumber(hour) or 0) / 24.0)
@@ -325,6 +429,10 @@ function Ctl.tick(now)
     if ZAO.Behaviors and ZAO.Behaviors.pulsePuked then
         pcall(function() ZAO.Behaviors.pulsePuked(now, hours) end)
     end
+    processExternalCrossed(now, hours, day)
+
+    local list = objectList()
+    if not list then return end
 
     for i = 1, list:size() do
         local obj = list:get(i - 1)
@@ -464,7 +572,8 @@ function Ctl.tick(now)
                                 mind.execution.canMove
                         end
 
-                        if state.currentForm ~= "none"
+                        if (state.currentForm ~= "none"
+                            or state.terminalState == "crossed")
                             and (not mind or mind.execution.canMove) then
                             local preferAfflicted =
                                 state.terminalState == "crossed"

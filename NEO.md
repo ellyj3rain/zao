@@ -22,7 +22,8 @@ A Project Zomboid Build 42 add-on beside Survivor Awareness Overhaul
 (`../survivor-awareness`). It owns the turned: what remains of a person's
 mind after zombification and how it rots, and — separately — what the
 pathogen does to bodies and what anyone is permitted to know about it.
-Living people are SAO's until the turn.
+SAO executes living people, including the Afflicted. ZAO takes a body at the
+turn or after a completed Afflicted-to-Crossed exposure.
 
 ## Operating conventions
 
@@ -92,6 +93,6 @@ Living people are SAO's until the turn.
    person's own record decaying — never a new species brain, never a second
    planner.
 3. Zombification is not one outcome.
-4. One brain per body. Living people are SAO's until the turn; the turned
-   body is ZAO's while ZAO is on, vanilla's when it is off.
+4. One brain per body. SAO executes living people, including the Afflicted;
+   ZAO owns the turned and a completed Crossed conversion while enabled.
 5. Rare is not stubbed. A mechanic kept rare on purpose is still built whole.

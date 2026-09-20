@@ -12,6 +12,9 @@ function StateStore.store()
     end)
     if not ok or type(store) ~= "table" then return nil end
     store.people = store.people or {}
+    store.brain = store.brain or {}
+    store.exposures = store.exposures or {}
+    store.exposureResults = store.exposureResults or {}
     store.settlements = store.settlements or {}
     store.recovery = store.recovery or {}
     return store
@@ -54,6 +57,10 @@ function StateStore.write(personId, state)
         returnSequence = state.returnSequence or existing.returnSequence,
         returnEvent = state.returnEvent or existing.returnEvent,
         deathSequence = state.deathSequence or existing.deathSequence,
+        exposureTokens = state.exposureTokens or existing.exposureTokens,
+        crossedTransferToken = state.crossedTransferToken
+            or existing.crossedTransferToken,
+        lastExposureAt = state.lastExposureAt or existing.lastExposureAt,
     }
 
     if state.settlementGroup then

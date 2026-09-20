@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Architecture |
 |---|---|
-| Version | `0.3.1.3-pre-alpha` |
+| Version | `0.3.2.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `ARCHITECTURE.md` |
 | Status | ACTIVE - ratified framework shape. Engine surfaces claimed here are unverified until `FINDINGS.md` carries them. |
@@ -24,13 +24,15 @@ until then every one is a hypothesis.
 
 ## The ownership seam
 
-The turn is the seam. Before it, nothing here runs. At it, exactly one of
-three owners takes the body:
+The turn is the first seam. A completed Afflicted blood exposure is the second.
+At either boundary exactly one owner runs the body:
 
 | ZAO state | Owner of the turned body |
 |---|---|
 | enabled | ZAO |
 | disabled | vanilla |
+| afflicted | SAO executes the living person; ZAO owns pathogen state |
+| completed Crossed exposure | ZAO takes the same living human shell from SAO |
 | (any) | never a second brain beside another owner |
 
 Knox Survivors may be in the load order; it does not own the infected. SAO's
@@ -111,6 +113,13 @@ a narrow generation journal after Lua save callbacks and before native body
 save; it replays after global data load and before native reanimated-player load.
 The journal contains only participating return identities and reconciles an
 exact source receipt or tombstone rather than duplicating general world state.
+
+A37 adds the opposite ownership direction for a living Afflicted person who
+becomes Crossed. The exposure action and pathogen receipt persist separately
+from body transfer. SAO checkpoints the supported human shell before ZAO takes
+its external-owner token; a busy action retries, and reload can transfer the
+dormant envelope without briefly re-adopting the person under SAO. A later
+death returns the corpse through SAO's existing death and witness path.
 
 ## What is not ratified
 

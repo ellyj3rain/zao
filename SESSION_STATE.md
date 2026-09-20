@@ -1,17 +1,28 @@
 | Document | Zombie Awareness Overhaul Session State |
 |---|---|
-| Version | `0.3.1.3-pre-alpha` |
+| Version | `0.3.2.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `SESSION_STATE.md` |
 | Status | CANONICAL - where the work actually stands. |
 
 # Session state
 
-**Working implementation, 2026-09-19:** A36 on
-`neo/a36-runtime-reconstruction` supports the sister's R4/C55 closure. Durable
-pathogen, recovery, settlement and return-source records reconstruct into fresh
-controllers, courses, settlement groups and Java runtime maps. New-world setup
-clears the previous world's maps before either environment advances.
+**Working implementation, 2026-09-19:** A37 on
+`neo/a37-health-and-dormant-physiology` supports the sister's R5/C56 closure.
+Normal Crossed state reaches its decision pass. An Afflicted target enters a
+distinct approach/contact blood action that clears ordinary attack targeting;
+only its completed durable token can authorize the existing Crossed-odds times
+Afflicted-susceptibility roll. There is no spontaneous Afflicted conversion.
+
+On success ZAO takes the same living human shell, supported snapshot and
+possessions from SAO. Busy transfer retries, reload may claim the checkpointed
+dormant envelope, and death hands the corpse through SAO's existing death and
+social funnel before it can be driven again. The exposure result and body
+transfer have separate journals so neither repeats the pathogen roll.
+
+ZAO also owns the durable brain-health history when installed. SAO supplies
+current physical observations, interval integration, graphs and behavioral
+effects. Exact pathogen event hours survive the seam.
 
 The return seam now survives interruption between the engine's separate native
 and global save surfaces. A narrow write-ahead generation journal captures only
@@ -21,25 +32,30 @@ Replay runs after global data loads and before native reanimated players load,
 then reconciles the exact source receipt or tombstone by person, event,
 incarnation and token. Existing unmarked saves remain readable.
 
-Border 8 verifies the installed engine lifecycle and all four old/new
-native/global pairings, including missing and stale native sources, retirement,
-cancellation, repeated saves, and missing or corrupt current-journal refusal.
-The runtime reconstruction probe covers a fresh Lua environment and a second
-world. A36 is the closed tip and remains undeployed; loaded-world play
-acceptance remains open.
+Borders 5, 9 and 10 verify exact pathogen time, external living/dormant/dead
+ownership, approach, contact, interruption, non-feeding behavior, exact-once
+results and live-action authorization. The sister's Borders 162-163 and 171-175
+cover the other side of the transfer, native snapshots and health/physiology.
+The ten-border gate passes; installed-VM probes also pass when invoked directly
+from the Windows environment. A37 is the closed tip and remains undeployed;
+loaded-world play acceptance remains open.
 
-The same audit found that A32's Crossed execution claim is false (F-017).
-Normal Crossed states have `currentForm = "none"`, while the controller gates
-the whole Crossed decision pass behind `currentForm ~= "none"`. The pass is
-therefore unreachable and, even if entered, does not carry the canonical
-human-looking body's retained combat, weapon, tool and general action
-vocabulary. The only Afflicted exposure caller is a daily three-tile proximity
-proxy; success changes pathogen state without transferring SAO's living body
-back to a ZAO Crossed owner. There is no spontaneous Afflicted conversion.
-The sister's R5, R7-R9 and R10 contracts own the complete repair; A35/R1 does
-not claim it.
+F-019 closes the exposure and ownership part of A32's corrected claim. The
+Crossed pass is reachable for this action, proximity cannot roll conversion,
+the Afflicted path cannot feed and terminal success moves the same human shell
+to one ZAO controller. The canonical retained combat, weapon, tool and general
+action vocabulary remains sister R7-R9 work, with grounded dormant opportunity
+in R10. A37 does not claim that larger system.
 
-**As of 2026-09-19**, `[A36]` close - durable/runtime reconstruction.
+**As of 2026-09-19**, `[A37]` close - intentional exposure and Crossed
+ownership. A completed, interruptible blood action is the sole Afflicted
+conversion producer. Its exact-once pathogen receipt and separate transfer
+journal preserve one person and one controller through busy state, reload,
+dormancy and death. The complete ten-border gate and paired sister probes pass
+with named source controls. These are controlled engine/VM receipts, not a
+loaded-world play observation.
+
+**Before that, 2026-09-19**, `[A36]` close - durable/runtime reconstruction.
 Runtime controllers, courses, settlement groups and Java registries are rebuilt
 from durable state without retaining a prior world. The return source is bound
 to the same save generation as the participating SAO and ZAO records before the

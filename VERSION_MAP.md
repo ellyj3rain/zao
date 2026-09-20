@@ -16,9 +16,9 @@ the machine. Names, dates, and threads below come from
 | Form | `major.minor.kohai.patch-maturity` |
 | Hard caps | minor 12; kohai 16; patch 24 |
 | Replay start | `0.1.0.0-pre-alpha` |
-| Current version | `0.3.1.3-pre-alpha` |
-| Closed chronology | `A1-A36` |
-| Next batch | `A37` |
+| Current version | `0.3.2.0-pre-alpha` |
+| Closed chronology | `A1-A37` |
+| Next batch | `A38` |
 | Executable source | [`tools/version_replay.py`](tools/version_replay.py) |
 
 ## Tier meanings
@@ -71,6 +71,7 @@ the machine. Names, dates, and threads below come from
 | `A34` | 2026-09-18 | patch | `0.3.1.1-pre-alpha` | Pathogen VM compatibility | Pathogen begin uses a table walk supported by the installed Kahlua VM; Border 5 reproduces the original missing-next failure and verifies durable mutation state. An in-place runtime correction. |
 | `A35` | 2026-09-19 | patch | `0.3.1.2-pre-alpha` | Authorized afflicted return | Repaired the existing Afflicted-return integration with exact turned-source ownership, durable removal acknowledgment and critical viable physiology that preserves injuries. The audit also corrects A32's unreachable and incomplete Crossed execution claim rather than treating it as part of this repair. |
 | `A36` | 2026-09-19 | patch | `0.3.1.3-pre-alpha` | Durable/runtime reconstruction | Reconstructed runtime controllers, courses, settlements and Java maps from durable owners across new environments and worlds; completed the existing Afflicted-return seam with a generation journal that reconciles interrupted native/global saves. |
+| `A37` | 2026-09-19 | kohai | `0.3.2.0-pre-alpha` | Intentional exposure and Crossed ownership | Connected the existing Crossed and Afflicted design across the sister boundary: reachable Crossed decisions, interruptible non-feeding blood exposure, an exact-once pathogen receipt and ownership transfer of the same living human shell to ZAO. This is a coherent integration of existing capabilities; the retained human action vocabulary remains later work. |
 
 ## Maturity
 
@@ -80,11 +81,11 @@ says.
 
 ## Next movement
 
-`A37` is the next batch. Its content determines its tier after it
+`A38` is the next batch. Its content determines its tier after it
 exists:
 
-| If A37 is | Result |
+| If A38 is | Result |
 |---|---|
-| patch or hotfix | `0.3.1.4-pre-alpha` |
-| kohai | `0.3.2.0-pre-alpha` |
+| patch or hotfix | `0.3.2.1-pre-alpha` |
+| kohai | `0.3.3.0-pre-alpha` |
 | minor | `0.4.0.0-pre-alpha` |
