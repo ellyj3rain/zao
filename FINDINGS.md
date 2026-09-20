@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Findings |
 |---|---|
-| Version | `0.3.1.3-pre-alpha` |
+| Version | `0.3.2.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `FINDINGS.md` |
 | Status | CANONICAL, APPEND-ONLY - verified engine findings from F-001. |
@@ -608,3 +608,29 @@ touches both surfaces must recover native-old/global-new as well as
 native-new/global-old. Border 8 executes those two mixed cases and both matching
 cases through the production generation journal. A completed round trip alone
 does not establish this contract.
+
+## F-019 | 2026-09-19 | Afflicted conversion requires a completed action and a body-owner transition
+
+F-017 found an unreachable Crossed pass, a daily proximity call presented as
+intentional exposure and a terminal-state change that left SAO controlling the
+living body. A37 separates the three responsibilities. Crossed states reach the
+decision pass regardless of their `none` form. An Afflicted target enters a
+durable approach/contact action whose carrier clears ordinary attack targeting.
+Only a matching token in the resolving phase can call the pathogen roll. The
+existing Crossed-odds times Afflicted-susceptibility probability is unchanged;
+proximity, incomplete actions and forged receipts cannot roll, and a repeated
+token returns its original receipt.
+
+Successful conversion begins a second durable phase. SAO captures the supported
+human shell before publishing ZAO ownership; ZAO then drives that same body or
+its dormant snapshot. Busy action state retries without a second roll. Save-time
+checkpointing permits a dormant ownership claim after reload. Death clears the
+living owner and hands the corpse to SAO's existing social/death funnel before
+any further drive. Borders 9-10 and the sister's Borders 162 and 173 execute the
+loaded, interrupted, reloaded, dormant and dead paths with source controls.
+
+This repairs the exposure and ownership part of F-017. It does not establish
+the complete canonical Crossed life. The transferred human representation and
+four-pillar mind are available, while retained combat, weapons, tools,
+explosives, loudspeakers, strategy and wider action producers remain assigned
+to the sister's R7-R9 work. Loaded-world presentation remains unobserved.

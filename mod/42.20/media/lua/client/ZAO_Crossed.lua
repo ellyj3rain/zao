@@ -199,6 +199,32 @@ function Crossed.decide(zombie, personId, state, mind, target, now, hours)
 
     local zx, zy = zombie:getX(), zombie:getY()
 
+    -- Afflicted people are approached through the intentional blood action.
+    -- They never fall through to the form/zombie pursuit that can consume a
+    -- human target merely because the engine represented the carrier as dead.
+    if target and ZAO.Exposure and ZAO.Pathogen then
+        local targetId = nil
+        pcall(function()
+            local tdata = target:getModData()
+            targetId = tdata and tdata.SAOPersonId or nil
+        end)
+        local targetState = targetId and ZAO.Pathogen.stateOf(targetId) or nil
+        if targetState and targetState.terminalState == "afflicted" then
+            local committed = false
+            pcall(function()
+                committed = ZAO.Exposure.step(zombie, personId, state,
+                    target, targetId, now, hours) == true
+            end)
+            if not committed then
+                pcall(function()
+                    zombie:setTarget(nil)
+                    zombie:pathToCharacter(target)
+                end)
+            end
+            return true
+        end
+    end
+
     -- Use the dead: with a target beyond the walk's reach and the
     -- drives for it, the body shouts on the engine's world-sound
     -- channel and the county's dead come toward it - then the

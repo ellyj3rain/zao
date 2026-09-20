@@ -74,6 +74,10 @@ end
 PROBE = r'''
 -- The real shipped VM has pairs but no global next.
 assert(next == nil, "engine contract changed: inspect next before updating control")
+local brain = ZAO.Brain.stateFor("brain-only", true)
+assert(brain and brain.version == 2 and type(brain.history) == "table")
+assert(ZAO.StateStore.store().brain["brain-only"] == brain,
+    "brain history did not use the durable owner")
 assert(ZAO.Pathogen.begin(nil) == nil)
 local state = ZAO.Pathogen.begin("person", "turned", 3, "vm-test")
 assert(state and state.currentForm == "Puker")
@@ -189,16 +193,20 @@ local crossed = ZAO.Pathogen.begin(crossedRecord.id, "infected", 0, "infection")
 assert(crossed.terminalState == "crossed")
 assert(courseCallCount("coursePassDeath") == 1)
 local function externalEvent(kind, terminal, day)
+    local atHours = day * 24 + 0.75
     if SAO.PathogenEvents then
-        assert(SAO.PathogenEvents.emit(kind, crossedRecord.id, day, { record = crossedRecord }))
+        assert(SAO.PathogenEvents.emit(kind, crossedRecord.id, day,
+            { record = crossedRecord, atHours = atHours }))
     else
-        assert(ZAO.Pathogen.begin(crossedRecord.id, terminal, day, kind, crossedRecord))
+        assert(ZAO.Pathogen.begin(crossedRecord.id, terminal, day, kind,
+            crossedRecord, atHours))
     end
     assert(crossed.terminalState == "crossed", "crossed changed on external event")
     assert(crossed.decayState == "crossed" and crossed.currentForm == "none")
     assert(crossed.source == kind and crossed.lastAdvancedDay == day)
     local event = crossed.history[#crossed.history]
     assert(event.source == kind and event.day == day and event.terminalState == "crossed")
+    assert(event.atHours == atHours, "exact pathogen event time was rounded to a day")
     assert(event.eventTerminalState == terminal, "external event input was lost")
 end
 setRoll(0.9)
@@ -251,6 +259,7 @@ def main() -> int:
             return 1
         args = [str(java), "-cp", f"{jar}{os.pathsep}{work}", "PathogenRun",
                 str(work / "host.lua"), str(LUA / "ZAO_StateStore.lua"),
+                str(LUA / "ZAO_Brain.lua"),
                 str(LUA / "ZAO_Forms.lua"), str(work / "pathogen.lua"),
                 str(work / "state.lua")]
         if event_source.is_file():
@@ -298,6 +307,9 @@ def main() -> int:
              "for elapsedDay = day, day do", "gap replay differs from daily state"),
             ("terminal-crossed", 'if prior and state.terminalState == "crossed" then',
              "if false then", "crossed changed on external event"),
+            ("exact-event-time", "local eventAtHours = tonumber(atHours) or eventDay * 24.0",
+             "local eventAtHours = eventDay * 24.0",
+             "exact pathogen event time was rounded to a day"),
         ):
             if source.count(old) != 1:
                 print(f"REFUSED: {label} control seam changed")
@@ -309,7 +321,7 @@ def main() -> int:
                 return 1
     integration = "; actual SAO event emitter" if event_source.is_file() else ""
     print("Border 5 PASS: real VM mutation, persistence, legacy, terminal crossed, daily/gap equivalence and controller projection"
-          + integration + "; five named controls fail")
+          + integration + "; six named controls fail")
     return 0
 
 

@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Roadmap |
 |---|---|
-| Version | `0.3.1.3-pre-alpha` |
+| Version | `0.3.2.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `ROADMAP.md` |
 | Status | CANONICAL - gate order and the open-fork ledger. |
@@ -55,6 +55,16 @@ it stands.
 
 Gate content past G0 depends on forks below; a gate is refined when its fork
 closes, never widened silently.
+
+## Current mechanical closure
+
+A37 completes the Afflicted-exposure ownership slice coordinated with SAO R5.
+Normal Crossed state reaches the decision pass; a distinct interruptible,
+non-feeding blood action produces the only Afflicted conversion result; and a
+successful exact-once receipt transfers the same living human shell and dormant
+envelope from SAO to ZAO. Borders 5, 9 and 10 cover pathogen time, external body
+lifecycle and action authorization. G1-G3 still require loaded-world
+observation and the complete retained human action vocabulary.
 
 ## Open forks — reserved to the operator
 

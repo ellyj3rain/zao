@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul |
 |---|---|
-| Version | `0.3.1.3-pre-alpha` |
+| Version | `0.3.2.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `README.md` |
 | Status | CANONICAL - human entry point. |
@@ -51,6 +51,16 @@ runtime controllers and courses from durable records, and uses a generation
 journal to reconcile interrupted saves across the engine's separate native and
 global persistence surfaces. This closes return ownership and reconstruction;
 the canonical Crossed human action system remains open in the sister roadmap.
+
+A37 implements the opposite ownership direction for an Afflicted person who
+becomes Crossed. A reachable Crossed decision approaches and holds contact
+through an interruptible blood action. Afflicted people are excluded from
+ordinary feeding; only the completed durable action can produce the existing
+Crossed-odds times susceptibility roll. Success transfers the same living human
+shell and dormant snapshot from SAO to ZAO exactly once, with retry across busy
+state, save/reload and later death. This closes the exposure/ownership slice;
+retained weapons, tools, strategy and the wider human action vocabulary remain
+unfinished.
 
 G0 closed at `[A6]`: the engine's turn surface is established from the
 installed build with file-and-line evidence, in F-001 through F-011.

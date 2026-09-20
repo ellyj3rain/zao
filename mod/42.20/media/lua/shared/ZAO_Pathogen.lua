@@ -120,7 +120,7 @@ local function identityDecayEpisode(state, day)
     return true
 end
 
-function Pathogen.begin(personId, terminalState, day, source, record)
+function Pathogen.begin(personId, terminalState, day, source, record, atHours)
     personId = tostring(personId or "")
     if personId == "" then return nil end
 
@@ -130,6 +130,7 @@ function Pathogen.begin(personId, terminalState, day, source, record)
     local prior = store.people[personId]
     local state = prior or {}
     local eventDay = math.floor(tonumber(day) or 0)
+    local eventAtHours = tonumber(atHours) or eventDay * 24.0
     if type(state.attributeMutations) ~= "table" then
         state.attributeMutations = {}
     end
@@ -146,6 +147,7 @@ function Pathogen.begin(personId, terminalState, day, source, record)
         remember(state, {
             type = "begin",
             day = eventDay,
+            atHours = eventAtHours,
             source = state.source,
             eventTerminalState = tostring(terminalState or "living"),
             terminalState = state.terminalState,
@@ -193,6 +195,9 @@ function Pathogen.begin(personId, terminalState, day, source, record)
         state.currentForm = "none"
         state.formPerformance = 0.0
         state.attributeMutations = {}
+        state.crossedTransferToken = state.crossedTransferToken
+            or ("crossed:" .. personId .. ":" .. tostring(eventDay)
+                .. ":" .. tostring(#(state.history or {}) + 1))
     else
         local odds = ZAO.Forms.mutationOdds()
         local capability = capabilityOf(record)
@@ -220,6 +225,7 @@ function Pathogen.begin(personId, terminalState, day, source, record)
     remember(state, {
         type = "begin",
         day = tonumber(day) or 0,
+        atHours = eventAtHours,
         source = state.source,
         terminalState = state.terminalState,
         form = state.currentForm,
@@ -228,6 +234,16 @@ function Pathogen.begin(personId, terminalState, day, source, record)
     })
 
     store.people[personId] = state
+    if state.terminalState == "crossed" and record and not record.dead
+        and SAO and SAO.Body and SAO.CrossedTransfer then
+        pcall(function()
+            local body = SAO.Body.active[personId]
+            if body then
+                SAO.CrossedTransfer.begin(personId, body,
+                    state.crossedTransferToken, eventAtHours)
+            end
+        end)
+    end
     return state
 end
 
@@ -329,11 +345,34 @@ function Pathogen.advance(personId, day)
     return true
 end
 
-function Pathogen.expose(personId, carrierState, day)
+function Pathogen.expose(personId, carrierState, day, actionResult)
     personId = tostring(personId or "")
     local store = ZAO.StateStore and ZAO.StateStore.store() or nil
     local state = store and store.people[personId] or nil
     if not state or type(carrierState) ~= "table" then return false end
+    if type(actionResult) ~= "table"
+        or actionResult.kind ~= "crossed-blood-exposure"
+        or actionResult.completed ~= true
+        or tostring(actionResult.targetId or "") ~= personId
+        or tostring(actionResult.token or "") == "" then
+        return false
+    end
+    local carrierId = tostring(actionResult.carrierId or "")
+    if carrierState.personId ~= nil
+        and tostring(carrierState.personId) ~= carrierId then
+        return false
+    end
+    local token = tostring(actionResult.token)
+    state.exposureTokens = state.exposureTokens or {}
+    if state.exposureTokens[token] then return state.exposureTokens[token] end
+    local action = store.exposures
+        and store.exposures[carrierId] or nil
+    if type(action) ~= "table" or action.token ~= token
+        or action.kind ~= "crossed-blood-exposure"
+        or action.phase ~= "resolving"
+        or tostring(action.targetId or "") ~= personId then
+        return false
+    end
     if state.terminalState ~= "afflicted"
         or carrierState.terminalState ~= "crossed" then
         return false
@@ -345,23 +384,60 @@ function Pathogen.expose(personId, carrierState, day)
         policy and tonumber(policy.afflictedSusceptibility) or 5.0
     if susceptibility < 0.0 then susceptibility = 0.0 end
     local risk = clamp01(crossedOdds * susceptibility)
-    if draw() >= risk then return false end
+    local roll = draw()
+    local converted = roll < risk
+    local receipt = {
+        token = token,
+        kind = actionResult.kind,
+        completed = true,
+        carrierId = carrierId,
+        targetId = personId,
+        atHours = tonumber(actionResult.atHours),
+        day = tonumber(day) or 0,
+        risk = risk,
+        roll = roll,
+        converted = converted,
+    }
+    state.exposureTokens[token] = receipt
+    remember(state, {
+        type = "intentional-exposure",
+        day = receipt.day,
+        atHours = receipt.atHours,
+        source = "crossed-blood-action",
+        carrierId = carrierId,
+        token = token,
+        risk = risk,
+        roll = roll,
+        converted = converted,
+    })
+    if not converted then return receipt end
 
     state.terminalState = "crossed"
     state.decayState = "crossed"
     state.currentForm = "none"
     state.formPerformance = 0.0
     state.attributeMutations = {}
+    state.crossedTransferToken = state.crossedTransferToken or token
 
     courseEvent("coursePassDeath", personId)
 
     remember(state, {
         type = "crossed",
         day = tonumber(day) or 0,
-        source = "carrier-exposure",
+        atHours = receipt.atHours,
+        source = "crossed-blood-action",
+        carrierId = carrierId,
+        token = token,
         terminalState = state.terminalState,
     })
-    return true
+    if SAO and SAO.Identity and SAO.Neuro and SAO.Neuro.recordTerminal then
+        pcall(function()
+            local rec = SAO.Identity.get(personId)
+            if rec then SAO.Neuro.recordTerminal(rec, "crossed",
+                receipt.atHours, "intentional-exposure") end
+        end)
+    end
+    return receipt
 end
 
 function Pathogen.stateOf(personId)

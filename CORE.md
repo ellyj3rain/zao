@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Core |
 |---|---|
-| Version | `0.3.1.3-pre-alpha` |
+| Version | `0.3.2.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `CORE.md` |
 | Status | ACTIVE - genesis identity for this project. |
@@ -74,10 +74,11 @@ mechanism. `ARCHITECTURE.md` holds the ratified shape.
   `projectzomboid.jar` and the shipped `media/lua` and `media/scripts` trees.
   Engine behavior is never asserted from memory. A claim without a file and
   line behind it is a hypothesis, and is labelled as one.
-- **One brain per body.** Living people are SAO's until the turn. When ZAO is
-  on, ZAO owns the turned body; when ZAO is off, vanilla handles the corpse.
-  Knox Survivors may be in the load order; it does not own the infected
-  (DR-004).
+- **One brain per body.** SAO executes a living person, including an Afflicted
+  person; ZAO owns their pathogen state. At the turn, or when a completed
+  Afflicted exposure makes the body Crossed, ZAO takes the body while enabled.
+  With ZAO off, vanilla handles the corpse. Knox Survivors may be in the load
+  order; it does not own the infected (DR-004).
 - **The mind that rots is the record.** No map omniscience, no second
   planner, no species brain pasted onto a walker (DR-002).
 - **Rare is not stubbed.** Settlement formation is rare on purpose and built
@@ -93,5 +94,6 @@ mechanism. `ARCHITECTURE.md` holds the ratified shape.
 This project shares its methodology with `../survivor-awareness` and
 `../colonist-awareness` — the governed doc-pack, batch discipline, the
 version machine, and the constraint that a body's capabilities never exceed
-what its record supports. SAO owns the living; ZAO owns the turned; the
-seam between them is the turn, and it is the subject of DR-004.
+what its record supports. SAO executes living people; ZAO owns the turned and
+the Crossed. The ownership seams are the turn and a completed Afflicted
+conversion; DR-004 and MUTATION.md define them.

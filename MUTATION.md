@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Mutation System |
 |---|---|
-| Version | `0.3.1.3-pre-alpha` |
+| Version | `0.3.2.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `MUTATION.md` |
 | Status | CANONICAL - the system as the operator defined it on 2026-09-09. Specifics not yet ratified into `DECISION_REGISTRY.md` are marked. |
@@ -292,6 +292,13 @@ code is near.
 **This project executes the crossed.** They came through death as the
 risen did, and exactly one controller runs any body.
 
+A37 implements the Afflicted-conversion boundary. A Crossed body approaches
+and holds contact through a persisted blood-exposure action; ordinary attack
+targeting is cleared because the Afflicted are not food. Only the completed
+action authorizes the Crossed-odds times Afflicted-susceptibility roll. Success
+transfers the same living human shell and dormant person envelope from SAO to
+ZAO exactly once. Interruption, busy actions, reload and death retain one owner.
+
 **The crossed's vocabulary is a bidirectional goal.** The direction is
 ratified: read the sister's action machinery, stripped of what
 humanity gave it, copying no files - the turn's pattern extended from
@@ -318,8 +325,8 @@ law, applied to them as to every arrangement in the county.
 
 The numbers are defined (DR-019 above), and the gradient's contents are
 enumerated in the runtime as the six capability forms and four attribute
-mutations. What remains open is the second seam's far side: the crossed's
-living vocabulary - driving is mapped (`C82`, surface-mapped at the
+mutations. The second seam's exposure and ownership boundary is implemented;
+what remains open is the crossed's wider living vocabulary - driving is mapped (`C82`, surface-mapped at the
 sister's `F-067`), explosives and loudspeakers are not - and ZAO's half
 of that seam is the named consumers in the record, never an invented
 implementation.

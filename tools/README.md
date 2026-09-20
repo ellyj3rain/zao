@@ -20,3 +20,11 @@ into the mod tree. `make_art.py` generates the icon and poster.
 `pathogen_vm_test.py` runs pathogen state transitions in the installed game's
 Kahlua VM and requires the original missing-`next` implementation to fail.
 It reports a skip when the engine or JDK is absent.
+
+`external_crossed_test.py` runs the transferred Crossed controller path in the
+installed Kahlua VM. It proves that a living human shell remains ZAO-owned and
+that death enters SAO's common county death funnel without driving the corpse.
+
+`intentional_exposure_test.py` executes the Crossed blood-exposure action and
+pathogen receipt together. It requires approach, sustained contact, feeding
+exclusion, interruption, durable action authorization, and exact-once replay.
