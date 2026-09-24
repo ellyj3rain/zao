@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Roadmap |
 |---|---|
-| Version | `0.3.2.0-pre-alpha` |
+| Version | `0.3.3.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `ROADMAP.md` |
 | Status | CANONICAL - gate order and the open-fork ledger. |
@@ -58,12 +58,14 @@ closes, never widened silently.
 
 ## Current mechanical closure
 
-A37 completes the Afflicted-exposure ownership slice coordinated with SAO R5.
-Normal Crossed state reaches the decision pass; a distinct interruptible,
-non-feeding blood action produces the only Afflicted conversion result; and a
-successful exact-once receipt transfers the same living human shell and dormant
-envelope from SAO to ZAO. Borders 5, 9 and 10 cover pathogen time, external body
-lifecycle and action authorization. G1-G3 still require loaded-world
+A38 extends A37's Afflicted-exposure ownership slice into enacted shared work.
+The ZAO-owned living Crossed shell is registered as its communication and
+execution body; present `ZAO.Mind` capability and competing activity gate the
+work. A Crossed-linked `IsoZombie` is rejected before any ownership, pathogen,
+settlement, persistence or cognition side effect instead of being treated as
+another representation. Borders 5, 9, 10 and 11 cover pathogen time, external
+body lifecycle, action authorization, retained-shell coordination and the
+malformed-representation controls. G1-G3 still require loaded-world
 observation and the complete retained human action vocabulary.
 
 ## Open forks — reserved to the operator

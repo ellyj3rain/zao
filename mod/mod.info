@@ -1,8 +1,8 @@
 name=Zombie Awareness Overhaul
 id=ZombieAwareness
 author=ellyj3rain
-modversion=0.3.2.0-pre-alpha
-description=Zombie Awareness Overhaul drives the turned body from the person it was. PRE-ALPHA: expect defects. Identity-bearing zombies are claimed by ZAO, carry a pathogen form, and move according to that form.
+modversion=0.3.3.0-pre-alpha
+description=Zombie Awareness Overhaul drives turned bodies and transferred living Crossed shells from the person's retained record. PRE-ALPHA: expect defects.
 versionMin=42.20
 versionMax=42.20
 icon=icon.png

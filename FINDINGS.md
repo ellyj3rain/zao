@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Findings |
 |---|---|
-| Version | `0.3.2.0-pre-alpha` |
+| Version | `0.3.3.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `FINDINGS.md` |
 | Status | CANONICAL, APPEND-ONLY - verified engine findings from F-001. |
@@ -634,3 +634,25 @@ the complete canonical Crossed life. The transferred human representation and
 four-pillar mind are available, while retained combat, weapons, tools,
 explosives, loudspeakers, strategy and wider action producers remain assigned
 to the sister's R7-R9 work. Loaded-world presentation remains unobserved.
+
+## F-020 | 2026-09-24 09:09 UTC / 02:09 PST | The controller admitted an invalid second Crossed representation
+
+**Verified** [A38], controlled in the installed Kahlua VM. A37 transfers a
+living Afflicted person's human shell to ZAO and preserves its identity and
+mind. Independently, `ZAO_Controller.tick` scanned every `IsoZombie` and could
+admit the same identity, or a derived id whose persisted pathogen state was
+Crossed, into ownership, pathogen advancement, settlement, persistence and
+Crossed decision work. That scan was an ownership defect; it did not establish
+an alternate Crossed population.
+
+Border 11 supplies both malformed inputs and proves they are rejected before
+each downstream side effect. It separately supplies the retained living human
+shell and proves that SAO resolves it through the registered ZAO execution
+owner, that current `ZAO.Mind` capability can refuse all work verbs, that an
+observed target is a competing activity, and that ordinary Crossed decisions
+resume when shared work does not own the tick. Six independent source mutations
+reverse these invariants and must fail.
+
+The result establishes the representation and execution boundary, not its
+loaded-world presentation. No mortality, revival, migration or replacement
+behavior has been inferred from the malformed input.

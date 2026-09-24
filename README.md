@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul |
 |---|---|
-| Version | `0.3.2.0-pre-alpha` |
+| Version | `0.3.3.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `README.md` |
 | Status | CANONICAL - human entry point. |
@@ -61,6 +61,15 @@ shell and dormant snapshot from SAO to ZAO exactly once, with retry across busy
 state, save/reload and later death. This closes the exposure/ownership slice;
 retained weapons, tools, strategy and the wider human action vocabulary remain
 unfinished.
+
+A38 makes that retained human shell the Crossed person's actual communication
+and shared-work body. The registered ZAO execution owner reports current
+activity and only the capabilities the retained mind still supports. A threat
+can interrupt the work; accepted work can own a tick; otherwise ordinary
+Crossed deliberation continues. A Crossed-linked `IsoZombie` is rejected before
+all admission side effects because it is not an alternate representation of
+the human-looking Crossed. This is mechanically controlled, not yet observed
+in loaded-world play.
 
 G0 closed at `[A6]`: the engine's turn surface is established from the
 installed build with file-and-line evidence, in F-001 through F-011.
