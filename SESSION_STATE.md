@@ -1,13 +1,37 @@
 | Document | Zombie Awareness Overhaul Session State |
 |---|---|
-| Version | `0.3.2.0-pre-alpha` |
+| Version | `0.3.3.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `SESSION_STATE.md` |
 | Status | CANONICAL - where the work actually stands. |
 
 # Session state
 
-**Working implementation, 2026-09-19:** A37 on
+**Current implementation, 2026-09-24:** A38 on
+`neo/a38-crossed-coordination-ownership` binds a ZAO-owned Crossed person's
+retained living human shell into SAO's enacted communication and work runtime.
+The registered execution owner derives current capability from `ZAO.Mind`,
+reports the actual body owner and executor, and carries current activity so a
+threat or driving can compete with coordination. Accepted work may own the
+tick; otherwise normal Crossed deliberation proceeds.
+
+The old controller scan no longer treats an identity-bearing `IsoZombie` as a
+second Crossed representation. Both sister-owned and derived persisted Crossed
+ids are rejected before body claim, pathogen advancement, settlement,
+persistence, mind construction or decision dispatch. This is an admission
+repair only: no mortality, revival or migration rule was added. Border 11
+executes the valid shell, incapable shell, threat, ordinary fallback and both
+rejected representations with six source controls. The full gate is the close
+condition. The batch is undeployed and loaded-world behavior remains
+unobserved.
+
+The cross-module state producer now preserves SAO's exact version 3 namespace:
+run, county, person, event and hour. It refuses malformed or duplicate full
+namespaces and publishes atomically. A controlled 13-row C79 capture retained all
+13 identities through this projection and Speakeasy compilation; this is
+headless evidence, not a loaded-world or training-admission receipt.
+
+**Before that, 2026-09-19:** A37 on
 `neo/a37-health-and-dormant-physiology` supports the sister's R5/C56 closure.
 Normal Crossed state reaches its decision pass. An Afflicted target enters a
 distinct approach/contact blood action that clears ordinary attack targeting;
@@ -37,7 +61,7 @@ ownership, approach, contact, interruption, non-feeding behavior, exact-once
 results and live-action authorization. The sister's Borders 162-163 and 171-175
 cover the other side of the transfer, native snapshots and health/physiology.
 The ten-border gate passes; installed-VM probes also pass when invoked directly
-from the Windows environment. A37 is the closed tip and remains undeployed;
+from the Windows environment. A37 was the closed tip and remains undeployed;
 loaded-world play acceptance remains open.
 
 F-019 closes the exposure and ownership part of A32's corrected claim. The
@@ -222,8 +246,8 @@ rows. A body with no assigned form is in the `none` form, its performance is
 zero, and its decay state follows the facts SAO already records.
 
 **Before that**, `[A18]` - the ZAO state producer. `tools/state_dump.py`
-emits one ZAO pathogen-state row per SAO decision moment, keyed by the SAO
-person id and the decision hour. The state carries the pathogen facts SAO
+emits one ZAO pathogen-state row per SAO decision moment, now keyed by the
+complete v3 run/county/person/event/hour namespace. The state carries the pathogen facts SAO
 already records, and the ZAO-specific mutation fields stay null until ZAO has
 a real state surface to read them from.
 

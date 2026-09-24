@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Architecture |
 |---|---|
-| Version | `0.3.2.0-pre-alpha` |
+| Version | `0.3.3.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `ARCHITECTURE.md` |
 | Status | ACTIVE - ratified framework shape. Engine surfaces claimed here are unverified until `FINDINGS.md` carries them. |
@@ -96,6 +96,12 @@ performance, attribute mutations, decay state, retained ability, and visible
 forms. A body with no assigned form is in the `none` form, and its performance
 is zero. No state is derived from a person id or a clock.
 
+`tools/state_dump.py` projects that state onto an SAO decision without changing
+the decision identity. Its key is exactly run, county, person, event and hour;
+two decisions by one person in one hour remain two rows. It validates all input
+before an atomic replace and never invents a form when the person record carries
+no event-driven ZAO state.
+
 ### Java bridge
 
 `ZAO.jar` owns the per-body actuators. It applies each form's speed,
@@ -120,6 +126,22 @@ from body transfer. SAO checkpoints the supported human shell before ZAO takes
 its external-owner token; a busy action retries, and reload can transfer the
 dormant envelope without briefly re-adopting the person under SAO. A later
 death returns the corpse through SAO's existing death and witness path.
+
+### Crossed execution owner
+
+The retained living shell is also the Crossed person's communication and work
+body. `ZAO_Controller` registers the `ZAO` execution owner with SAO and exposes
+only current body presence, the present competing activity and capabilities
+derived from `ZAO.Mind`. SAO may address and advance an accepted shared process
+through that adapter; ZAO remains the executor and ordinary Crossed deliberation
+continues whenever coordination does not own the tick.
+
+An `IsoZombie` carrying a ZAO-owned or durably Crossed identity is malformed at
+this boundary. The controller rejects it before ownership, pathogen,
+settlement, persistence or cognition side effects. Rejection is an admission
+rule, not a body transition: it does not manufacture death, revival, migration
+or a substitute shell. The separate retained-shell driving adapter is
+unchanged.
 
 ## What is not ratified
 

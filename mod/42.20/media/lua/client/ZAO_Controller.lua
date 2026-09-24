@@ -23,6 +23,7 @@ Ctl.nextScanAt = 0
 Ctl.controlled = Ctl.controlled or {}
 Ctl.derivedSeq = Ctl.derivedSeq or 0
 Ctl.lastReckonDay = nil
+Ctl.rejectedCrossedBodies = Ctl.rejectedCrossedBodies or {}
 
 local SCAN_INTERVAL = 20
 local CONTROL_RADIUS = 30.0
@@ -39,10 +40,10 @@ local function objectList()
     return list
 end
 
--- The crossed work on the afflicted (g6): a crossed body's target
--- selection prefers the afflicted, whose fear rises through the
--- sister's existing pressure chain. The dead are ignored unless the
--- operator's dial says otherwise.
+-- Crossed may prefer an Afflicted living target for the distinct intentional
+-- blood-exposure action. SAO bodies remain living people here; Crossed.decide
+-- prevents them from falling through to the ordinary feeding pursuit. The
+-- dead are ignored unless the operator's dial says otherwise.
 local function nearestTarget(zx, zy, preferAfflicted, engageDead)
     local best, bestD = nil, nil
 
@@ -318,6 +319,77 @@ function Ctl.acceptExternal(personId, body, token)
     return true
 end
 
+local function crossedActivity(personId, body)
+    local rec = SAO and SAO.Identity and SAO.Identity.get(personId) or nil
+    if rec and rec.worldSourceReservation then return "coordination" end
+    local runtime = SAO and SAO.Controller
+        and SAO.Controller.coordinationRuntime
+        and SAO.Controller.coordinationRuntime[personId] or nil
+    if runtime and runtime.coordinationRoute then return "coordination" end
+    local data = nil
+    if body then pcall(function() data = body:getModData() end) end
+    if data and data.ZAOCrossedDriving then return "driving" end
+    return "idle"
+end
+
+local executionAdapter = {}
+
+function executionAdapter.bodyFor(personId, rec)
+    personId = tostring(personId or "")
+    if not rec or rec.bodyOwner ~= "ZAO" or not SAO or not SAO.Body
+        or not SAO.Body.foreign then return nil end
+    local body = SAO.Body.foreign[personId]
+    if not body or Ctl.controlled[personId] ~= body then return nil end
+    return body
+end
+
+function executionAdapter.snapshot(personId, rec)
+    local body = executionAdapter.bodyFor(personId, rec)
+    local hour = 0
+    pcall(function() hour = SAO.History.countyHours() end)
+    local mind = ZAO.Mind and ZAO.Mind.of(rec, hour) or nil
+    local canAct = body ~= nil and rec.dead ~= true and mind
+        and mind.execution and mind.execution.canMove == true
+    return {
+        bodyOwner = "ZAO",
+        executor = "ZAO.Controller",
+        represented = body ~= nil,
+        currentActivity = crossedActivity(tostring(personId), body),
+        canAcquire = canAct == true,
+        canCarry = canAct == true,
+        canDeliver = canAct == true,
+        canExecute = canAct == true,
+        incapable = canAct ~= true,
+        dead = rec.dead == true,
+    }
+end
+
+local function registerExecutionAdapter()
+    if SAO and SAO.Communication
+        and SAO.Communication.registerExecutionOwner then
+        SAO.Communication.registerExecutionOwner("ZAO", executionAdapter)
+    end
+end
+
+-- An identity-bearing IsoZombie is never the living shell retained by a
+-- Crossed conversion. Reject it before claim, pathogen advancement,
+-- settlement admission, persistence, or deliberate action. This repairs an
+-- ownership defect; it does not invent a migration or mortality transition.
+local function rejectCrossedZombie(personId, rec)
+    local state = ZAO.Pathogen and ZAO.Pathogen.stateOf
+        and ZAO.Pathogen.stateOf(personId) or nil
+    local rejected = rec and rec.bodyOwner == "ZAO"
+        or state and state.terminalState == "crossed"
+    if not rejected then return false end
+    Ctl.controlled[personId] = nil
+    if not Ctl.rejectedCrossedBodies[personId] then
+        Ctl.rejectedCrossedBodies[personId] = true
+        log("rejected IsoZombie for Crossed state or ZAO-owned living identity "
+            .. personId)
+    end
+    return true
+end
+
 local function processExternalCrossed(now, hours, day)
     if not (SAO and SAO.Identity and SAO.Body and ZAO.Pathogen) then return end
     local player = nil
@@ -383,9 +455,28 @@ local function processExternalCrossed(now, hours, day)
                         data.ZAOForm = state.currentForm or "none"
                     end
                     local mind = ZAO.Mind and ZAO.Mind.of(rec, hours) or nil
+                    if SAO.Standing and SAO.Standing.maybeCallForBread then
+                        pcall(SAO.Standing.maybeCallForBread, personId)
+                    end
                     local target = nearestTarget(body:getX(), body:getY(), true,
                         false)
-                    if mind and mind.execution and mind.execution.canMove
+                    local activity = crossedActivity(personId, body)
+                    if target and activity ~= "driving" and mind
+                        and mind.execution and mind.execution.canTarget then
+                        activity = "hunt"
+                    end
+                    local coordinated = false
+                    if SAO.Controller
+                        and SAO.Controller.advanceExternalCoordination then
+                        local okWork, didWork = pcall(function()
+                            return SAO.Controller.advanceExternalCoordination(
+                                personId, body, "ZAO",
+                                activity)
+                        end)
+                        coordinated = okWork and didWork == true
+                    end
+                    if not coordinated and mind and mind.execution
+                        and mind.execution.canMove
                         and ZAO.Crossed and ZAO.Crossed.decide then
                         pcall(ZAO.Crossed.decide, body, personId, state, mind,
                             target, now, hours)
@@ -400,6 +491,7 @@ local function processExternalCrossed(now, hours, day)
 end
 
 function Ctl.tick(now)
+    registerExecutionAdapter()
     if SAO and SAO.AfflictedReturn then SAO.AfflictedReturn.resumePending() end
     if SAO and SAO.CrossedTransfer then SAO.CrossedTransfer.resumePending() end
     if ZAO.Exposure and ZAO.Exposure.resumePending then
@@ -464,10 +556,15 @@ function Ctl.tick(now)
                     personId = tostring(data.ZAODerivedId)
                 end
 
-                local returnHeld = data.ZAOReturnToken ~= nil
+                local representationRejected = personId
+                    and rejectCrossedZombie(personId, rec) or false
+                local returnHeld = not representationRejected
+                    and (data.ZAOReturnToken ~= nil
                     or rec and rec.returnTransition ~= nil
+                    )
                 if returnHeld and personId then Ctl.controlled[personId] = obj end
-                if personId and ZAO.Pathogen and ZAO.StateStore and not returnHeld then
+                if personId and ZAO.Pathogen and ZAO.StateStore and not returnHeld
+                    and not representationRejected then
                     data.ZAOOwned = true
 
                     local state = nil
@@ -624,6 +721,8 @@ function Ctl.tick(now)
         end
     end
 end
+
+registerExecutionAdapter()
 
 Events.OnTick.Add(function()
     local ok, now = pcall(function() return SAO.Controller.tick() end)

@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Decision Registry |
 |---|---|
-| Version | `0.3.2.0-pre-alpha` |
+| Version | `0.3.3.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `DECISION_REGISTRY.md` |
 | Status | CANONICAL, APPEND-ONLY - ratified decisions. |
@@ -671,3 +671,29 @@ raises weighted body-part health to the return floor. The sister stamps
 succeeds under the authorized return event. Installed-engine production and
 defect controls cover viability, injury/stat/XP preservation, native infection
 clearance and the next `BodyDamage.Update`.
+
+## DR-029 | 2026-09-24 09:09 UTC / 02:09 PST | Crossed coordination uses the retained human shell
+
+**Status.** RATIFIED by the approved SAO/ZAO/Speakeasy implementation contract
+(`../survivor-awareness/artifacts/audits/20260924-cao-prior-art/IMPLEMENTATION_SPEC.md`).
+
+**Decision.** A living Crossed person retains human appearance, cognition,
+identity, history and capabilities within the established decay constraints.
+ZAO owns execution after conversion, but the person's representation remains
+the transferred living human shell. Communication and accepted shared work
+reach that shell through a registered ZAO execution owner. Present capability
+and competing activity govern whether the work can advance.
+
+An identity-bearing `IsoZombie` encountered by `ZAO_Controller` is not an
+alternate Crossed representation. When its identity is ZAO-owned or its
+persisted pathogen state is Crossed, admission is refused before any ownership
+or simulation side effect. The refusal does not decide how such a malformed
+body came to exist and does not create a death, revival, migration or body
+replacement policy.
+
+**Consequences.** `Communication.bodyFor` can resolve ZAO-owned Crossed bodies
+without transferring execution back to SAO. Retained `ZAO.Mind` capability,
+death and current activity remain authoritative. The existing human-shell
+driving adapter remains separate. Intentional Afflicted blood exposure remains
+an action distinct from feeding, and Afflicted people cannot be feeding
+targets.

@@ -120,6 +120,14 @@ if ! "$PY" tools/intentional_exposure_test.py; then
     fail=1
 fi
 
+# 11. Crossed retain their living human shell. An identity-bearing IsoZombie
+# is rejected before ownership, settlement, persistence, or cognition, while
+# the registered ZAO execution owner exposes the real shell to shared work.
+if ! "$PY" tools/crossed_ownership_test.py; then
+    note "BORDER 11 REFUSED: Crossed execution ownership"
+    fail=1
+fi
+
 if [ "$fail" -ne 0 ]; then
     note "GATE REFUSED"
 else

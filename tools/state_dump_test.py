@@ -29,7 +29,10 @@ the knowledge term must treat a string as no structured weight rather
 than crash or read through it.
 """
 
+import copy
+import json
 import sys
+import tempfile
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -82,7 +85,14 @@ def main():
     # fails for lack of the facts - only for how they are read.
     def base_record():
         return {
+            "schema": "speakeasy-decision-row",
+            "schemaVersion": 3,
+            "namespace": {
+                "runId": "run-one", "county": "County000",
+                "personId": "sao-44", "eventId": "event-one", "hour": 888,
+            },
             "person": {
+                "id": "sao-44",
                 "record": {
                     "id": "sao-44",
                     "knoxInfected": True,
@@ -96,7 +106,7 @@ def main():
                     "turnedDormant": True,
                 },
             },
-            "situation": {"hour": 888},
+            "situation": {"county": "County000", "hour": 888},
         }
 
     # A recorded state passes through, and the pressure chain is
@@ -110,6 +120,11 @@ def main():
     }
     state = state_dump.state_for(row)
     pathogen = state["pathogen"]
+    failures += check("state schema", (state["schema"], state["schemaVersion"]),
+                      ("zao-decision-state", 3))
+    failures += check("full namespace preserved", state["namespace"],
+                      row["namespace"])
+    failures += check("asOfHour bound", state["asOfHour"], 888)
     failures += check("currentForm", pathogen["currentForm"], "Wrecker")
     failures += check("formPerformance", pathogen["formPerformance"], 0.06)
     failures += check("source", pathogen["source"], "event")
@@ -222,14 +237,62 @@ def main():
         "dormant",
     )
 
+    # Full event identity is the deduplication key. Two decisions by the same
+    # person in the same hour survive when their event ids differ; an exact
+    # duplicate and every malformed namespace fail closed.
+    first = base_record()
+    second = copy.deepcopy(first)
+    second["namespace"]["eventId"] = "event-two"
+    states = state_dump.states_for([first, second])
+    failures += check("same person/hour distinct events survive", len(states), 2)
+    try:
+        state_dump.states_for([first, copy.deepcopy(first)])
+        failures += check("duplicate full namespace refused", False, True)
+    except state_dump.ContractError:
+        pass
+    for label, mutate in (
+            ("missing event id", lambda row: row["namespace"].pop("eventId")),
+            ("person mismatch", lambda row: row["person"].update(id="other")),
+            ("county mismatch", lambda row: row["situation"].update(county="Elsewhere")),
+            ("legacy schema", lambda row: row.update(schemaVersion=2))):
+        invalid = copy.deepcopy(first)
+        mutate(invalid)
+        try:
+            state_dump.state_for(invalid)
+            failures += check(label + " refused", False, True)
+        except state_dump.ContractError:
+            pass
+
+    # Publication is atomic: a failed final replace leaves prior bytes intact.
+    with tempfile.TemporaryDirectory(prefix="zao-state-dump-") as temporary:
+        destination = Path(temporary) / "state.jsonl"
+        destination.write_text("prior\n", encoding="utf-8")
+        original = state_dump.os.replace
+        state_dump.os.replace = lambda source, target: (_ for _ in ()).throw(
+            OSError("controlled replace failure"))
+        try:
+            try:
+                state_dump.atomic_write(destination, states)
+                failures += check("failed atomic replace refused", False, True)
+            except OSError:
+                pass
+        finally:
+            state_dump.os.replace = original
+        failures += check("failed replace preserved prior output",
+                          destination.read_text(encoding="utf-8"), "prior\n")
+        state_dump.atomic_write(destination, states)
+        written = [json.loads(line) for line in
+                   destination.read_text(encoding="utf-8").splitlines()]
+        failures += check("atomic output keeps both namespaces", len(written), 2)
+
     print("=" * 74)
     print("STATE DUMP")
     print("=" * 74)
     if failures:
         print(f"  FAULT: {failures} check(s) failed")
         return 1
-    print("  state mapping, precedence, the recorded-state gate, and")
-    print("  the pressure chain: correct")
+    print("  state mapping, precedence, recorded-state gate and pressure: correct")
+    print("  full v3 namespace, duplicate refusal and atomic publication: correct")
     return 0
 
 
