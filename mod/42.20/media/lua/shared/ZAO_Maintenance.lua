@@ -10,10 +10,9 @@ ZAO.Maintenance = ZAO.Maintenance or {}
 local Maintenance = ZAO.Maintenance
 
 Maintenance.profile = Maintenance.profile or {
-    version = 1,
+    version = 2,
     survivorHungerPerHour = 0.012,
     thirstPerHour = 0.020,
-    crossedCaloricFactor = 0.25,
     predatoryPressurePerHour = 0.012,
     afflictedAlternativeRelief = 0.60,
     afflictedAlternativePenalty = 0.18,
@@ -44,7 +43,7 @@ local function rowOf(state, atHours)
     if type(state) ~= "table" then return nil end
     local row = type(state.maintenance) == "table" and state.maintenance or {}
     state.maintenance = row
-    row.version = 1
+    row.version = 2
     row.receiptSequence = tonumber(row.receiptSequence) or 0
     if not finite(tonumber(row.lastAdvancedHours)) and finite(atHours) then
         row.lastAdvancedHours = atHours
@@ -122,10 +121,8 @@ function Maintenance.advanceDormant(personId, state, body, elapsedHours,
     local hunger, thirst = stat(body, CharacterStat.HUNGER),
         stat(body, CharacterStat.THIRST)
     if hunger == nil or thirst == nil then return false, "stats-unavailable" end
-    local hungerFactor = terminal == "crossed"
-        and Maintenance.profile.crossedCaloricFactor or 1.0
     local nextHunger = hunger + elapsedHours
-        * Maintenance.profile.survivorHungerPerHour * hungerFactor
+        * Maintenance.profile.survivorHungerPerHour
     local nextThirst = thirst + elapsedHours * Maintenance.profile.thirstPerHour
     if not setStat(body, CharacterStat.HUNGER, nextHunger)
         or not setStat(body, CharacterStat.THIRST, nextThirst) then
@@ -139,10 +136,9 @@ function Maintenance.advanceDormant(personId, state, body, elapsedHours,
     return true, "state-owned-physiology-advanced"
 end
 
--- Loaded native time continues to move the human body.  For Crossed, positive
--- caloric drift is scaled down while completed eating reductions are retained
--- in full.  Afflicted use native caloric passage and their distinct food
--- consequences are applied at completion by recordAfflictedMeal.
+-- Loaded native time moves both living states through the ordinary human shell.
+-- ZAO observes that physiology without rewriting it. State-specific motives
+-- and completed food consequences remain separate from caloric passage.
 function Maintenance.observeLoaded(personId, state, body, atHours)
     atHours = tonumber(atHours)
     if type(state) ~= "table" or not body or not finite(atHours) then
@@ -150,19 +146,12 @@ function Maintenance.observeLoaded(personId, state, body, atHours)
     end
     Maintenance.advanceState(state, atHours)
     local row = rowOf(state, atHours)
-    if tostring(state.terminalState or "") ~= "crossed"
-        or not CharacterStat then return true end
     row.physiology = type(row.physiology) == "table" and row.physiology or {}
     local physiology = row.physiology
-    local current = stat(body, CharacterStat.HUNGER)
-    if current == nil then return false end
-    local prior = tonumber(physiology.lastAppliedHunger)
-    if prior ~= nil and current > prior then
-        current = prior + (current - prior)
-            * Maintenance.profile.crossedCaloricFactor
-        if not setStat(body, CharacterStat.HUNGER, current) then return false end
+    if CharacterStat then
+        physiology.lastObservedHunger = stat(body, CharacterStat.HUNGER)
+        physiology.lastObservedThirst = stat(body, CharacterStat.THIRST)
     end
-    physiology.lastAppliedHunger = clamp01(current)
     physiology.lastObservedAtHours = atHours
     return true
 end

@@ -66,6 +66,11 @@ function ISEatFoodAction:new(character,item)
 end
 function ISEatFoodAction.stop() end
 function ISEatFoodAction.complete() return true end
+ISAddItemInRecipe={}
+function ISAddItemInRecipe.complete(action)
+ action.baseItem.extras[#action.baseItem.extras+1]=action.usedItem:getFullType()
+ return true
+end
 
 local durable={}
 ModData={getOrCreate=function(key) durable[key]=durable[key] or {} return durable[key] end}
@@ -105,8 +110,15 @@ local function item(fullType,kind)
 end
 local regular=item('Base.CannedBeans')
 local flesh=item('ZombieAwareness.HumanFlesh')
+flesh.data.ZAOHumanOrigin='ordinary-human-corpse'
+flesh.data.ZAODonorTerminalState='ordinary'
 local stew=item('Base.Stew') stew.extras={'ZombieAwareness.HumanFlesh'}
 local ordinaryStew=item('Base.Stew') ordinaryStew.extras={'Base.Carrots'}
+local afflictedFlesh=item('ZombieAwareness.HumanFlesh')
+afflictedFlesh.data.ZAOHumanOrigin='afflicted-human-corpse'
+afflictedFlesh.data.ZAODonorPersonId='afflicted'
+afflictedFlesh.data.ZAODonorTerminalState='afflicted'
+local afflictedStew=item('Base.Stew')
 local knife=item('Base.KitchenKnife','HandWeapon') knife.sharp=true
 local ranged=item('Base.Pistol','HandWeapon') ranged.ranged=true ranged.ammo=2
 
@@ -233,6 +245,8 @@ function __item(name)
  if name=='flesh' then return flesh end
  if name=='stew' then return stew end
  if name=='ordinaryStew' then return ordinaryStew end
+ if name=='afflictedFlesh' then return afflictedFlesh end
+ if name=='afflictedStew' then return afflictedStew end
  if name=='knife' then return knife end
  return ranged
 end
@@ -255,6 +269,8 @@ function __setItems(which)
  if which=='regular' then inventory.items={knife,regular}
  elseif which=='flesh' then inventory.items={knife,flesh}
  elseif which=='both' then inventory.items={knife,regular,flesh}
+ elseif which=='afflictedFlesh' then inventory.items={knife,afflictedFlesh}
+ elseif which=='afflictedStew' then inventory.items={knife,afflictedStew}
  else inventory.items={knife} end
 end
 function __observedFood(value)
@@ -269,6 +285,13 @@ function __counts() return applyCalls,exposureCalls,ownershipCalls,physicalCalls
 function __inventoryCount() return #inventory.items end
 function __inventoryItem(index) return inventory.items[index] end
 function __root() return durable['ZombieAwareness_State'] end
+function __evolveAfflictedStew()
+ return ISAddItemInRecipe.complete({baseItem=afflictedStew,
+  usedItem=afflictedFlesh})
+end
+function __evolveOrdinaryStew()
+ return ISAddItemInRecipe.complete({baseItem=stew,usedItem=flesh})
+end
 '''
 
 SETUP = r'''
@@ -277,6 +300,7 @@ root.people.carrier={personId='carrier',terminalState='crossed',history={}}
 root.people.afflicted={personId='afflicted',terminalState='afflicted',history={}}
 root.people.otherCrossed={personId='otherCrossed',terminalState='crossed',history={}}
 root.people.mutant={personId='mutant',terminalState='turned',currentForm='Husk',history={}}
+ZAO.Controller.controlled.afflicted=__target('afflicted')
 '''
 
 PROBE = r'''
@@ -286,13 +310,52 @@ assert(not ZAO.Diet.isHumanFood(regular) and ZAO.Diet.isHumanFood(flesh)
  and ZAO.Diet.isHumanFood(__item('stew'))
  and not ZAO.Diet.isHumanFood(__item('ordinaryStew')),
  'human-food provenance admitted ordinary food or lost a human stew')
+local unknownAllowed,unknownReason=ZAO.Diet.profileAllowed('crossed',
+ ZAO.Diet.foodProfile(__item('stew')))
+assert(unknownAllowed==false and unknownReason=='human-source-unknown',
+ 'legacy anonymous human dish invented a non-Afflicted donor')
+assert(__evolveOrdinaryStew()==true)
+assert(ZAO.Diet.profileAllowed('crossed',
+ ZAO.Diet.foodProfile(__item('stew')))==true,
+ 'known ordinary-human stew lost Crossed food eligibility')
 assert(ZAO.Diet.corpseEligible(__corpse('human'))==true)
 assert(ZAO.Diet.corpseEligible(__corpse('afflicted'))==true,
- 'Afflicted human corpse was categorically erased from the diet space')
+ 'Afflicted corpse lost its source identity for Afflicted policy')
+local crossedAfflicted,reason=ZAO.Diet.corpseEligibleFor('carrier',carrier,
+ __corpse('afflicted'))
+assert(crossedAfflicted==false and reason=='afflicted-not-food',
+ 'Crossed admitted an Afflicted corpse as food')
+assert(ZAO.Diet.corpseEligibleFor('afflicted',__target('afflicted'),
+ __corpse('afflicted'))==true,
+ 'Crossed non-feeding rule leaked into distinct Afflicted food policy')
 assert(ZAO.Diet.corpseEligible(__corpse('zombie'))==false
  and ZAO.Diet.corpseEligible(__corpse('animal'))==false
  and ZAO.Diet.corpseEligible(__corpse('mutant'))==false,
  'zombie, animal, or mutant corpse entered the Crossed diet')
+
+local afflictedFlesh=__item('afflictedFlesh')
+local afflictedStew=__item('afflictedStew')
+assert(__evolveAfflictedStew()==true)
+local afflictedDish=ZAO.Diet.foodProfile(afflictedStew)
+assert(afflictedDish and afflictedDish.human==true
+ and afflictedDish.containsAfflictedHuman==true
+ and afflictedDish.donor.terminalState=='afflicted',
+ 'evolved dish lost the exact Afflicted donor provenance')
+assert(ZAO.Diet.beginEat('carrier',carrier,afflictedFlesh,1)==false
+ and ZAO.Diet.beginEat('carrier',carrier,afflictedStew,1)==false,
+ 'Crossed directly admitted raw or cooked Afflicted human food')
+assert(ZAO.Diet.createSourceUseAction('carrier',carrier,afflictedStew,
+ {id='afflicted-source',nativeUseTerminalState='crossed',
+  nativeUsePermitHuman=true})==nil,
+ 'SourceUse bypassed the Crossed-to-Afflicted non-feeding rule')
+__setItems('afflictedStew')
+assert(#ZAO.Diet.options('carrier',carrier,
+ ZAO.Pathogen.stateOf('carrier'),{},1)==0,
+ 'Afflicted-origin dish entered Crossed choice arbitration')
+__setItems('none') __clearQueue()
+assert(ZAO.Diet.beginButcher('carrier',carrier,__corpse('afflicted'),1)==false
+ and __queued()==nil and not __corpse('afflicted'):getModData().ZAOButchered,
+ 'Crossed queued Afflicted butchery before food admission')
 
 local humanCorpse=__corpse('human')
 assert(ZAO.Diet.beginButcher('carrier',carrier,humanCorpse,1))
@@ -466,11 +529,23 @@ def main() -> int:
          "if not ok or not item or Diet.isHumanFood(item) then return nil end",
          "if true then return nil end"),
         ("human-origin preference", "ZAO_Diet.lua",
-         "score = (dispreferred and 45 or 68) + need * 22",
-         "score = (dispreferred and 45 or 20) + need * 22"),
-        ("Afflicted corpse admission", "ZAO_Diet.lua",
-         'if terminal == "crossed" then return false, "crossed" end',
-         'if terminal == "afflicted" then return false, "afflicted" end'),
+         "score = 68 + need * 22",
+         "score = 20 + need * 22"),
+        ("Crossed refusal of Afflicted corpses", "ZAO_Diet.lua",
+         'if terminal == "crossed" and donor\n'
+         '        and donor.terminalState == "afflicted" then',
+         "if false then"),
+        ("Crossed refusal of carried Afflicted food", "ZAO_Diet.lua",
+         'if terminal == "crossed" and profile.human\n'
+         '        and profile.containsAfflictedHuman == true then',
+         "if false then"),
+        ("anonymous human food fails closed", "ZAO_Diet.lua",
+         'if terminal == "crossed" and profile.human\n'
+         '        and profile.humanSourceKnown ~= true then',
+         "if false then"),
+        ("evolved-dish donor provenance", "ZAO_Diet.lua",
+         "Diet.propagateHumanProvenance(action.baseItem, source, profile)",
+         "Diet.propagateHumanProvenance(nil, source, profile)"),
         ("native SourceUse acquisition owner", "ZAO_Diet.lua",
          'SAO.SourceUse.registerNativeUseOwner("ZAO.Diet", {',
          'SAO.SourceUse.registerNativeUseOwner("ZAO.Diet.disabled", {'),
@@ -516,7 +591,7 @@ def main() -> int:
             if result.returncode == 0:
                 print(f"REFUSED: {name} control survived")
                 return 1
-    print("Border 13 PASS: Crossed ordinary food and preferred human-origin food both require exact native eating actions, and private source knowledge invokes SAO SourceUse rather than a parallel acquisition path; Afflicted human corpses remain possible but dispreferred rather than erased; butchery is source-bounded; only actual hand weapons admit finite blooded melee/projectile hits after injury; Afflicted exposure stays distinct; eight controls fail")
+    print("Border 13 PASS: Crossed ordinary food and source-known eligible human-origin food require exact native eating actions, while Afflicted corpses, carried flesh, cooked dishes, SourceUse results, and anonymous legacy human food are refused from donor provenance; Afflicted food policy stays distinct; butchery is source-bounded; only actual hand weapons admit finite blooded melee/projectile hits after injury; intentional Afflicted exposure stays separate; eleven controls fail")
     return 0
 
 

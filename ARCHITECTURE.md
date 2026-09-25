@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Architecture |
 |---|---|
-| Version | `0.5.1.0-pre-alpha` |
+| Version | `0.5.2.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `ARCHITECTURE.md` |
 | Status | ACTIVE - ratified framework shape. Engine surfaces claimed here are unverified until `FINDINGS.md` carries them. |
@@ -149,19 +149,20 @@ exact-once route outcomes. Each state provider admits its own motives and
 actions. Afflicted fear actual Crossed threats, seek other Afflicted and travel
 toward evidenced ground. They require water, prefer meat/protein, can accept
 non-dairy alternatives with reduced relief, and may individually choose
-human-origin food. Crossed retain human physiology under reduced caloric
-pressure and may choose native wound care, drinking, rest or ordinary food
+human-origin food. Crossed retain ordinary human caloric passage and may choose
+native wound care, drinking, rest or ordinary food
 alongside their distinct predation, exposure, driving, holding and material
 actions. Predation appraisal may use distress visible to that observer, such
 as running or sprinting; it never reads the target's hidden moodles. Settlement formation requires state-specific
 acts of holding ground by distinct people over time; proximity is not assent.
 
-Crossed can subsist on ordinary food. Human-origin food remains a preferred
+Crossed can subsist on ordinary food. Eligible ordinary-human-origin food remains a preferred
 option because sustenance can coincide with cruelty, mutilation, domination,
 terror and contagion; it is not a biological-only diet. Their first material
-producer butchers eligible ordinary or Afflicted human corpses into human flesh
-and preserves that origin through evolved dishes. Afflicted sources are
-dispreferred; Crossed, mutant, zombie and animal bodies remain excluded. Weapon contamination is a
+producer butchers eligible ordinary human corpses into human flesh and preserves
+both human origin and donor identity through evolved dishes. Afflicted sources
+are categorically rejected; anonymous legacy donor provenance fails closed.
+Crossed, mutant, zombie and animal bodies remain excluded. Weapon contamination is a
 separately selected tactic on an exact equipped melee or projectile weapon;
 finite native hits resolve only after an actual wound exists. An Afflicted
 target enters the separate intentional-exposure pathogen action when that act
@@ -179,7 +180,24 @@ Private food knowledge invokes SAO's existing SourceUse owner. That owner keeps
 the exact source revision, locomotion, transfer, carried item and native-use
 receipt. `ZAO_Diet` registers only the state-specific eating action after the
 item is physically carried. Dormant external shells restore at zero survivor
-elapsed time before ZAO advances its own hunger, thirst and predatory state.
+elapsed time before ZAO observes native hunger and thirst and advances the
+separately owned predatory state.
+
+### Private contact continuation and maintenance correction (A42)
+
+Each Afflicted or Crossed provider may pursue the particular contacts retained
+for its current state-authored matter through the same `ZAO.Driver`. The sister's
+Communication owner keeps contact attempt, address arrival, proposal reception,
+private appraisal and returned response separate. `ZAO_ExecutionOwner` exposes
+current presence, activity and capability in loaded, dormant and headless
+execution; it does not convert missing representation into hearing or assent.
+
+Crossed material admission revalidates the donor at option formation,
+timed-action start, every validity check, native completion and SourceUse use.
+Raw flesh and evolved dishes carry the provenance. Known ordinary-human donors
+may pass; known Afflicted donors and anonymous legacy human-origin items fail.
+This is a Crossed policy boundary only. It neither changes Afflicted food policy
+nor joins eating to the distinct intentional-exposure action.
 
 ### Distinct durable coordination
 

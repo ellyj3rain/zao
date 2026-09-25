@@ -1,15 +1,15 @@
 -- ZAO_Diet - state-specific sustenance actions and human-origin provenance.
 --
--- Crossed keep human physiology, so ordinary food can satisfy hunger. Human
--- flesh is a preferred option because sustenance, mutilation and domination
--- can coincide; that preference is motivational, not a biological-only diet.
--- Afflicted prefer meat/protein, can survive on non-dairy alternatives with a
--- cost, and may choose human flesh under individual and social pressure.  An
--- Afflicted corpse is dispreferred rather than categorically impossible food;
--- Crossed/zombie/animal sources remain separate from this human butchery path.
+-- Crossed keep ordinary human physiology, so ordinary food can satisfy hunger.
+-- Human flesh is preferred where sustenance, mutilation and domination can
+-- coincide; that preference is motivational, not a biological-only diet.
+-- Afflicted people are not a Crossed food source.  Intentional exposure and
+-- other violence remain separate actions.  Afflicted retain their own food
+-- policy, including the individual possibility of human-origin food.
 
 require "TimedActions/ISBaseTimedAction"
 require "TimedActions/ISEatFoodAction"
+require "TimedActions/ISAddItemInRecipe"
 
 ZAO = ZAO or {}
 ZAO.Diet = ZAO.Diet or {}
@@ -120,6 +120,18 @@ function Diet.corpseEligible(corpse)
         state)
 end
 
+function Diet.corpseEligibleFor(personId, body, corpse)
+    local terminal = terminalOf(personId, body)
+    if not terminal then return false, "unowned-eater" end
+    local eligible, token, donor = Diet.corpseEligible(corpse)
+    if not eligible then return false, token end
+    if terminal == "crossed" and donor
+        and donor.terminalState == "afflicted" then
+        return false, "afflicted-not-food", donor
+    end
+    return true, token, donor
+end
+
 local function usableCuttingWeapon(item)
     local ok, answer = pcall(function()
         return item and instanceof(item, "HandWeapon")
@@ -165,18 +177,63 @@ function Diet.isHumanFood(item)
     return false
 end
 
-local function donorFromItem(item)
-    local data = bodyData(item)
-    if not data or not data.ZAOHumanOrigin then return nil end
+local function copyDonor(donor)
+    if type(donor) ~= "table" then return nil end
+    return {
+        personId = donor.personId and tostring(donor.personId) or nil,
+        terminalState = tostring(donor.terminalState or "unknown"),
+        form = tostring(donor.form or "none"),
+        health = tonumber(donor.health),
+        infectionsSurvived = tonumber(donor.infectionsSurvived) or 0,
+        immuneProgress = tonumber(donor.immuneProgress) or 0,
+    }
+end
+
+local function legacyDonor(data)
+    if type(data) ~= "table" or not data.ZAOHumanOrigin then return nil end
     return {
         personId = data.ZAODonorPersonId
             and tostring(data.ZAODonorPersonId) or nil,
-        terminalState = tostring(data.ZAODonorTerminalState or "ordinary"),
+        terminalState = tostring(data.ZAODonorTerminalState or "unknown"),
         form = tostring(data.ZAODonorForm or "none"),
         health = tonumber(data.ZAODonorHealth),
         infectionsSurvived = tonumber(data.ZAODonorInfectionsSurvived) or 0,
         immuneProgress = tonumber(data.ZAODonorImmuneProgress) or 0,
     }
+end
+
+local function donorsFromItem(item)
+    local data = bodyData(item)
+    if not data then return {} end
+    local donors = {}
+    if type(data.ZAOHumanDonors) == "table" then
+        for _, donor in ipairs(data.ZAOHumanDonors) do
+            local copied = copyDonor(donor)
+            if copied then donors[#donors + 1] = copied end
+        end
+    end
+    if #donors == 0 then
+        local donor = legacyDonor(data)
+        if donor then donors[1] = donor end
+    end
+    return donors
+end
+
+local function donorFromItem(item)
+    local donors = donorsFromItem(item)
+    for _, donor in ipairs(donors) do
+        if donor.terminalState == "afflicted" then return donor end
+    end
+    return donors[1]
+end
+
+local function containsAfflictedHuman(item)
+    local data = bodyData(item)
+    if data and data.ZAOContainsAfflictedHuman == true then return true end
+    for _, donor in ipairs(donorsFromItem(item)) do
+        if donor.terminalState == "afflicted" then return true end
+    end
+    return false
 end
 
 -- Classification follows native Food composition and provenance. Display
@@ -198,8 +255,18 @@ function Diet.foodProfile(item)
         profile.dairy = milk ~= nil and tostring(milk) ~= ""
     end)
     if profile.human then
+        local donors = donorsFromItem(item)
         profile.class = "human"
         profile.donor = donorFromItem(item)
+        profile.donors = donors
+        profile.humanSourceKnown = #donors > 0
+        for _, donor in ipairs(donors) do
+            if donor.terminalState ~= "ordinary"
+                and donor.terminalState ~= "afflicted" then
+                profile.humanSourceKnown = false
+            end
+        end
+        profile.containsAfflictedHuman = containsAfflictedHuman(item)
     elseif profile.dairy then
         profile.class = "dairy"
     elseif (profile.proteins or 0) >= 4
@@ -207,6 +274,86 @@ function Diet.foodProfile(item)
         profile.class = "protein"
     end
     return profile
+end
+
+function Diet.profileAllowed(terminal, profile)
+    terminal = tostring(terminal or "")
+    if type(profile) ~= "table" or profile.class == "dairy" then
+        return false, "food-not-admitted"
+    end
+    if terminal == "crossed" and profile.human
+        and profile.containsAfflictedHuman == true then
+        return false, "afflicted-not-food"
+    end
+    if terminal == "crossed" and profile.human
+        and profile.humanSourceKnown ~= true then
+        return false, "human-source-unknown"
+    end
+    if terminal ~= "crossed" and terminal ~= "afflicted" then
+        return false, "unsupported-terminal-state"
+    end
+    return true, "admitted"
+end
+
+local function donorKey(donor)
+    donor = type(donor) == "table" and donor or {}
+    return tostring(donor.personId or "") .. "|"
+        .. tostring(donor.terminalState or "unknown") .. "|"
+        .. tostring(donor.form or "none")
+end
+
+-- Evolved recipes retain native ingredient-type provenance, but that list does
+-- not retain the particular donor.  Copy the source-owned donor records onto
+-- the resulting dish when the exact ingredient is actually added so cooking
+-- cannot turn Afflicted flesh into an anonymous Crossed food source.
+function Diet.propagateHumanProvenance(resultItem, sourceItem, suppliedProfile)
+    local profile = suppliedProfile or Diet.foodProfile(sourceItem)
+    local resultData = bodyData(resultItem)
+    if not (resultData and profile and profile.human == true) then return false end
+    local donors, seen = donorsFromItem(resultItem), {}
+    for _, donor in ipairs(donors) do seen[donorKey(donor)] = true end
+    local sourceDonors = type(profile.donors) == "table"
+        and profile.donors or {}
+    if #sourceDonors == 0 and type(profile.donor) == "table" then
+        sourceDonors = { profile.donor }
+    end
+    for _, donor in ipairs(sourceDonors) do
+        local copied, key = copyDonor(donor), donorKey(donor)
+        if copied and not seen[key] then
+            donors[#donors + 1] = copied
+            seen[key] = true
+        end
+    end
+    resultData.ZAOHumanOrigin = resultData.ZAOHumanOrigin
+        or "evolved-human-food"
+    resultData.ZAOHumanDonors = donors
+    if profile.containsAfflictedHuman == true then
+        resultData.ZAOContainsAfflictedHuman = true
+    end
+    local sourceData = bodyData(sourceItem)
+    if sourceData and sourceData.ZAOHumanOrigin then
+        resultData.ZAOHumanSourceTokens = type(resultData.ZAOHumanSourceTokens)
+            == "table" and resultData.ZAOHumanSourceTokens or {}
+        local token = tostring(sourceData.ZAOHumanOrigin)
+        local present = false
+        for _, existing in ipairs(resultData.ZAOHumanSourceTokens) do
+            if tostring(existing) == token then present = true end
+        end
+        if not present then
+            resultData.ZAOHumanSourceTokens[
+                #resultData.ZAOHumanSourceTokens + 1] = token
+        end
+    end
+    local primary = donorFromItem(resultItem)
+    if primary then
+        resultData.ZAODonorPersonId = primary.personId
+        resultData.ZAODonorTerminalState = primary.terminalState
+        resultData.ZAODonorForm = primary.form
+        resultData.ZAODonorHealth = primary.health
+        resultData.ZAODonorInfectionsSurvived = primary.infectionsSurvived
+        resultData.ZAODonorImmuneProgress = primary.immuneProgress
+    end
+    return true
 end
 
 local function carriedMatching(body, predicate)
@@ -220,8 +367,11 @@ local function carriedMatching(body, predicate)
     return item, item and Diet.foodProfile(item) or nil
 end
 
-local function carriedHumanFood(body)
-    return carriedMatching(body, function(profile) return profile.human == true end)
+local function carriedHumanFood(body, terminal)
+    return carriedMatching(body, function(profile)
+        local admitted = Diet.profileAllowed(terminal, profile)
+        return profile.human == true and admitted == true
+    end)
 end
 
 local function afflictedHumanWillingness(state, mind, hungerNeed)
@@ -298,7 +448,7 @@ end
 
 function Diet.beginButcher(personId, body, corpse, hours)
     local root = rootStore()
-    local eligible, token, donor = Diet.corpseEligible(corpse)
+    local eligible, token, donor = Diet.corpseEligibleFor(personId, body, corpse)
     local weapon = cuttingWeapon(body)
     if not (root and zaoLiving(personId, body) and eligible and weapon) then
         return false
@@ -310,6 +460,7 @@ function Diet.beginButcher(personId, body, corpse, hours)
         version = 1,
         token = nextToken(root, "butcher", personId),
         personId = personId,
+        terminalState = terminalOf(personId, body),
         corpseToken = token,
         donor = donor,
         weaponId = weapon:getID(),
@@ -336,7 +487,7 @@ function Diet.completeButcher(actionToken, body, corpse, weapon)
     local personId = bodyData(body) and bodyData(body).SAOPersonId or nil
     local action = personId and root and root.butcherActions[tostring(personId)]
         or nil
-    local eligible, token, donor = Diet.corpseEligible(corpse)
+    local eligible, token, donor = Diet.corpseEligibleFor(personId, body, corpse)
     if not action or action.token ~= actionToken or action.phase ~= "queued"
         or not zaoLiving(personId, body) or not eligible
         or token ~= action.corpseToken or weapon:getID() ~= action.weaponId
@@ -358,6 +509,10 @@ function Diet.completeButcher(actionToken, body, corpse, weapon)
             data.ZAODonorHealth = source.health
             data.ZAODonorInfectionsSurvived = source.infectionsSurvived or 0
             data.ZAODonorImmuneProgress = source.immuneProgress or 0
+            data.ZAOHumanDonors = { copyDonor(source) }
+            if tostring(source.terminalState or "") == "afflicted" then
+                data.ZAOContainsAfflictedHuman = true
+            end
             created[#created + 1] = item:getID()
         end
     end
@@ -409,8 +564,9 @@ local function prepareEat(personId, body, item, hours, suppliedProfile,
         sourceReservation)
     local root = rootStore()
     local terminal, state = terminalOf(personId, body)
-    local profile = suppliedProfile or Diet.foodProfile(item)
-    if not (root and terminal and profile and profile.class ~= "dairy") then
+    local profile = Diet.foodProfile(item)
+    local admitted = Diet.profileAllowed(terminal, profile)
+    if not (root and terminal and admitted) then
         return nil, nil end
     personId = tostring(personId)
     local action = {
@@ -459,7 +615,8 @@ function Diet.createSourceUseAction(personId, body, item, reservation)
     local root = rootStore()
     local terminal = terminalOf(personId, body)
     local profile = Diet.foodProfile(item)
-    if not (root and terminal and profile and reservation
+    local admitted = Diet.profileAllowed(terminal, profile)
+    if not (root and terminal and admitted and reservation
         and tostring(reservation.nativeUseTerminalState or terminal)
             == terminal) then return nil end
     if terminal == "afflicted" and (profile.class == "dairy"
@@ -497,9 +654,20 @@ function Diet.completeEat(actionToken, body, item)
     local personId = data and tostring(data.SAOPersonId or "") or ""
     local action = root and root.dietActions[personId] or nil
     local terminal, state = terminalOf(personId, body)
+    local currentProfile = Diet.foodProfile(item)
+    local admitted, refusal = Diet.profileAllowed(terminal, currentProfile)
     if not action or action.token ~= actionToken or action.phase ~= "queued"
         or terminal ~= action.terminalState
         or item:getID() ~= action.itemId then return false end
+    if not admitted then
+        archive(root, "dietActions", "dietResults", action,
+            "failed", refusal or "food-not-admitted", nil)
+        if data and data.ZAOEatHumanAction == action.token then
+            data.ZAOEatHumanAction = nil
+        end
+        return false
+    end
+    action.profile = currentProfile
     action.phase = "resolving"
     local nowHours = tonumber(action.startedAtHours) or 0
     pcall(function() nowHours = SAO.History.countyHours() end)
@@ -525,9 +693,8 @@ function Diet.completeEat(actionToken, body, item)
     elseif terminal == "crossed" and action.profile.human
         and ZAO.Maintenance and ZAO.Maintenance.recordPredatoryOutcome then
         local donor = action.profile.donor or {}
-        local relief = donor.terminalState == "afflicted" and 0.06 or 0.12
         local receipt = ZAO.Maintenance.recordPredatoryOutcome(personId, state,
-            "consumption", relief, action.token, nowHours, {
+            "consumption", 0.12, action.token, nowHours, {
                 itemId = action.itemId,
                 donorPersonId = donor.personId,
                 donorTerminalState = donor.terminalState or "ordinary",
@@ -606,32 +773,27 @@ function Diet.options(personId, body, state, mind, hours)
     local need = hunger(body)
     if need < HUNGER_THRESHOLD then return options end
 
-    local humanFood, humanProfile = carriedHumanFood(body)
+    local humanFood = carriedHumanFood(body, terminal)
     local sourcePlace, sourceAdmission = observedFoodPlace(personId, body, need)
     if terminal == "crossed" then
         if humanFood then
-            local dispreferred = humanProfile and humanProfile.donor
-                and humanProfile.donor.terminalState == "afflicted"
             options[#options + 1] = {
                 id = "crossed:diet:human:" .. tostring(humanFood:getID()),
                 kind = "diet-human", activity = "feeding",
-                score = (dispreferred and 45 or 68) + need * 22,
+                score = 68 + need * 22,
                 interruptsWork = need >= 0.75,
-                detail = dispreferred and "carried dispreferred Afflicted flesh"
-                    or "preferred carried human-origin food",
+                detail = "preferred carried human-origin food",
             }
         end
-        local corpse, _, donor = Diet.nearestHumanCorpse(body, true)
+        local corpse = Diet.nearestHumanCorpse(body, false)
         if corpse and cuttingWeapon(body) then
-            local dispreferred = donor and donor.terminalState == "afflicted"
             options[#options + 1] = {
                 id = "crossed:diet:corpse:" .. tostring(corpseToken(corpse)),
                 kind = "butcher-human", activity = "butchering",
-                score = (dispreferred and 38 or 62) + need * 22,
+                score = 62 + need * 22,
                 interruptsWork = need >= 0.75,
                 corpse = corpse,
-                detail = dispreferred and "reachable dispreferred Afflicted corpse"
-                    or "reachable ordinary human corpse",
+                detail = "reachable ordinary human corpse",
             }
         end
         local ordinary = ordinaryCarriedFood(body)
@@ -730,7 +892,7 @@ function Diet.step(personId, body, state, mind, hours, selectedKind)
         selectedKind = selected and selected.kind or nil
     end
     if selectedKind == "diet-human" then
-        local food, profile = carriedHumanFood(body)
+        local food, profile = carriedHumanFood(body, terminal)
         return food and Diet.beginEat(personId, body, food, hours, profile)
                 or false,
             food and "feeding" or "human-food-unavailable"
@@ -782,7 +944,7 @@ function Diet.step(personId, body, state, mind, hours, selectedKind)
             or "source-unavailable"
     elseif selectedKind == "butcher-human" then
         local corpse = selected and selected.corpse
-            or Diet.nearestHumanCorpse(body, terminal == "crossed")
+            or Diet.nearestHumanCorpse(body, terminal ~= "crossed")
         return corpse and Diet.beginButcher(personId, body, corpse, hours) or false,
             corpse and "butchering" or "human-corpse-unavailable"
     elseif selectedKind == "diet-pending" then
@@ -822,7 +984,8 @@ function ZAOButcherHumanAction:isValid()
         and cuttingWeapon(self.character) == self.weapon
         and zaoLiving(data.SAOPersonId, self.character)
         and apart ~= nil and apart <= CORPSE_REACH
-        and Diet.corpseEligible(self.corpse) == true
+        and Diet.corpseEligibleFor(data.SAOPersonId, self.character,
+            self.corpse) == true
 end
 
 function ZAOButcherHumanAction:waitToStart()
@@ -861,12 +1024,29 @@ end
 
 ZAOEatHumanAction = ISEatFoodAction:derive("ZAOEatHumanAction")
 
+function ZAOEatHumanAction:isValid()
+    local parentValid = true
+    if type(ISEatFoodAction.isValid) == "function" then
+        local ok, valid = pcall(ISEatFoodAction.isValid, self)
+        parentValid = ok and valid == true
+    end
+    local data = bodyData(self.character)
+    local terminal = data and terminalOf(data.SAOPersonId, self.character) or nil
+    local admitted = Diet.profileAllowed(terminal, Diet.foodProfile(self.item))
+    return parentValid and admitted == true
+end
+
 function ZAOEatHumanAction:stop()
     Diet.interruptEat(self.zaoToken, self.character, "timed-action-stopped")
     ISEatFoodAction.stop(self)
 end
 
 function ZAOEatHumanAction:complete()
+    if not self:isValid() then
+        Diet.interruptEat(self.zaoToken, self.character,
+            "consumption-no-longer-admitted")
+        return false
+    end
     local completed = ISEatFoodAction.complete(self)
     if completed then
         Diet.completeEat(self.zaoToken, self.character, self.item)
@@ -880,6 +1060,24 @@ function ZAOEatHumanAction:new(character, item, token)
     return o
 end
 
+local function installEvolvedProvenance()
+    if type(ISAddItemInRecipe) ~= "table"
+        or type(ISAddItemInRecipe.complete) ~= "function" then return false end
+    if ISAddItemInRecipe.ZAOHumanProvenanceWrapped == true then return true end
+    local nativeComplete = ISAddItemInRecipe.complete
+    ISAddItemInRecipe.complete = function(action)
+        local source = action and action.usedItem or nil
+        local profile = source and Diet.foodProfile(source) or nil
+        local completed = nativeComplete(action)
+        if completed and profile and profile.human == true then
+            Diet.propagateHumanProvenance(action.baseItem, source, profile)
+        end
+        return completed
+    end
+    ISAddItemInRecipe.ZAOHumanProvenanceWrapped = true
+    return true
+end
+
 local function registerSourceUseOwner()
     if SAO and SAO.SourceUse and SAO.SourceUse.registerNativeUseOwner then
         SAO.SourceUse.registerNativeUseOwner("ZAO.Diet", {
@@ -890,11 +1088,13 @@ local function registerSourceUseOwner()
 end
 
 registerSourceUseOwner()
+installEvolvedProvenance()
 
 if Diet.onGameStart then Events.OnGameStart.Remove(Diet.onGameStart) end
 Diet.onGameStart = function()
     Diet.runtimeActions = {}
     registerSourceUseOwner()
+    installEvolvedProvenance()
     Diet.resumePending()
 end
 Events.OnGameStart.Add(Diet.onGameStart)

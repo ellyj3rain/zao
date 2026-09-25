@@ -192,6 +192,9 @@ ZAO = {
   return ZAO.StateStore.store().people[tostring(rec.id)]
  end},
 }
+ZAO.Maintenance={predatoryPressure=function(state)
+ return tonumber(state and state.testPredatoryPressure) or 0
+end}
 
 function __body(which)
  if which=='afflicted' then return afflicted end
@@ -217,6 +220,8 @@ function __controlled(mode)
  if mode=='threat' then ZAO.Controller.controlled={afflicted=afflicted,crossed=crossed}
  elseif mode=='peers' then ZAO.Controller.controlled={afflicted=afflicted,peer=peer}
  elseif mode=='crossed' then ZAO.Controller.controlled={crossed=crossed}
+ elseif mode=='crossed_afflicted' then
+  ZAO.Controller.controlled={crossed=crossed,afflicted=afflicted}
  elseif mode=='crossed_targets' or mode=='global_only' then
   ZAO.Controller.controlled={crossed=crossed,nearHuman=nearHuman,farHuman=farHuman}
  else ZAO.Controller.controlled={afflicted=afflicted} end
@@ -225,6 +230,9 @@ function __controlled(mode)
  if mode=='crossed_targets' then
   crossedPeople.Near={id='nearHuman',source='observed',at=7,x=14,y=10}
   crossedPeople.Far={id='farHuman',source='observed',at=7,x=22,y=10}
+ end
+ if mode=='crossed_afflicted' then
+  crossedPeople.afflicted={id='afflicted',source='observed',at=7,x=10,y=10}
  end
 end
 function __routeComplete(value) routeComplete=value end
@@ -344,6 +352,22 @@ for _,option in ipairs(hiddenOptions) do
  assert(option.kind~='predation',
   'controller-wide bodies became Crossed targets without private perception')
 end
+__controlled('crossed_afflicted')
+cstate.testPredatoryPressure=1
+local afflictedOptions=ZAO.Crossed.options(crossed,'crossed',cstate,
+ crossedMind,7,7)
+local exposureSeen,predationSeen=false,false
+for _,option in ipairs(afflictedOptions) do
+ if option.targetId=='afflicted' and option.kind=='exposure' then
+  exposureSeen=true
+ end
+ if option.targetId=='afflicted' and option.kind=='predation' then
+  predationSeen=true
+ end
+end
+assert(exposureSeen and not predationSeen,
+ 'Afflicted exposure disappeared or fell through to Crossed prey selection')
+cstate.testPredatoryPressure=nil
 __controlled('crossed_targets')
 local crossedOptions=ZAO.Crossed.options(crossed,'crossed',cstate,
  crossedMind,7,7)
@@ -459,6 +483,9 @@ def main() -> int:
         ("Crossed target evidence", "ZAO_Crossed.lua",
          '+ observedFear * 12 - distanceCost',
          '+ observedFear * 0 - distanceCost'),
+        ("Afflicted exposure is not prey selection", "ZAO_Crossed.lua",
+         'if person.state == "afflicted" then',
+         "if false then"),
         ("visible rather than hidden fear evidence", "ZAO_Mind.lua",
          'fresh.zaoVisibleDistress = visibleDistress(other)',
          'fresh.zaoVisibleDistress = 0'),
@@ -493,7 +520,7 @@ def main() -> int:
             if result.returncode == 0:
                 print(f"REFUSED: {name} control survived")
                 return 1
-    print("Border 12 PASS: one ZAO driver arbitrates distinct living-state options from real Perception, Disposition and Standing inputs; dormant people cannot execute native work without a body; Afflicted fear, gathering and evidenced travel coexist with shared human water physiology; personal acquisition stays serialized under SAO SourceUse; Crossed strategy uses privately visible distress; distinct-person settlement formation is required; ten controls fail")
+    print("Border 12 PASS: one ZAO driver arbitrates distinct living-state options from real Perception, Disposition and Standing inputs; dormant people cannot execute native work without a body; Afflicted fear, gathering and evidenced travel coexist with shared human physiology; personal acquisition stays serialized under SAO SourceUse; Crossed strategy uses privately visible distress while Afflicted exposure cannot fall through to prey selection; distinct-person settlement formation is required; eleven controls fail")
     return 0
 
 

@@ -117,6 +117,45 @@ function adapter.appraiseMatter(personId, rec, processView, baseContext)
         type(baseContext) == "table" and baseContext or {}, hours)
 end
 
+-- The common execution adapter dispatches origination to the current state
+-- provider exactly as it dispatches appraisal.  Shared ownership stops here:
+-- Afflicted necessity and Crossed rendezvous evidence remain separate policy
+-- inputs and neither provider may borrow the other's maintenance state.
+function adapter.originateMatter(personId, rec, context)
+    personId = tostring(personId or "")
+    local body = bodyFor(personId, rec)
+    local hours = tonumber(type(context) == "table" and context.atHours) or 0
+    if hours <= 0 then pcall(function() hours = SAO.History.countyHours() end) end
+    local state = ZAO.Pathogen and ZAO.Pathogen.stateOf(personId) or nil
+    if state and ZAO.Maintenance and ZAO.Maintenance.advanceState then
+        pcall(ZAO.Maintenance.advanceState, state, hours)
+    end
+    local provider = state and state.terminalState == "afflicted"
+        and ZAO.Afflicted or state and state.terminalState == "crossed"
+        and ZAO.Crossed or nil
+    if not (state and provider and type(provider.originateMatter) == "function") then
+        return nil, "state-provider-unavailable"
+    end
+    local mind = ZAO.Mind and ZAO.Mind.of(rec, hours, body) or nil
+    if not mind then return nil, "mind-unavailable" end
+    return provider.originateMatter(personId, body, state, mind,
+        type(context) == "table" and context or {}, hours)
+end
+
+-- Both living states use the same ZAO driver for physical contact
+-- continuation. Their different policies created the matter; this adapter
+-- only prevents SAO from moving a ZAO-owned record on their behalf.
+function adapter.advanceContact(personId, rec, candidate, context)
+    local state = ZAO.Pathogen and ZAO.Pathogen.stateOf(tostring(personId))
+        or nil
+    if not state or not ZAO.Driver
+        or not ZAO.Driver.advanceDormantContact then
+        return false, "contact-owner-unavailable"
+    end
+    return ZAO.Driver.advanceDormantContact(tostring(personId), rec, state,
+        candidate, type(context) == "table" and context or {})
+end
+
 function adapter.advanceDormant(personId, rec, body, elapsedHours, atHours)
     local state = ZAO.Pathogen and ZAO.Pathogen.stateOf(tostring(personId))
         or nil

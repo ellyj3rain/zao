@@ -1,13 +1,35 @@
 | Document | Zombie Awareness Overhaul Session State |
 |---|---|
-| Version | `0.5.1.0-pre-alpha` |
+| Version | `0.5.2.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `SESSION_STATE.md` |
 | Status | CANONICAL - where the work actually stands. |
 
 # Session state
 
-**Current implementation, 2026-09-25:** A41 on
+**Current implementation, 2026-09-25:** A42 on
+`neo/a42-private-situation-producers` continues Afflicted- and Crossed-authored
+matters through particular privately retained contacts under the same ZAO
+driver. The two providers remain different policies. Contact address arrival is
+not hearing; actual Communication reception, recipient-private appraisal and a
+returned answer are separate. Missing representation waits or defers, and
+loaded, dormant and headless execution use the same shared owner.
+
+A42 also corrects the Crossed maintenance boundary. Crossed retain the human
+shell's ordinary caloric passage and can use ordinary food. Eligible
+ordinary-human provenance remains available under Crossed motives, but
+Afflicted provenance is rejected categorically at option formation,
+timed-action admission, validity, native completion and SourceUse consumption.
+Evolved dishes retain donor provenance; anonymous legacy human-origin food
+fails closed. Eating and intentional blood exposure remain separate. A42 does
+not modify or infer Afflicted food policy.
+
+Focused material, maintenance and shared-driver controls pass in installed
+Kahlua, and the full gate covers the combined sister seams. This is mechanical
+headless evidence. Loaded-world speech, movement, food diversity, animation,
+save/reopen presentation, balance and long-horizon ecology remain unobserved.
+
+**Before that, 2026-09-25:** A41 on
 `neo/a41-dormant-life-policy-owner` moves the living ZAO execution adapter out
 of the loaded Controller and into shared `ZAO_ExecutionOwner`. Loaded, dormant
 and headless coordination now obtain current activity, capability and generic
@@ -65,7 +87,7 @@ gathers with actual Afflicted peers and travels to evidenced ground. Afflicted
 require water, prefer meat/protein, can use penalized non-dairy alternatives
 and may individually choose human-origin food with donor-conditioned exposure
 protection. Crossed policy admits human wound care, drinking, rest and ordinary
-food under reduced caloric pressure alongside predation, intentional exposure,
+food through ordinary human caloric passage alongside predation, intentional exposure,
 driving and holding. A
 settlement requires state-specific holding acts by distinct people across days;
 mere proximity and repeat scans cannot form one.
@@ -73,8 +95,8 @@ mere proximity and repeat scans cannot form one.
 Crossed material action is now concrete. Ordinary food sustains the retained
 human physiology; human-origin food receives a separate preference because it
 can combine sustenance with altered motives. Timed butchery yields human flesh once
-from an eligible ordinary or Afflicted human corpse, with Afflicted sources
-dispreferred. Items and evolved dishes—including stew—remain eligible only while
+from an eligible ordinary human corpse; Afflicted sources are categorically
+rejected. Items and evolved dishes—including stew—remain eligible only while
 their native ingredient provenance contains that flesh. Crossed, mutant, zombie
 and animal bodies are refused.
 A separately selected timed blood action stamps the exact equipped melee or

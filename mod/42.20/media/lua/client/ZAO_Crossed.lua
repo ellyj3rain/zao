@@ -240,16 +240,41 @@ local function relationFixation(value)
     return math.min(1, math.abs(value))
 end
 
+local function retainedAssociates(personId, state)
+    local groupId = state and state.settlementGroup or nil
+    local group = groupId and ZAO.Settlement and ZAO.Settlement.groups
+        and ZAO.Settlement.groups[groupId] or nil
+    local associates = {}
+    for otherId in pairs(group and group.members or {}) do
+        otherId = tostring(otherId or "")
+        if otherId ~= "" and otherId ~= tostring(personId) then
+            local relationship = 0
+            pcall(function()
+                relationship = SAO.Standing.trust(personId, otherId)
+            end)
+            associates[#associates + 1] = {
+                id = otherId, relationship = relationship,
+                priorGroup = true, retained = true,
+            }
+        end
+    end
+    table.sort(associates, function(a, b) return a.id < b.id end)
+    return associates
+end
+
 local function rendezvousSituation(body, personId, state, mind, associates,
         hours)
-    if not (body and mind and ZAO.Driver and SAO and SAO.Organization) then
+    if not (mind and ZAO.Driver and SAO and SAO.Organization) then
         return nil
     end
     local open = SAO.Organization.openMatter
         and SAO.Organization.openMatter(tostring(personId),
             "rendezvous-holding") or nil
     if #associates == 0 then
-        if open then
+        -- A represented scan that presently finds nobody can revise the
+        -- actor's intent. Bodylessness is only missing observation and cannot
+        -- withdraw a previously evidenced associate.
+        if body and open then
             return { id = "crossed:rendezvous:withdraw:" .. tostring(open.id),
                 kind = "rendezvous-withdraw",
                 activity = "revising-rendezvous", score = 34,
@@ -273,16 +298,18 @@ local function rendezvousSituation(body, personId, state, mind, associates,
     if group and group.occupied and group.place and tonumber(group.place.x)
         and tonumber(group.place.y) then
         x, y, z = group.place.x, group.place.y,
-            group.place.z or body:getZ()
+            group.place.z or body and body:getZ() or record and record.z or 0
         source, arrival = "held-ground", "holding-home"
     elseif record and tonumber(record.homeX) and tonumber(record.homeY)
         and (tonumber(disposition.discipline) or 0) >= 0.35 then
-        x, y, z = record.homeX, record.homeY, record.homeZ or body:getZ()
+        x, y, z = record.homeX, record.homeY,
+            record.homeZ or body and body:getZ() or record.z or 0
         source, arrival = "retained-home", "holding-home"
-    else
+    elseif body then
         x, y, z = body:getX(), body:getY(), body:getZ()
         source, arrival = "present-opportunity", "holding-with-kin"
     end
+    if not (tonumber(x) and tonumber(y)) then return nil end
     x, y, z = math.floor(x), math.floor(y), math.floor(z)
     local intentKey = table.concat({ source, tostring(x), tostring(y),
         tostring(z) }, ":")
@@ -326,6 +353,41 @@ local function rendezvousSituation(body, personId, state, mind, associates,
             addressedCount = #addressed,
         },
     }
+end
+
+-- The shared driver invokes this provider without changing what motivates a
+-- Crossed person. Loaded origin uses people presently observed through the
+-- retained mind. Bodyless origin is narrower: only durable membership in an
+-- evidenced ZAO holding group can establish associates, and the destination
+-- must remain their held ground or retained home.
+function Crossed.originateMatter(personId, body, state, mind, context, hours)
+    local associates = {}
+    if body then
+        local people = ZAO.Mind and ZAO.Mind.visiblePeople
+            and ZAO.Mind.visiblePeople(mind, body,
+                type(context) == "table" and context.now or 0,
+                ACTION_RANGE) or {}
+        associates = associatesOf(personId,
+            mind.standing and mind.standing.group, people)
+    else
+        associates = retainedAssociates(personId, state)
+    end
+    local option = rendezvousSituation(body, personId, state, mind,
+        associates, hours)
+    if not option then return nil, "no-crossed-situation" end
+    if option.kind == "rendezvous-withdraw" then
+        local open = SAO.Organization.openMatter(tostring(personId),
+            "rendezvous-holding")
+        local withdrawn, status = ZAO.Driver.withdrawMatter(personId,
+            "rendezvous-holding", "opportunity-no-longer-evidenced", {
+                owner = "ZAO.Crossed", atHours = tonumber(hours) or 0,
+            })
+        return open, withdrawn and "withdrawn" or status
+    end
+    local _, status, process = ZAO.Driver.performMatter(personId,
+        "rendezvous-holding", option.organizationId, option.proposal,
+        option.addressedIds, option.privateEvidence, hours)
+    return process, status
 end
 
 function Crossed.appraiseMatter(personId, body, state, mind, processView,
@@ -490,24 +552,10 @@ function Crossed.options(body, personId, state, mind, now, hours)
                 target = person.body,
                 detail = "observed Afflicted exposure opportunity",
             })
-            -- Afflicted are generally dispreferred as prey and remain useful
-            -- to Crossed in many other ways.  They are nevertheless not made
-            -- categorically inedible or immune to violence: extreme pressure,
-            -- personal fixation and disposition can make this one option.
-            if predatoryPressure >= 0.70 then
-                add(options, {
-                    id = "crossed:predation:afflicted:" .. person.id,
-                    kind = "predation", activity = "hunt",
-                    score = 12 + predatoryPressure * 30
-                        + (tonumber(disposition.aggression) or 0) * 12
-                        + relationFixation(person.relationship) * 10
-                        + observedFear * 8 - person.distance * 0.25,
-                    interruptsWork = predatoryPressure >= 0.90,
-                    targetId = person.id, target = person.body,
-                    distance = person.distance,
-                    detail = "dispreferred Afflicted predation opportunity",
-                })
-            end
+            -- Afflicted are not a Crossed food source.  This branch preserves
+            -- the distinct intentional-exposure action; other evidenced
+            -- violence can remain its own concern without entering diet or
+            -- pressure-driven prey selection.
         elseif person.state ~= "crossed" and not associateIds[person.id] then
             local observedFear = tonumber(person.visibleDistress) or 0
             local distanceCost = math.min(ACTION_RANGE, person.distance) * 0.25

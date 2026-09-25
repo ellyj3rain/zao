@@ -99,13 +99,49 @@ local function clamp01(value)
     return value
 end
 
+local function knownRecipients(personId, group, context)
+    local addressed, seen = {}, {}
+    local function admit(otherId, hostile, knownForm)
+        otherId = tostring(otherId or "")
+        if otherId ~= "" and otherId ~= tostring(personId)
+            and hostile ~= true and tostring(knownForm or "") ~= "crossed"
+            and not seen[otherId] then
+            seen[otherId] = true
+            addressed[#addressed + 1] = otherId
+        end
+    end
+    for otherId in pairs(group and group.members or {}) do admit(otherId, false) end
+    for _, contact in ipairs(type(context) == "table"
+            and context.knownContacts or {}) do
+        -- Only the actor's retained form knowledge may exclude a known
+        -- Crossed threat here. Missing form remains unknown; ZAO must not
+        -- consult the other person's current hidden pathogen state.
+        admit(contact.id, contact.hostile, contact.form)
+        if #addressed >= 3 then break end
+    end
+    table.sort(addressed)
+    while #addressed > 3 do table.remove(addressed) end
+    return addressed
+end
+
 local function afflictedProvisioningSituation(body, personId, state, mind,
-        now, hours)
-    if not (body and mind and ZAO.Driver and SAO and SAO.Organization) then
+        now, hours, context)
+    if not (mind and ZAO.Driver and SAO and SAO.Organization) then
         return nil
     end
     local physical = mind.physical or {}
-    local hunger, thirst = clamp01(physical.hunger), clamp01(physical.thirst)
+    local personalEvidence = body ~= nil and (physical.hunger ~= nil
+        or physical.thirst ~= nil)
+    local retained = state and state.driver
+        and type(state.driver.settlementPressure) == "table"
+        and state.driver.settlementPressure or nil
+    if not personalEvidence and retained
+        and retained.terminalState == "afflicted" then
+        physical = retained
+        personalEvidence = retained.hunger ~= nil or retained.thirst ~= nil
+    end
+    local hunger = personalEvidence and clamp01(physical.hunger) or 0
+    local thirst = personalEvidence and clamp01(physical.thirst) or 0
     local groupId = state and state.settlementGroup or nil
     local group = groupId and ZAO.Settlement and ZAO.Settlement.groups
         and ZAO.Settlement.groups[groupId] or nil
@@ -131,7 +167,8 @@ local function afflictedProvisioningSituation(body, personId, state, mind,
     local pressure = math.max(foodPressure, waterPressure)
     local open = SAO.Organization.openMatter
         and SAO.Organization.openMatter(tostring(personId), "provisioning") or nil
-    if pressure <= 0.25 and open then
+    local evidenceAvailable = personalEvidence or observed > 0
+    if evidenceAvailable and pressure <= 0.25 and open then
         return {
             id = "afflicted:provisioning:withdraw:" .. tostring(open.id),
             kind = "provisioning-withdraw",
@@ -140,24 +177,33 @@ local function afflictedProvisioningSituation(body, personId, state, mind,
             detail = "the evidenced provisioning pressure has passed",
         }
     end
-    if pressure < 0.55 then return nil end
+    if not evidenceAvailable or pressure < 0.55 then return nil end
 
-    local people = ZAO.Mind and ZAO.Mind.visiblePeople
-        and ZAO.Mind.visiblePeople(mind, body, now, GATHER_RADIUS) or {}
     local addressed = {}
-    for _, person in ipairs(people) do
-        if person.state ~= "crossed" and person.relationship > -0.35 then
-            addressed[#addressed + 1] = person.id
-            if #addressed >= 3 then break end
+    if body then
+        local people = ZAO.Mind and ZAO.Mind.visiblePeople
+            and ZAO.Mind.visiblePeople(mind, body, now, GATHER_RADIUS) or {}
+        for _, person in ipairs(people) do
+            if person.state ~= "crossed" and person.relationship > -0.35 then
+                addressed[#addressed + 1] = person.id
+                if #addressed >= 3 then break end
+            end
         end
+    else
+        addressed = knownRecipients(personId, group, context)
     end
     if #addressed == 0 then return nil end
 
-    local x, y, z = body:getX(), body:getY(), math.floor(body:getZ())
+    local record = SAO.Identity and SAO.Identity.get(personId) or nil
+    local x = body and body:getX() or record and (record.homeX or record.x)
+    local y = body and body:getY() or record and (record.homeY or record.y)
+    local z = body and body:getZ() or record and (record.homeZ or record.z)
     if group and group.place and tonumber(group.place.x)
         and tonumber(group.place.y) then
-        x, y, z = group.place.x, group.place.y, group.place.z or z
+        x, y, z = group.place.x, group.place.y, group.place.z or z or 0
     end
+    if not (tonumber(x) and tonumber(y)) then return nil end
+    z = tonumber(z) or 0
     x, y, z = math.floor(x), math.floor(y), math.floor(z)
     local band = math.max(1, math.min(4, math.floor(pressure * 4) + 1))
     local intentKey = table.concat({ category, tostring(x), tostring(y),
@@ -189,12 +235,39 @@ local function afflictedProvisioningSituation(body, personId, state, mind,
         proposal = proposal,
         addressedIds = addressed,
         privateEvidence = {
-            source = group and "settlement-necessity" or "personal-necessity",
-            needOwner = "ZAO.Driver<-SAO.Needs",
+            source = group and "settlement-necessity"
+                or body and "personal-necessity"
+                or "retained-personal-necessity",
+            needOwner = body and "ZAO.Driver<-SAO.Needs"
+                or "ZAO.Driver.settlementPressure<-SAO.Needs",
             foodPressure = foodPressure, waterPressure = waterPressure,
             settlementNecessity = settlementNeed,
+            observedAtHours = body and tonumber(hours)
+                or retained and tonumber(retained.observedAtHours) or nil,
         },
     }
+end
+
+-- Representation-neutral entry used by the shared execution adapter. Missing
+-- body evidence cannot manufacture hunger or thirst; a bodyless request needs
+-- the driver's retained exact pressure or settlement-owned need evidence.
+function Afflicted.originateMatter(personId, body, state, mind, context, hours)
+    local option = afflictedProvisioningSituation(body, personId, state, mind,
+        nil, hours, context)
+    if not option then return nil, "no-afflicted-situation" end
+    if option.kind == "provisioning-withdraw" then
+        local open = SAO.Organization.openMatter(tostring(personId),
+            "provisioning")
+        local withdrawn, status = ZAO.Driver.withdrawMatter(personId,
+            "provisioning", "necessity-resolved", {
+                owner = "ZAO.Afflicted", atHours = tonumber(hours) or 0,
+            })
+        return open, withdrawn and "withdrawn" or status
+    end
+    local _, status, process = ZAO.Driver.performMatter(personId,
+        "provisioning", option.organizationId, option.proposal,
+        option.addressedIds, option.privateEvidence, hours)
+    return process, status
 end
 
 -- ZAO chooses from the current person's own activity, capability, relations
@@ -295,7 +368,7 @@ function Afflicted.options(body, personId, state, mind, now, hours)
         end
     end
     local provisioning = afflictedProvisioningSituation(body, personId, state,
-        mind, now, hours)
+        mind, now, hours, nil)
     if provisioning then options[#options + 1] = provisioning end
     local threatId, threat = Afflicted.threatFor(body, personId, mind, now)
     local route = state and state.driver and state.driver.route or nil

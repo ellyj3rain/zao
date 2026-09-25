@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Roadmap |
 |---|---|
-| Version | `0.5.1.0-pre-alpha` |
+| Version | `0.5.2.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `ROADMAP.md` |
 | Status | CANONICAL - gate order and the open-fork ledger. |
@@ -63,12 +63,12 @@ living pathogen states. Afflicted and Crossed retain distinct policies,
 capabilities and action providers. Authorized Afflicted return, loaded/dormant handoff,
 conversion without executor replacement, state-specific holding evidence and
 source-owned body pressure now form one causal path. Crossed explicitly admit
-ordinary food under reduced caloric pressure. Afflicted water, protein
+ordinary food through ordinary human caloric passage. Afflicted water, protein
 preference, penalized non-dairy alternatives and donor-conditioned human-meal
 protection form a distinct maintenance path.
 
 Crossed now have first material producers: interruptible exact-once butchery of
-eligible ordinary or dispreferred Afflicted human corpses, human-flesh provenance through cooked dishes,
+eligible ordinary human corpses, human-flesh and donor provenance through cooked dishes,
 ordinary food as valid physiology, and finite blood uses deliberately prepared
 on the actual equipped melee or projectile
 weapon. Native hit resolution waits for a real wound; Afflicted exposure stays
@@ -93,6 +93,15 @@ final appraisal to distinct Afflicted or Crossed policy and retains missing
 representation as an observation gap. SAO C84 uses that owner in exact-replay
 causal episodes; the first tracked 30-day episode observes ZAO state changes but
 no shared matter. Wider producer density and loaded-world behavior remain open.
+
+A42 connects those state-authored situations to particular retained contacts
+through the common driver while keeping arrival, reception and response
+separate. It corrects Crossed maintenance to ordinary human caloric passage and
+rejects Afflicted donor provenance at option, timed-action, native-completion
+and SourceUse boundaries. Anonymous legacy human-origin food fails closed;
+intentional exposure remains separate and Afflicted food policy is unchanged.
+Focused controls and the full gate provide mechanical evidence. Loaded-world
+presentation, balance and long-horizon ecology remain open.
 
 ## Open forks — reserved to the operator
 
