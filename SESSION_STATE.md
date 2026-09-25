@@ -1,13 +1,31 @@
 | Document | Zombie Awareness Overhaul Session State |
 |---|---|
-| Version | `0.5.0.0-pre-alpha` |
+| Version | `0.5.1.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `SESSION_STATE.md` |
 | Status | CANONICAL - where the work actually stands. |
 
 # Session state
 
-**Current implementation, 2026-09-25:** A40 on
+**Current implementation, 2026-09-25:** A41 on
+`neo/a41-dormant-life-policy-owner` moves the living ZAO execution adapter out
+of the loaded Controller and into shared `ZAO_ExecutionOwner`. Loaded, dormant
+and headless coordination now obtain current activity, capability and generic
+pressure from the same ZAO owner. The retained human shell is resolved only
+when it is actually controlled; its absence stays an observation gap and adds
+no body, death, migration or conversion policy.
+
+After actual proposal acquisition, the shared adapter dispatches to
+`ZAO.Afflicted.appraiseMatter` or `ZAO.Crossed.appraiseMatter` from the person's
+current state. The two lives therefore retain different motives, terms and
+response policy behind one `ZAO.Driver` executor. Condition, diet and predatory
+truth remain outside SAO's generic appraisal envelope. Updated Borders 11 and
+15 retain six mutations each, and SAO C84's twenty-scene audit rejects missing
+registration and forged final ZAO attribution. This is mechanical headless
+evidence; loaded-world speech, movement, animation and save/reopen play remain
+unobserved.
+
+**Before that, 2026-09-25:** A40 on
 `neo/a40-distinct-life-coordination` makes Afflicted and Crossed participants
 in durable shared matters through their common ZAO execution owner without
 making their lives similar. `ZAO.Driver` is only the bridge into SAO's one

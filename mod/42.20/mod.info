@@ -1,7 +1,7 @@
 name=Zombie Awareness Overhaul
 id=ZombieAwareness
 author=ellyj3rain
-modversion=0.5.0.0-pre-alpha
+modversion=0.5.1.0-pre-alpha
 description=Zombie Awareness Overhaul drives turned bodies and transferred living Afflicted and Crossed human shells from the person's retained record. PRE-ALPHA: expect defects.
 versionMin=42.20
 versionMax=42.20

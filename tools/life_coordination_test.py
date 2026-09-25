@@ -22,6 +22,7 @@ FILES = {
     "driver": ROOT / "mod/42.20/media/lua/client/ZAO_Driver.lua",
     "afflicted": ROOT / "mod/42.20/media/lua/client/ZAO_Afflicted.lua",
     "crossed": ROOT / "mod/42.20/media/lua/client/ZAO_Crossed.lua",
+    "execution_owner": ROOT / "mod/42.20/media/lua/shared/ZAO_ExecutionOwner.lua",
     "controller": ROOT / "mod/42.20/media/lua/client/ZAO_Controller.lua",
 }
 
@@ -321,6 +322,7 @@ def run(work: Path, sources: dict[str, str]) -> subprocess.CompletedProcess[str]
         "driver.lua": sources["driver"],
         "afflicted.lua": sources["afflicted"],
         "crossed.lua": sources["crossed"],
+        "execution_owner.lua": sources["execution_owner"],
         "controller.lua": sources["controller"],
         "probe.lua": PROBE,
     }
@@ -345,9 +347,9 @@ def static_contract(sources: dict[str, str]) -> tuple[bool, str]:
     if ("rendezvousSituation" not in sources["crossed"]
             or '"rendezvous-holding"' not in sources["crossed"]):
         return False, "Crossed rendezvous producer is absent"
-    controller = sources["controller"]
-    if ("function executionAdapter.appraiseMatter" not in controller
-            or "provider.appraiseMatter" not in controller):
+    execution_owner = sources["execution_owner"]
+    if ("function adapter.appraiseMatter" not in execution_owner
+            or "provider.appraiseMatter" not in execution_owner):
         return False, "registered ZAO appraisal is not state-dispatched"
     forbidden = ("terminalState = terminal", "diet =", "dietKnown =")
     appraisal = sources["afflicted"] + sources["crossed"]
@@ -407,7 +409,7 @@ def main() -> int:
              'bodyOwner = "ZAO", currentActivity = activity,',
              'bodyOwner = "ZAO", terminalState = state.terminalState, '
              'currentActivity = activity,'),
-            ("conversion dispatches current state policy", "controller",
+            ("conversion dispatches current state policy", "execution_owner",
              'and ZAO.Crossed or nil',
              'and ZAO.Afflicted or nil'),
         ]

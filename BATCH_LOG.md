@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Batch Log |
 |---|---|
-| Version | `0.5.0.0-pre-alpha` |
+| Version | `0.5.1.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `BATCH_LOG.md` |
 | Status | REGULATORY - chronological batch index. |
@@ -56,3 +56,4 @@ history tree. The last row below is the tip.
 | [A38](Batches/A38-2026-09-24-crossed-coordination-ownership.md) | 2026-09-24 | Crossed coordination ownership | [`T-001`](Batches/THREADS.md#t-001), [`T-002`](Batches/THREADS.md#t-002) |
 | [A39](Batches/A39-20260924-2016Z-1316PST-afflicted-and-crossed-execution.md) | 2026-09-24 | Afflicted and Crossed execution | [`T-001`](Batches/THREADS.md#t-001), [`T-002`](Batches/THREADS.md#t-002) |
 | [A40](Batches/A40-20260925-0855Z-0155PST-distinct-life-coordination.md) | 2026-09-25 | Distinct life coordination | [`T-001`](Batches/THREADS.md#t-001), [`T-002`](Batches/THREADS.md#t-002) |
+| [A41](Batches/A41-20260925-1201Z-0501PST-shared-living-execution-owner.md) | 2026-09-25 | Shared living execution owner | [`T-001`](Batches/THREADS.md#t-001), [`T-002`](Batches/THREADS.md#t-002) |
