@@ -16,9 +16,9 @@ the machine. Names, dates, and threads below come from
 | Form | `major.minor.kohai.patch-maturity` |
 | Hard caps | minor 12; kohai 16; patch 24 |
 | Replay start | `0.1.0.0-pre-alpha` |
-| Current version | `0.5.0.0-pre-alpha` |
-| Closed chronology | `A1-A40` |
-| Next batch | `A41` |
+| Current version | `0.5.1.0-pre-alpha` |
+| Closed chronology | `A1-A41` |
+| Next batch | `A42` |
 | Executable source | [`tools/version_replay.py`](tools/version_replay.py) |
 
 ## Tier meanings
@@ -75,6 +75,7 @@ the machine. Names, dates, and threads below come from
 | `A38` | 2026-09-24 | kohai | `0.3.3.0-pre-alpha` | Crossed coordination ownership | Connected the ZAO-owned living Crossed shell to the sister's enacted coordination runtime through a registered execution owner, with retained-capability and competing-activity evidence. Identity-bearing IsoZombie representations of Crossed state are rejected before admission side effects. This matures the existing ownership seam without adding a new body transition, so kohai. |
 | `A39` | 2026-09-24 | minor | `0.4.0.0-pre-alpha` | Afflicted and Crossed execution | ZAO now executes both living pathogen states through one durable driver with distinct state providers, actor-private options, evidenced settlement acts, distinct Afflicted maintenance, retained Crossed human physiology, and first material producers for ordinary and human-origin sustenance, exact human butchery and selectively blood-contaminated weapon hits. This is a new player-visible simulation capability, so minor. |
 | `A40` | 2026-09-25 | minor | `0.5.0.0-pre-alpha` | Distinct life coordination | Afflicted and Crossed now originate, revise, withdraw, appraise and perform concrete shared matters through their common ZAO execution driver while retaining distinct motives: necessity-backed food or water provisioning for Afflicted and bounded rendezvous/holding for Crossed. Actual communication, independent responses, native acquisition or arrival, reload and exact-once outcomes make this the first long-horizon social-life producer for both states, so minor. |
+| `A41` | 2026-09-25 | kohai | `0.5.1.0-pre-alpha` | Shared living execution owner | Move the registered living execution adapter from the loaded controller into one shared owner usable by loaded, dormant and headless execution. The adapter preserves one common ZAO driver while dispatching recipient appraisal to distinct Afflicted or Crossed policy and retaining missing representation as an observation gap. This structurally matures the A39-A40 ownership and coordination boundary without adding a new life, body or action family, so kohai. |
 
 ## Maturity
 
@@ -84,11 +85,11 @@ says.
 
 ## Next movement
 
-`A41` is the next batch. Its content determines its tier after it
+`A42` is the next batch. Its content determines its tier after it
 exists:
 
-| If A41 is | Result |
+| If A42 is | Result |
 |---|---|
-| patch or hotfix | `0.5.0.1-pre-alpha` |
-| kohai | `0.5.1.0-pre-alpha` |
+| patch or hotfix | `0.5.1.1-pre-alpha` |
+| kohai | `0.5.2.0-pre-alpha` |
 | minor | `0.6.0.0-pre-alpha` |

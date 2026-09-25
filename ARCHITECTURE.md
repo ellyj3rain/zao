@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Architecture |
 |---|---|
-| Version | `0.5.0.0-pre-alpha` |
+| Version | `0.5.1.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `ARCHITECTURE.md` |
 | Status | ACTIVE - ratified framework shape. Engine surfaces claimed here are unverified until `FINDINGS.md` carries them. |
@@ -136,10 +136,13 @@ existing death and witness path.
 ### Living ZAO execution owner
 
 The retained living shell is the Afflicted or Crossed person's communication
-and work body. `ZAO_Controller` registers `ZAO.Driver` with SAO and exposes only
-current body presence, competing activity and capabilities derived from that
-person's current mind. SAO may address the person and perform an accepted
-native action through the adapter; ZAO decides whether the actor does it.
+and work body. Shared `ZAO_ExecutionOwner` registers the common `ZAO.Driver`
+adapter with SAO and exposes only current body presence, competing activity and
+capabilities derived from that person's current mind. `ZAO_Controller` renews
+the registration in loaded execution but does not own or define the adapter;
+dormant and headless execution use the same shared module. SAO may address the
+person and perform an accepted native action through the adapter; ZAO decides
+whether the actor does it.
 
 The shared driver supplies arbitration, current activity, durable movement and
 exact-once route outcomes. Each state provider admits its own motives and
@@ -198,6 +201,14 @@ Locomotion and Handover owners. Accepted rendezvous returns to Locomotion and
 records holding activity only after the matching promised arrival. The result
 can therefore inform existing settlement evidence without proximity becoming
 assent or completion.
+
+A41 makes this dispatch representation-neutral. The shared execution owner
+resolves a loaded body only when the person's stable ZAO control token owns the
+retained human shell. Otherwise it supplies a bodyless snapshot or an explicit
+observation gap and dispatches the final appraisal to the current Afflicted or
+Crossed provider. The adapter never treats common execution as common
+physiology, sustenance, motives or policy and exports no terminal-state label
+through SAO's generic response envelope.
 
 An `IsoZombie` carrying a ZAO-owned or durably Crossed identity is malformed at
 this boundary. The controller rejects it before ownership, pathogen,

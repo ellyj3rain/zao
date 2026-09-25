@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Roadmap |
 |---|---|
-| Version | `0.5.0.0-pre-alpha` |
+| Version | `0.5.1.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `ROADMAP.md` |
 | Status | CANONICAL - gate order and the open-fork ledger. |
@@ -86,6 +86,13 @@ state, and accepted work reaches the sister's exact material or arrival owners.
 The process survives revision, conversion, interruption and reload. Border 15
 proves these paths mechanically; loaded-world presentation and the wider life
 vocabulary remain open.
+
+A41 moves the registered living execution adapter into a shared module so the
+same owner serves loaded, dormant and headless coordination. It dispatches the
+final appraisal to distinct Afflicted or Crossed policy and retains missing
+representation as an observation gap. SAO C84 uses that owner in exact-replay
+causal episodes; the first tracked 30-day episode observes ZAO state changes but
+no shared matter. Wider producer density and loaded-world behavior remain open.
 
 ## Open forks — reserved to the operator
 

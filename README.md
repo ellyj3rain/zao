@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul |
 |---|---|
-| Version | `0.5.0.0-pre-alpha` |
+| Version | `0.5.1.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `README.md` |
 | Status | CANONICAL - human entry point. |
@@ -101,6 +101,15 @@ locomotion owners; rendezvous completes only at the exact promised arrival.
 Conversion retains the process but reappraises it through current Crossed
 policy. Border 15 controls this combined path headlessly; loaded-world behavior
 remains unobserved.
+
+A41 makes that common execution owner available without the loaded Controller.
+The shared adapter resolves the real retained human shell when present, exposes
+current `ZAO.Driver` activity/capability/pressure, and dispatches the final
+response to the current Afflicted or Crossed policy. Dormant and headless
+coordination therefore cannot fall back into SAO ownership. A missing shell
+remains an observation gap; no alternate body, mortality, migration or
+conversion rule is inferred. Updated Borders 11 and 15 control the shared seam;
+loaded-world behavior remains unobserved.
 
 G0 closed at `[A6]`: the engine's turn surface is established from the
 installed build with file-and-line evidence, in F-001 through F-011.

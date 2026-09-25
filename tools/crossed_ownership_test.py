@@ -15,6 +15,7 @@ GAME = Path(os.environ.get(
 JDK = Path(os.environ.get(
     "JDK_BIN", r"C:\Users\jleyv\Peanut Butter\JetBrains\Java\bin"))
 CONTROLLER = ROOT / "mod/42.20/media/lua/client/ZAO_Controller.lua"
+EXECUTION_OWNER = ROOT / "mod/42.20/media/lua/shared/ZAO_ExecutionOwner.lua"
 
 RUNNER = r'''
 import java.nio.charset.StandardCharsets;
@@ -286,52 +287,58 @@ assert(probeOk, "Crossed ownership probe failed at " .. stage .. ": "
 '''
 
 
-def run(work: Path, source: str) -> subprocess.CompletedProcess[str]:
-    instrumented = source.replace(
+def run(work: Path, controller_source: str,
+        owner_source: str) -> subprocess.CompletedProcess[str]:
+    instrumented = controller_source.replace(
         "return ZAO.Controller",
         "__processExternalCrossed = processExternalCrossed\nreturn ZAO.Controller",
         1,
     )
     (work / "controller.lua").write_text(instrumented, encoding="utf-8")
+    (work / "execution_owner.lua").write_text(owner_source, encoding="utf-8")
     return subprocess.run(
         [str(JDK / "java.exe"), "-cp",
          f"{GAME / 'projectzomboid.jar'}{os.pathsep}{work}",
          "CrossedOwnershipRun", str(work / "host.lua"),
+         str(work / "execution_owner.lua"),
          str(work / "controller.lua"), str(work / "probe.lua")],
         cwd=work, capture_output=True, text=True, timeout=30)
 
 
 def main() -> int:
     required = [GAME / "projectzomboid.jar", GAME / "stdlib.lua",
-                JDK / "java.exe", JDK / "javac.exe", CONTROLLER]
+                JDK / "java.exe", JDK / "javac.exe", CONTROLLER,
+                EXECUTION_OWNER]
     if not all(path.is_file() for path in required):
         print("Border 11 SKIPPED: installed game VM or JDK absent")
         return 0
     source = CONTROLLER.read_text(encoding="utf-8-sig")
+    owner_source = EXECUTION_OWNER.read_text(encoding="utf-8-sig")
     controls = [
-        ("pre-admission representation guard",
+        ("pre-admission representation guard", "controller",
          "and not representationRejected then", "then"),
-        ("derived Crossed representation guard",
+        ("derived Crossed representation guard", "controller",
          'local rejected = not returnHeld and (rec and rec.bodyOwner == "ZAO"\n'
          '        or livingZAOState)',
          'local rejected = not returnHeld and rec and rec.bodyOwner == "ZAO"'),
-        ("coordination owns the valid shell",
+        ("coordination owns the valid shell", "controller",
          "if mind and ZAO.Driver and ZAO.Driver.step then",
          "if false then"),
-        ("actor-private perception before deliberation",
+        ("actor-private perception before deliberation", "controller",
          'SAO.Perception.observe(personId, body, now, false)',
          'return false'),
-        ("retained capability gates execution",
+        ("retained capability gates execution", "execution_owner",
          "canExecute = canAct == true", "canExecute = true"),
-        ("communication execution-owner registration",
-         'SAO.Communication.registerExecutionOwner("ZAO", executionAdapter)',
+        ("communication execution-owner registration", "execution_owner",
+         'return SAO.Communication.registerExecutionOwner("ZAO", adapter)',
          "return false"),
     ]
     if source.count("return ZAO.Controller") != 1:
         print("REFUSED: Crossed ownership instrumentation seam changed")
         return 1
-    for name, old, _ in controls:
-        if source.count(old) != 1:
+    sources = {"controller": source, "execution_owner": owner_source}
+    for name, target, old, _ in controls:
+        if sources[target].count(old) != 1:
             print(f"REFUSED: {name} mutation seam changed")
             return 1
     with tempfile.TemporaryDirectory(prefix="zao-crossed-ownership-") as tmp:
@@ -347,13 +354,16 @@ def main() -> int:
         if built.returncode:
             print(built.stdout + built.stderr)
             return 1
-        fixed = run(work, source)
+        fixed = run(work, source, owner_source)
         if fixed.returncode or "CROSSED_OWNERSHIP_OK" not in fixed.stdout:
             print("REFUSED: Crossed ownership production path failed\n"
                   + fixed.stdout + fixed.stderr)
             return 1
-        for name, old, new in controls:
-            mutant = run(work, source.replace(old, new, 1))
+        for name, target, old, new in controls:
+            changed = dict(sources)
+            changed[target] = changed[target].replace(old, new, 1)
+            mutant = run(work, changed["controller"],
+                         changed["execution_owner"])
             if mutant.returncode == 0:
                 print(f"REFUSED: {name} mutation survived")
                 return 1
