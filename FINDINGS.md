@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Findings |
 |---|---|
-| Version | `0.3.3.0-pre-alpha` |
+| Version | `0.4.0.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `FINDINGS.md` |
 | Status | CANONICAL, APPEND-ONLY - verified engine findings from F-001. |
@@ -656,3 +656,79 @@ reverse these invariants and must fail.
 The result establishes the representation and execution boundary, not its
 loaded-world presentation. No mortality, revival, migration or replacement
 behavior has been inferred from the malformed input.
+
+## F-021 | 2026-09-24 20:16 UTC / 13:16 PST | The Afflicted execution split created two incompatible living-person models
+
+**Verified** [A39], controlled in the installed Kahlua VM and Build 42.20
+bridge. The former contract returned an Afflicted human shell to SAO execution
+while ZAO retained the state that determined its fear, gathering, conversion
+and constraints. That made the person's actor policy and pathogen authority
+different planners and allowed survivor needs to stand in for an undefined
+Afflicted maintenance model. The governed SAO/ZAO text contains no rule for how
+Afflicted sustain themselves; the established boundary says only that Crossed
+do not feed on them. Physical pressure is evidence, not a satisfier rule.
+
+A39 transfers both Afflicted and Crossed human shells to one ZAO driver.
+Afflicted-to-Crossed conversion preserves the driver's token. Afflicted policy
+reacts only to observed Crossed threats, gathers with actual Afflicted peers and
+completes ground claims only after native locomotion arrives. Crossed policy
+remains separate and admits retained human physiology. High unresolved
+Afflicted pressure blocks new work without authorizing survivor or Crossed
+maintenance. Settlement formation now requires three distinct people
+performing state-specific holding activity across the configured days; repeat
+scans and proximity alone cannot form it. Durable routes mint one terminal
+receipt and reconstruct after handoff or reload.
+
+The first Crossed material producers are causal actions rather than labels.
+Timed butchery accepts only an eligible ordinary human corpse and yields human
+flesh once; interruption or reload yields none. An item or evolved dish counts
+as human-origin food only when its native extra-item provenance contains that
+flesh; ordinary carried food can also satisfy physiological hunger, while the
+human-origin option remains preferred. Timed blood preparation is a selectable
+tactic that stamps the exact equipped weapon with finite melee or
+projectile uses. The hit is resolved after the native attack creates a wound;
+the bridge applies the engine's own `generateZombieInfection` path to an
+eligible living human. Afflicted targets instead enter ZAO's exact-once
+intentional-exposure path, and other ZAO states are refused.
+
+The controller supplies no global target. `ZAO.Mind` rechecks the actor's fresh
+private observations before resolving a visible body and pathogen state. A
+farther observed person can outrank a nearer one when privately visible distress,
+relationship, disposition and pressure differ. Crossed cooperation does not
+read another actor's private route or target, and weapon contamination is not
+automatically inserted into every attack.
+
+Borders 12 and 13 execute the shared owner, distinct policy, settlement,
+butchery, food-provenance and weapon-transmission paths with thirteen named
+mutations. These are headless native/VM receipts. Loaded-world presentation,
+animation quality, combat feel and long-horizon population outcomes remain
+unobserved.
+
+## F-022 | 2026-09-25 00:24 UTC / 17:24 PST | The unresolved-maintenance conclusion was itself an implementation defect
+
+F-021 repaired the split execution owner but treated the missing Afflicted
+implementation as missing design and repeated a categorical Afflicted-feeding
+rule. The operator's correction establishes a different, state-specific
+mechanism. Afflicted require water, strongly prefer meat/protein, can subsist on
+non-dairy alternatives with reduced relief and a temporary performance cost,
+and may individually choose human-origin food. Donor health and Knox adaptation
+can create bounded temporary protection from later intentional Crossed
+exposure. Crossed ordinary food remains valid under reduced caloric pressure;
+their separate pressure concerns fear, pain and control. Afflicted human remains
+are possible but dispreferred Crossed food. Eating and exposure are distinct.
+
+A39 implements those distinctions without another driver or planner.
+`ZAO_Maintenance` owns time passage and exact consequence receipts.
+`ZAO_Diet` classifies native food composition and human provenance, then uses
+SAO SourceUse for private-source approach, exact acquisition and carrying.
+`ZAO_Predation` admits fear only after heard threat and public flight, pain only
+after native health loss, and control only after an exact completed post-threat
+yield. Death supplies zero acute relief. Pending encounters, maintenance and
+consumed handovers persist; a lost native combat handle interrupts on reload.
+
+Borders 10 and 12-14 execute the protected exposure, shared driver/source owner,
+material diets, dormant passage and acute result boundaries with twenty-four
+named source controls. The sister's Borders 162 and 179 cover external dormant
+ownership and registered native use. These remain mechanical/headless evidence;
+loaded-world action presentation, ecological balance, broad food-mod
+compatibility and long-horizon population consequences are unobserved.

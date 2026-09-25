@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Roadmap |
 |---|---|
-| Version | `0.3.3.0-pre-alpha` |
+| Version | `0.4.0.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `ROADMAP.md` |
 | Status | CANONICAL - gate order and the open-fork ledger. |
@@ -58,15 +58,25 @@ closes, never widened silently.
 
 ## Current mechanical closure
 
-A38 extends A37's Afflicted-exposure ownership slice into enacted shared work.
-The ZAO-owned living Crossed shell is registered as its communication and
-execution body; present `ZAO.Mind` capability and competing activity gate the
-work. A Crossed-linked `IsoZombie` is rejected before any ownership, pathogen,
-settlement, persistence or cognition side effect instead of being treated as
-another representation. Borders 5, 9, 10 and 11 cover pathogen time, external
-body lifecycle, action authorization, retained-shell coordination and the
-malformed-representation controls. G1-G3 still require loaded-world
-observation and the complete retained human action vocabulary.
+A39 replaces the old split execution contract with one ZAO driver for both
+living pathogen states. Afflicted and Crossed retain distinct policies,
+capabilities and action providers. Authorized Afflicted return, loaded/dormant handoff,
+conversion without executor replacement, state-specific holding evidence and
+source-owned body pressure now form one causal path. Crossed explicitly admit
+ordinary food under reduced caloric pressure. Afflicted water, protein
+preference, penalized non-dairy alternatives and donor-conditioned human-meal
+protection form a distinct maintenance path.
+
+Crossed now have first material producers: interruptible exact-once butchery of
+eligible ordinary or dispreferred Afflicted human corpses, human-flesh provenance through cooked dishes,
+ordinary food as valid physiology, and finite blood uses deliberately prepared
+on the actual equipped melee or projectile
+weapon. Native hit resolution waits for a real wound; Afflicted exposure stays
+a separate pathogen action. Borders 5 and 9-13 cover pathogen time, external
+body lifecycle, action authorization, retained-shell coordination, shared
+execution, private non-nearest target selection, settlement evidence,
+sustenance, distinct maintenance, evidenced predatory results and contamination. G1-G3 still require
+loaded-world observation and the wider living action vocabulary.
 
 ## Open forks — reserved to the operator
 

@@ -15,6 +15,18 @@ function StateStore.store()
     store.brain = store.brain or {}
     store.exposures = store.exposures or {}
     store.exposureResults = store.exposureResults or {}
+    store.driverResults = store.driverResults or {}
+    store.butcherActions = store.butcherActions or {}
+    store.butcherResults = store.butcherResults or {}
+    store.dietActions = store.dietActions or {}
+    store.dietResults = store.dietResults or {}
+    store.contaminationPrep = store.contaminationPrep or {}
+    store.contaminationPrepResults = store.contaminationPrepResults or {}
+    store.contaminationHits = store.contaminationHits or {}
+    store.contaminationResults = store.contaminationResults or {}
+    store.maintenanceResults = store.maintenanceResults or {}
+    store.predationActions = store.predationActions or {}
+    store.predationResults = store.predationResults or {}
     store.settlements = store.settlements or {}
     store.recovery = store.recovery or {}
     return store
@@ -58,9 +70,18 @@ function StateStore.write(personId, state)
         returnEvent = state.returnEvent or existing.returnEvent,
         deathSequence = state.deathSequence or existing.deathSequence,
         exposureTokens = state.exposureTokens or existing.exposureTokens,
+        -- One execution identity survives Afflicted/Crossed state changes.
+        -- The historical Crossed token remains readable for old saves and
+        -- sister versions, but is no longer the ownership model.
+        driverToken = state.driverToken or existing.driverToken
+            or state.crossedTransferToken or existing.crossedTransferToken,
         crossedTransferToken = state.crossedTransferToken
             or existing.crossedTransferToken,
         lastExposureAt = state.lastExposureAt or existing.lastExposureAt,
+        driver = type(state.driver) == "table" and state.driver
+            or existing.driver,
+        maintenance = type(state.maintenance) == "table" and state.maintenance
+            or existing.maintenance,
     }
 
     if state.settlementGroup then
@@ -126,6 +147,27 @@ function StateStore.settlementOf(personId)
     return nil
 end
 
+function StateStore.leaveSettlement(personId, groupId)
+    personId = tostring(personId or "")
+    local store = StateStore.store()
+    if not store or personId == "" then return false end
+    groupId = groupId or StateStore.settlementOf(personId)
+    if not groupId then return false end
+    groupId = tostring(groupId)
+    local group = store.settlements[groupId]
+    if type(group) == "table" and type(group.members) == "table" then
+        group.members[personId] = nil
+    end
+    local state = store.people[personId]
+    if state and tostring(state.settlementGroup or "") == groupId then
+        state.settlementGroup = nil
+    end
+    if ZAO.Settlement and ZAO.Settlement.leave then
+        ZAO.Settlement.leave(groupId, personId)
+    end
+    return true
+end
+
 -- A formed settlement's own facts - the place it keeps and the
 -- necessity its members' needs reckoned - persist with the members so
 -- a reopened world restores what these bodies did, never a default.
@@ -139,6 +181,17 @@ function StateStore.writeSettlement(groupId, place, necessity)
         store.settlements[groupId] = group
     end
     group.place = place or group.place or nil
+    group.kind = type(place) == "table" and place.kind or group.kind
+    local runtime = ZAO.Settlement and ZAO.Settlement.groups
+        and ZAO.Settlement.groups[groupId] or nil
+    if runtime and type(runtime.members) == "table" then
+        for personId in pairs(runtime.members) do
+            group.members[tostring(personId)] = true
+        end
+        group.formationEvidence = runtime.formationEvidence
+            or group.formationEvidence
+        group.needEvidence = runtime.needEvidence or group.needEvidence
+    end
     if type(necessity) == "number" then
         group.necessity = necessity
     end
@@ -168,7 +221,10 @@ function StateStore.restoreSettlements()
                     and type(group.place) == "table" and group.place
                     or {},
                 type(group) == "table"
-                    and tonumber(group.necessity) or 0.0)
+                    and tonumber(group.necessity) or 0.0,
+                type(group) == "table" and group.kind or nil,
+                type(group) == "table" and group.formationEvidence or nil,
+                type(group) == "table" and group.needEvidence or nil)
         end
         for personId in pairs(members) do
             ZAO.Settlement.join(groupId, tostring(personId))

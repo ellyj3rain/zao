@@ -6,6 +6,11 @@ import com.zao.engine.ZAOControllerStore;
 import com.zao.engine.ZAODomainController;
 import com.zao.engine.ZAOSandboxPolicy;
 import zombie.WorldSoundManager;
+import zombie.characters.BodyDamage.BodyDamage;
+import zombie.characters.BodyDamage.BodyPart;
+import zombie.characters.CharacterStat;
+import zombie.characters.IsoGameCharacter;
+import zombie.characters.IsoPlayer;
 import zombie.characters.IsoZombie;
 import zombie.iso.IsoMovingObject;
 
@@ -261,14 +266,14 @@ public final class ZAOBridge {
      */
     public boolean noise(Object object, int radius, int volume) {
         try {
-            if (!(object instanceof IsoZombie zombie)) {
+            if (!(object instanceof IsoGameCharacter character)) {
                 return false;
             }
             WorldSoundManager.instance.addSound(
-                zombie,
-                (int) zombie.getX(),
-                (int) zombie.getY(),
-                (int) zombie.getZ(),
+                character,
+                (int) character.getX(),
+                (int) character.getY(),
+                (int) character.getZ(),
                 radius,
                 volume);
             ZAOAgent.log("noise r=" + radius + " v=" + volume);
@@ -276,6 +281,64 @@ public final class ZAOBridge {
         } catch (Throwable throwable) {
             ZAOAgent.log("noise threw: " + throwable);
             return false;
+        }
+    }
+
+    /**
+     * Read the body's native hunger pressure without selecting a food for it.
+     * Crossed policy owns the eligible diet; this bridge only exposes the same
+     * physical signal the engine advances on every living human shell.
+     */
+    public double hunger(Object object) {
+        try {
+            if (!(object instanceof IsoGameCharacter character)
+                || character.getStats() == null) {
+                return -1.0;
+            }
+            return character.getStats().get(CharacterStat.HUNGER);
+        } catch (Throwable throwable) {
+            ZAOAgent.log("hunger threw: " + throwable);
+            return -1.0;
+        }
+    }
+
+    /**
+     * Let contaminated Crossed blood enter through an injury that the actual
+     * weapon hit produced. This never manufactures a wound and never treats a
+     * zombie/mutant representation as a living human. Native transmission and
+     * mortality settings remain authoritative through generateZombieInfection.
+     */
+    public String applyCrossedBlood(Object object) {
+        try {
+            if (!(object instanceof IsoPlayer person) || person.isDead()) {
+                return "REFUSED:not-living-human";
+            }
+            BodyDamage damage = person.getBodyDamage();
+            if (damage == null || damage.getBodyParts() == null) {
+                return "REFUSED:no-body-damage";
+            }
+            BodyPart selected = null;
+            int selectedIndex = -1;
+            for (int index = 0; index < damage.getBodyParts().size(); index++) {
+                BodyPart part = damage.getBodyParts().get(index);
+                if (part == null || part.IsInfected()) continue;
+                boolean open = part.bitten() || part.scratched()
+                    || part.deepWounded() || part.isDeepWounded()
+                    || part.isCut() || part.haveBullet() || part.bleeding()
+                    || part.HasInjury();
+                if (open) {
+                    selected = part;
+                    selectedIndex = index;
+                    break;
+                }
+            }
+            if (selected == null) return "REFUSED:no-injury";
+            selected.generateZombieInfection(100);
+            return (selected.IsInfected() || damage.isInfected()
+                    ? "APPLIED:" : "RESISTED:") + selectedIndex;
+        } catch (Throwable throwable) {
+            ZAOAgent.log("applyCrossedBlood threw: " + throwable);
+            return "REFUSED:exception:" + throwable.getClass().getSimpleName();
         }
     }
 

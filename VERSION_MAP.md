@@ -16,9 +16,9 @@ the machine. Names, dates, and threads below come from
 | Form | `major.minor.kohai.patch-maturity` |
 | Hard caps | minor 12; kohai 16; patch 24 |
 | Replay start | `0.1.0.0-pre-alpha` |
-| Current version | `0.3.3.0-pre-alpha` |
-| Closed chronology | `A1-A38` |
-| Next batch | `A39` |
+| Current version | `0.4.0.0-pre-alpha` |
+| Closed chronology | `A1-A39` |
+| Next batch | `A40` |
 | Executable source | [`tools/version_replay.py`](tools/version_replay.py) |
 
 ## Tier meanings
@@ -73,6 +73,7 @@ the machine. Names, dates, and threads below come from
 | `A36` | 2026-09-19 | patch | `0.3.1.3-pre-alpha` | Durable/runtime reconstruction | Reconstructed runtime controllers, courses, settlements and Java maps from durable owners across new environments and worlds; completed the existing Afflicted-return seam with a generation journal that reconciles interrupted native/global saves. |
 | `A37` | 2026-09-19 | kohai | `0.3.2.0-pre-alpha` | Intentional exposure and Crossed ownership | Connected the existing Crossed and Afflicted design across the sister boundary: reachable Crossed decisions, interruptible non-feeding blood exposure, an exact-once pathogen receipt and ownership transfer of the same living human shell to ZAO. This is a coherent integration of existing capabilities; the retained human action vocabulary remains later work. |
 | `A38` | 2026-09-24 | kohai | `0.3.3.0-pre-alpha` | Crossed coordination ownership | Connected the ZAO-owned living Crossed shell to the sister's enacted coordination runtime through a registered execution owner, with retained-capability and competing-activity evidence. Identity-bearing IsoZombie representations of Crossed state are rejected before admission side effects. This matures the existing ownership seam without adding a new body transition, so kohai. |
+| `A39` | 2026-09-24 | minor | `0.4.0.0-pre-alpha` | Afflicted and Crossed execution | ZAO now executes both living pathogen states through one durable driver with distinct state providers, actor-private options, evidenced settlement acts, unresolved Afflicted maintenance, retained Crossed human physiology, and first material producers for ordinary and human-origin sustenance, exact human butchery and selectively blood-contaminated weapon hits. This is a new player-visible simulation capability, so minor. |
 
 ## Maturity
 
@@ -82,11 +83,11 @@ says.
 
 ## Next movement
 
-`A39` is the next batch. Its content determines its tier after it
+`A40` is the next batch. Its content determines its tier after it
 exists:
 
-| If A39 is | Result |
+| If A40 is | Result |
 |---|---|
-| patch or hotfix | `0.3.3.1-pre-alpha` |
-| kohai | `0.3.4.0-pre-alpha` |
-| minor | `0.4.0.0-pre-alpha` |
+| patch or hotfix | `0.4.0.1-pre-alpha` |
+| kohai | `0.4.1.0-pre-alpha` |
+| minor | `0.5.0.0-pre-alpha` |

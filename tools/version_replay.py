@@ -91,6 +91,7 @@ UNITS = [
     ("A36", "patch", "Reconstructed runtime controllers, courses, settlements and Java maps from durable owners across new environments and worlds; completed the existing Afflicted-return seam with a generation journal that reconciles interrupted native/global saves."),
     ("A37", "kohai", "Connected the existing Crossed and Afflicted design across the sister boundary: reachable Crossed decisions, interruptible non-feeding blood exposure, an exact-once pathogen receipt and ownership transfer of the same living human shell to ZAO. This is a coherent integration of existing capabilities; the retained human action vocabulary remains later work."),
     ("A38", "kohai", "Connected the ZAO-owned living Crossed shell to the sister's enacted coordination runtime through a registered execution owner, with retained-capability and competing-activity evidence. Identity-bearing IsoZombie representations of Crossed state are rejected before admission side effects. This matures the existing ownership seam without adding a new body transition, so kohai."),
+    ("A39", "minor", "ZAO now executes both living pathogen states through one durable driver with distinct state providers, actor-private options, evidenced settlement acts, unresolved Afflicted maintenance, retained Crossed human physiology, and first material producers for ordinary and human-origin sustenance, exact human butchery and selectively blood-contaminated weapon hits. This is a new player-visible simulation capability, so minor."),
 ]
 
 TIER_MEANINGS = [

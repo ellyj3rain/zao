@@ -15,6 +15,7 @@ GAME = Path(os.environ.get(
 JDK = Path(os.environ.get(
     "JDK_BIN", r"C:\Users\jleyv\Peanut Butter\JetBrains\Java\bin"))
 STATE = ROOT / "mod/42.20/media/lua/shared/ZAO_StateStore.lua"
+MAINTENANCE = ROOT / "mod/42.20/media/lua/shared/ZAO_Maintenance.lua"
 PATHOGEN = ROOT / "mod/42.20/media/lua/shared/ZAO_Pathogen.lua"
 EXPOSURE = ROOT / "mod/42.20/media/lua/client/ZAO_Exposure.lua"
 
@@ -99,6 +100,20 @@ ZAO = {
         crossedOdds = 0.5, afflictedSusceptibility = 2.0,
     } end },
 }
+ZAO.Driver = {
+    routeTo = function(personId, seen, state, kind, targetId)
+        assert(personId == "carrier" and seen == carrierBody
+            and kind == "exposure" and targetId ~= nil)
+        seen.paths = seen.paths + 1
+        state.driver = state.driver or {}
+        state.driver.route = { kind = kind, targetId = targetId }
+        return true, "moving"
+    end,
+    cancelRoute = function(personId, state)
+        if state.driver then state.driver.route = nil end
+        return true
+    end,
+}
 function __bodies() return carrierBody, targetBody, target2Body end
 function __transfers() return transfers end
 function __transferReady(value) transferReady = value end
@@ -112,6 +127,8 @@ root.people.carrier = { personId = "carrier", terminalState = "crossed",
 root.people.target = { personId = "target", terminalState = "afflicted",
     currentForm = "none", attributeMutations = {}, history = {} }
 root.people.target2 = { personId = "target2", terminalState = "afflicted",
+    currentForm = "none", attributeMutations = {}, history = {} }
+root.people.protected = { personId = "protected", terminalState = "afflicted",
     currentForm = "none", attributeMutations = {}, history = {} }
 '''
 
@@ -160,6 +177,22 @@ assert(ZAO.Pathogen.expose("target2", carrierState, 0, {
     phase = "resolving",
 }) == false, "pathogen accepted a forged completed action")
 
+local protected=ZAO.Pathogen.stateOf('protected')
+local meal=ZAO.Maintenance.recordAfflictedMeal('protected',protected,
+ {class='human',donor={personId='adapted-donor',health=1,
+  infectionsSurvived=5,immuneProgress=1}},'protected-meal',1)
+root.exposures.carrier={token='protected-exposure',
+ kind='crossed-blood-exposure',phase='resolving',targetId='protected'}
+local protectedReceipt=ZAO.Pathogen.expose('protected',carrierState,0,{
+ token='protected-exposure',kind='crossed-blood-exposure',completed=true,
+ carrierId='carrier',targetId='protected',atHours=1})
+assert(meal.crossedProtection==.75 and protectedReceipt
+ and protectedReceipt.nutritionProtection==.75
+ and protectedReceipt.nutritionProtectionSource=='protected-meal'
+ and protectedReceipt.risk==.25 and not protectedReceipt.converted
+ and protected.terminalState=='afflicted',
+ 'donor-conditioned Afflicted nutrition did not reduce Crossed exposure risk')
+
 carrier.x = 10
 assert(ZAO.Exposure.step(carrier, "carrier", carrierState,
     target2, "target2", 4, 2.0) == true)
@@ -183,7 +216,8 @@ def run(work: Path, pathogen: str, exposure: str) -> subprocess.CompletedProcess
     return subprocess.run(
         [str(JDK / "java.exe"), "-cp",
          f"{GAME / 'projectzomboid.jar'}{os.pathsep}{work}", "ExposureRun",
-         str(work / "host.lua"), str(STATE), str(work / "setup.lua"),
+         str(work / "host.lua"), str(STATE), str(MAINTENANCE),
+         str(work / "setup.lua"),
          str(work / "pathogen.lua"), str(work / "exposure.lua"),
          str(work / "probe.lua")], cwd=work,
         capture_output=True, text=True, timeout=30)
@@ -191,7 +225,8 @@ def run(work: Path, pathogen: str, exposure: str) -> subprocess.CompletedProcess
 
 def main() -> int:
     required = [GAME / "projectzomboid.jar", GAME / "stdlib.lua",
-                JDK / "java.exe", JDK / "javac.exe", STATE, PATHOGEN, EXPOSURE]
+                JDK / "java.exe", JDK / "javac.exe", STATE, MAINTENANCE,
+                PATHOGEN, EXPOSURE]
     if not all(path.is_file() for path in required):
         print("Border 10 SKIPPED: installed game VM or JDK absent")
         return 0
@@ -207,8 +242,11 @@ def main() -> int:
          "if state.exposureTokens[token] then return state.exposureTokens[token] end",
          "if false then return state.exposureTokens[token] end"),
         ("pathogen", "live-action authorization",
-         "local action = store.exposures\n        and store.exposures[carrierId] or nil",
+         "local action = contact and store.exposures\n        and store.exposures[carrierId]\n        or weapon and store.contaminationHits\n        and store.contaminationHits[token] or nil",
          "local action = actionResult"),
+        ("pathogen", "nutrition-conditioned susceptibility",
+         "crossedOdds * susceptibility * (1.0 - protection)",
+         "crossedOdds * susceptibility"),
     ]
     for which, name, old, _ in controls:
         source = pathogen if which == "pathogen" else exposure
@@ -245,7 +283,7 @@ def main() -> int:
                 print(f"REFUSED: {name} mutation survived\n"
                       + mutant.stdout + mutant.stderr)
                 return 1
-    print("Border 10 PASS: approach, contact time, interruption, feeding exclusion, exact-once result and durable live-action authorization execute in Kahlua; five controls fail")
+    print("Border 10 PASS: approach, contact time, interruption, feeding exclusion, exact-once result, durable live-action authorization, and donor-conditioned Afflicted susceptibility execute in Kahlua; six controls fail")
     return 0
 
 

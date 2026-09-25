@@ -10,8 +10,10 @@
 set -u
 cd "$(dirname "$0")/.." || exit 2
 
-PY=python
-command -v python >/dev/null 2>&1 || PY=python3
+if [ -z "${PY:-}" ]; then
+    PY=python
+    command -v python >/dev/null 2>&1 || PY=python3
+fi
 
 fail=0
 note() { printf '[check] %s\n' "$*"; }
@@ -125,6 +127,29 @@ fi
 # the registered ZAO execution owner exposes the real shell to shared work.
 if ! "$PY" tools/crossed_ownership_test.py; then
     note "BORDER 11 REFUSED: Crossed execution ownership"
+    fail=1
+fi
+
+# 12. One ZAO driver owns both living states while retaining distinct policy,
+# actor-private inputs, acted settlement formation and state-owned maintenance.
+if ! "$PY" tools/shared_person_driver_test.py; then
+    note "BORDER 12 REFUSED: shared Afflicted/Crossed person driver"
+    fail=1
+fi
+
+# 13. Crossed food and blooded weapons require real material actions: ordinary
+# food sustains physiology, human-origin food is preferred, eligible human
+# corpses and finite contamination uses retain native
+# injuries and the separate Afflicted exposure path can produce receipts.
+if ! "$PY" tools/crossed_material_actions_test.py; then
+    note "BORDER 13 REFUSED: Crossed material actions"
+    fail=1
+fi
+
+# 14. Dormant/loaded needs remain state-owned, and Crossed acute pressure is
+# relieved only by distinct evidenced fear, pain, control, or consumption.
+if ! "$PY" tools/maintenance_predation_test.py; then
+    note "BORDER 14 REFUSED: living maintenance and predatory evidence"
     fail=1
 fi
 

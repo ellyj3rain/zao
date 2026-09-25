@@ -1,4 +1,4 @@
--- ZAO_Controller - ZAO owns the turned body.
+-- ZAO_Controller - ZAO owns turned bodies and drives living Afflicted/Crossed.
 --
 -- A body is claimed only when the engine presents it. The pathogen
 -- state is read from the store, advanced once per day, and written
@@ -40,48 +40,45 @@ local function objectList()
     return list
 end
 
--- Crossed may prefer an Afflicted living target for the distinct intentional
--- blood-exposure action. SAO bodies remain living people here; Crossed.decide
--- prevents them from falling through to the ordinary feeding pursuit. The
--- dead are ignored unless the operator's dial says otherwise.
-local function nearestTarget(zx, zy, preferAfflicted, engageDead)
+-- Legacy turned/form pursuit remains an engine-body query. Living Afflicted
+-- and Crossed never enter this path; their shared driver reads actor-private
+-- Perception through ZAO.Mind.
+local function nearestTurnedTarget(source, zx, zy, engageDead)
     local best, bestD = nil, nil
+    local seen = {}
 
-    local function consider(target, afflicted)
-        if not target then return end
+    local function consider(target)
+        if not target or target == source or seen[target] then return end
+        seen[target] = true
         local ok, d = pcall(function()
             local dx, dy = target:getX() - zx, target:getY() - zy
             return math.sqrt(dx * dx + dy * dy)
         end)
         if ok and d then
-            -- The afflicted stand closer in the crossed body's
-            -- reckoning; the fear-work does the rest.
-            if preferAfflicted and afflicted then d = d * 0.5 end
             if d <= CONTROL_RADIUS and (not bestD or d < bestD) then
                 best, bestD = target, d
             end
         end
     end
 
-    if SAO and SAO.Body and SAO.Body.active then
-        for id, body in pairs(SAO.Body.active) do
-            local rec = SAO.Identity and SAO.Identity.get(id) or nil
+    if SAO and SAO.Identity and SAO.Body then
+        for id, rec in pairs(SAO.Identity.all()) do
             if rec and (not rec.dead or engageDead) then
-                local afflicted = false
-                if preferAfflicted and ZAO.Pathogen then
-                    pcall(function()
-                        local state = ZAO.Pathogen.stateOf(id)
-                        afflicted = state ~= nil
-                            and state.terminalState == "afflicted"
-                    end)
+                id = tostring(id)
+                local body = SAO.Body.active and SAO.Body.active[id] or nil
+                body = body or SAO.Body.foreign and SAO.Body.foreign[id] or nil
+                local state = ZAO.Pathogen and ZAO.Pathogen.stateOf(id) or nil
+                -- A Crossed person is kin, never prey. Afflicted remain a
+                -- distinct eligible recruit and are handled by Exposure.
+                if not state or state.terminalState ~= "crossed" then
+                    consider(body)
                 end
-                consider(body, afflicted)
             end
         end
     end
 
     local me = getSpecificPlayer(0)
-    if me then consider(me, false) end
+    if me then consider(me) end
 
     return best
 end
@@ -124,8 +121,8 @@ end
 -- Where a body stands is a fact (DR-006). A building the county
 -- already knows is the place key; the open county falls back to the
 -- ground it stands on.
-local function placeKeyOf(zombie)
-    local x, y = zombie:getX(), zombie:getY()
+local function placeKeyOf(body)
+    local x, y = body:getX(), body:getY()
     local key = nil
     if SAO and SAO.Places and SAO.Places.at then
         pcall(function()
@@ -155,6 +152,23 @@ local function dailyReckon(day)
         ZAO.StateStore.writeSettlement(
             group.id, group.place, group.necessity)
     end
+end
+
+-- Formation records every actual participant, not only whichever body made
+-- the final presence observation. Each person's state and the group projection
+-- are committed before a later scan or reload can split them apart.
+local function persistFormation(group)
+    if not (group and ZAO.StateStore and ZAO.Pathogen) then return false end
+    for memberId in pairs(group.members or {}) do
+        local memberState = ZAO.Pathogen.stateOf(tostring(memberId))
+        if memberState and (not group.kind
+            or memberState.terminalState == group.kind) then
+            memberState.settlementGroup = group.id
+            ZAO.StateStore.write(tostring(memberId), memberState)
+        end
+    end
+    return ZAO.StateStore.writeSettlement(group.id,
+        group.place, group.necessity)
 end
 
 local function driveForm(zombie, state, target, now, hours)
@@ -297,15 +311,25 @@ function Ctl.cancelReturn(personId, body, token)
     return true
 end
 
--- A successful Crossed transition keeps the living IsoPlayer shell and all
--- of its equipment.  SAO exposes it through Body.foreign; ZAO is the sole
--- controller from this point onward.
-function Ctl.acceptExternal(personId, body, token)
+-- A living Afflicted or Crossed transition keeps the IsoPlayer shell and all
+-- of its equipment. SAO exposes the shell and shared services through
+-- Body.foreign; ZAO.Driver is the sole behavioral controller from this point.
+function Ctl.acceptExternal(personId, body, token, terminalState)
     personId = tostring(personId or "")
     local rec = SAO and SAO.Identity and SAO.Identity.get(personId) or nil
     if not rec or rec.bodyOwner ~= "ZAO"
         or tostring(rec.bodyOwnerToken or "") ~= tostring(token or "") then
         return false
+    end
+    local state = ZAO.Pathogen and ZAO.Pathogen.stateOf(personId) or nil
+    local terminal = state and tostring(state.terminalState or "")
+        or tostring(terminalState or "")
+    if terminal ~= "afflicted" and terminal ~= "crossed" then return false end
+    if state and ZAO.Pathogen.ensureDriverToken then
+        local driverToken = ZAO.Pathogen.ensureDriverToken(state, personId)
+        if driverToken and tostring(driverToken) ~= tostring(token or "") then
+            return false
+        end
     end
     if body then
         Ctl.controlled[personId] = body
@@ -313,13 +337,13 @@ function Ctl.acceptExternal(personId, body, token)
         pcall(function() data = body:getModData() end)
         if data then
             data.ZAOOwned = true
-            data.ZAOTerminalState = "crossed"
+            data.ZAOTerminalState = terminal
         end
     end
     return true
 end
 
-local function crossedActivity(personId, body)
+local function externalActivity(personId, body)
     local rec = SAO and SAO.Identity and SAO.Identity.get(personId) or nil
     if rec and rec.worldSourceReservation then return "coordination" end
     local runtime = SAO and SAO.Controller
@@ -329,6 +353,10 @@ local function crossedActivity(personId, body)
     local data = nil
     if body then pcall(function() data = body:getModData() end) end
     if data and data.ZAOCrossedDriving then return "driving" end
+    local state = ZAO.Pathogen and ZAO.Pathogen.stateOf(personId) or nil
+    if ZAO.Driver and ZAO.Driver.currentActivity then
+        return ZAO.Driver.currentActivity(personId, body, state)
+    end
     return "idle"
 end
 
@@ -347,20 +375,91 @@ function executionAdapter.snapshot(personId, rec)
     local body = executionAdapter.bodyFor(personId, rec)
     local hour = 0
     pcall(function() hour = SAO.History.countyHours() end)
-    local mind = ZAO.Mind and ZAO.Mind.of(rec, hour) or nil
+    local state = ZAO.Pathogen and ZAO.Pathogen.stateOf(tostring(personId)) or nil
+    if state and ZAO.Maintenance and ZAO.Maintenance.advanceState then
+        pcall(ZAO.Maintenance.advanceState, state, tonumber(hour) or 0)
+    end
+    local mind = ZAO.Mind and ZAO.Mind.of(rec, hour, body) or nil
+    if ZAO.Driver and ZAO.Driver.snapshot then
+        return ZAO.Driver.snapshot(tostring(personId), rec, body, state, mind)
+    end
     local canAct = body ~= nil and rec.dead ~= true and mind
         and mind.execution and mind.execution.canMove == true
     return {
         bodyOwner = "ZAO",
         executor = "ZAO.Controller",
         represented = body ~= nil,
-        currentActivity = crossedActivity(tostring(personId), body),
+        currentActivity = externalActivity(tostring(personId), body),
         canAcquire = canAct == true,
         canCarry = canAct == true,
         canDeliver = canAct == true,
         canExecute = canAct == true,
         incapable = canAct ~= true,
         dead = rec.dead == true,
+    }
+end
+
+function executionAdapter.advanceDormant(personId, rec, body, elapsedHours,
+        atHours)
+    local state = ZAO.Pathogen and ZAO.Pathogen.stateOf(tostring(personId))
+        or nil
+    if not state or not ZAO.Maintenance
+        or not ZAO.Maintenance.advanceDormant then
+        return false, "maintenance-owner-unavailable"
+    end
+    return ZAO.Maintenance.advanceDormant(tostring(personId), state, body,
+        elapsedHours, atHours)
+end
+
+-- Reception remains with the threatened ZAO person. The state-specific
+-- provider decides what follows on its next pass; no private appraisal is
+-- returned to the sender.
+function executionAdapter.receiveThreat(personId, fromId, threatToken, evidence)
+    personId, fromId, threatToken = tostring(personId or ""),
+        tostring(fromId or ""), tostring(threatToken or "")
+    local state = ZAO.Pathogen and ZAO.Pathogen.stateOf(personId) or nil
+    if not state or (state.terminalState ~= "afflicted"
+        and state.terminalState ~= "crossed") then return false, "unanswered" end
+    state.driver = type(state.driver) == "table" and state.driver or {}
+    local atHours = 0
+    pcall(function() atHours = SAO.History.countyHours() end)
+    state.driver.receivedThreat = {
+        version = 1,
+        token = threatToken,
+        fromId = fromId,
+        receivedAtHours = tonumber(atHours) or 0,
+        channel = "spoken",
+    }
+    if SAO and SAO.Standing and SAO.Standing.setHostile then
+        pcall(SAO.Standing.setHostile, personId, fromId, true)
+    end
+    return true, "received"
+end
+
+function executionAdapter.observeThreatResponse(personId, fromId, threatToken)
+    personId, fromId, threatToken = tostring(personId or ""),
+        tostring(fromId or ""), tostring(threatToken or "")
+    local state = ZAO.Pathogen and ZAO.Pathogen.stateOf(personId) or nil
+    local event = state and state.driver and state.driver.receivedThreat or nil
+    if not event or tostring(event.token or "") ~= threatToken
+        or tostring(event.fromId or "") ~= fromId then return nil end
+    local rec = SAO and SAO.Identity and SAO.Identity.get(personId) or nil
+    local body = executionAdapter.bodyFor(personId, rec)
+    local activity = ZAO.Driver and ZAO.Driver.currentActivity
+        and ZAO.Driver.currentActivity(personId, body, state) or "idle"
+    local kind = activity == "flee" and "flight"
+        or activity == "combat" and "resistance" or nil
+    if not kind then return nil end
+    local atHours = 0
+    pcall(function() atHours = SAO.History.countyHours() end)
+    return {
+        version = 1,
+        token = threatToken,
+        personId = personId,
+        sourceId = fromId,
+        kind = kind,
+        activity = activity,
+        observedAtHours = tonumber(atHours) or 0,
     }
 end
 
@@ -375,22 +474,24 @@ end
 -- Crossed conversion. Reject it before claim, pathogen advancement,
 -- settlement admission, persistence, or deliberate action. This repairs an
 -- ownership defect; it does not invent a migration or mortality transition.
-local function rejectCrossedZombie(personId, rec)
+local function rejectZAOPersonZombie(personId, rec, returnHeld)
     local state = ZAO.Pathogen and ZAO.Pathogen.stateOf
         and ZAO.Pathogen.stateOf(personId) or nil
-    local rejected = rec and rec.bodyOwner == "ZAO"
-        or state and state.terminalState == "crossed"
+    local livingZAOState = state and (state.terminalState == "afflicted"
+        or state.terminalState == "crossed")
+    local rejected = not returnHeld and (rec and rec.bodyOwner == "ZAO"
+        or livingZAOState)
     if not rejected then return false end
     Ctl.controlled[personId] = nil
     if not Ctl.rejectedCrossedBodies[personId] then
         Ctl.rejectedCrossedBodies[personId] = true
-        log("rejected IsoZombie for Crossed state or ZAO-owned living identity "
+        log("rejected IsoZombie for living Afflicted/Crossed identity "
             .. personId)
     end
     return true
 end
 
-local function processExternalCrossed(now, hours, day)
+local function processExternalPeople(now, hours, day, policy)
     if not (SAO and SAO.Identity and SAO.Body and ZAO.Pathogen) then return end
     local player = nil
     pcall(function() player = getSpecificPlayer(0) end)
@@ -398,7 +499,8 @@ local function processExternalCrossed(now, hours, day)
         if rec.bodyOwner == "ZAO" then
             personId = tostring(personId)
             local state = ZAO.Pathogen.stateOf(personId)
-            if state and state.terminalState == "crossed" then
+            if state and (state.terminalState == "afflicted"
+                or state.terminalState == "crossed") then
                 local body = SAO.Body.foreign[personId]
                 local deadBody = false
                 if body then
@@ -446,40 +548,71 @@ local function processExternalCrossed(now, hours, day)
                     Ctl.controlled[personId] = body
                     pcall(function()
                         rec.x, rec.y, rec.z = body:getX(), body:getY(), body:getZ()
+                        local health = tonumber(body:getHealth())
+                        if health and health == health and health > 0 then
+                            rec.lastLivingHealth = math.max(0,
+                                math.min(1, health / 100.0))
+                        end
                     end)
                     local data = nil
                     pcall(function() data = body:getModData() end)
                     if data then
                         data.ZAOOwned = true
-                        data.ZAOTerminalState = "crossed"
+                        data.ZAOTerminalState = state.terminalState
                         data.ZAOForm = state.currentForm or "none"
                     end
-                    local mind = ZAO.Mind and ZAO.Mind.of(rec, hours) or nil
-                    if SAO.Standing and SAO.Standing.maybeCallForBread then
-                        pcall(SAO.Standing.maybeCallForBread, personId)
+                    if ZAO.Settlement then
+                        local groupId = state.settlementGroup
+                        local group = groupId and ZAO.Settlement.groups
+                            and ZAO.Settlement.groups[groupId] or nil
+                        if group and group.occupied then
+                            ZAO.Settlement.join(groupId, personId)
+                        elseif groupId then
+                            state.settlementGroup = nil
+                        end
                     end
-                    local target = nearestTarget(body:getX(), body:getY(), true,
-                        false)
-                    local activity = crossedActivity(personId, body)
-                    if target and activity ~= "driving" and mind
-                        and mind.execution and mind.execution.canTarget then
-                        activity = "hunt"
-                    end
-                    local coordinated = false
-                    if SAO.Controller
-                        and SAO.Controller.advanceExternalCoordination then
-                        local okWork, didWork = pcall(function()
-                            return SAO.Controller.advanceExternalCoordination(
-                                personId, body, "ZAO",
-                                activity)
+                    -- ZAO-owned living people acquire their own current sight
+                    -- before deliberation. The driver consumes that private
+                    -- store; it never receives a controller-wide nearest body.
+                    if SAO.Perception and SAO.Perception.observe then
+                        pcall(function()
+                            SAO.Perception.observe(personId, body, now, false)
                         end)
-                        coordinated = okWork and didWork == true
                     end
-                    if not coordinated and mind and mind.execution
-                        and mind.execution.canMove
+                    if ZAO.Maintenance and ZAO.Maintenance.observeLoaded then
+                        pcall(ZAO.Maintenance.observeLoaded, personId, state,
+                            body, hours)
+                    end
+                    local mind = ZAO.Mind
+                        and ZAO.Mind.of(rec, hours, body) or nil
+                    if mind and ZAO.Driver and ZAO.Driver.step then
+                        pcall(ZAO.Driver.step, personId, body, state, mind,
+                            now, hours)
+                    elseif state.terminalState == "crossed" and mind
+                        and mind.execution and mind.execution.canMove
                         and ZAO.Crossed and ZAO.Crossed.decide then
                         pcall(ZAO.Crossed.decide, body, personId, state, mind,
-                            target, now, hours)
+                            nil, now, hours)
+                    end
+                    -- A living ZAO settlement follows a performed holding act,
+                    -- not repeated scans of a nearby body. The driver supplies
+                    -- the terminal-specific activity evidence after executing
+                    -- this scan; formation then records every distinct actor.
+                    if ZAO.Settlement and (not policy or policy.settlement)
+                        and ZAO.Driver and ZAO.Driver.settlementEvidence then
+                        local evidence = ZAO.Driver.settlementEvidence(state)
+                        local formed = evidence and ZAO.Settlement.notePresence(
+                            placeKeyOf(body), personId, day,
+                            state.terminalState, {
+                                x = body:getX(), y = body:getY(),
+                                z = body:getZ(),
+                            }, evidence) or nil
+                        if formed then
+                            state.settlementGroup = formed.id
+                            persistFormation(formed)
+                            log(state.terminalState
+                                .. " settlement formed: " .. formed.id)
+                        end
                     end
                     ZAO.StateStore.write(personId, state)
                 else
@@ -490,12 +623,19 @@ local function processExternalCrossed(now, hours, day)
     end
 end
 
+-- Compatibility seam for the A38 probes and saved diagnostic harnesses. The
+-- implementation now processes every ZAO-owned living person.
+local processExternalCrossed = processExternalPeople
+
 function Ctl.tick(now)
     registerExecutionAdapter()
     if SAO and SAO.AfflictedReturn then SAO.AfflictedReturn.resumePending() end
     if SAO and SAO.CrossedTransfer then SAO.CrossedTransfer.resumePending() end
     if ZAO.Exposure and ZAO.Exposure.resumePending then
         ZAO.Exposure.resumePending()
+    end
+    if ZAO.Predation and ZAO.Predation.resumePending then
+        ZAO.Predation.resumePending()
     end
     local policy = ZAO.Sandbox and ZAO.Sandbox.policy() or nil
     if policy and (not policy.enabled or not policy.controller) then
@@ -521,7 +661,7 @@ function Ctl.tick(now)
     if ZAO.Behaviors and ZAO.Behaviors.pulsePuked then
         pcall(function() ZAO.Behaviors.pulsePuked(now, hours) end)
     end
-    processExternalCrossed(now, hours, day)
+    processExternalPeople(now, hours, day, policy)
 
     local list = objectList()
     if not list then return end
@@ -556,12 +696,11 @@ function Ctl.tick(now)
                     personId = tostring(data.ZAODerivedId)
                 end
 
-                local representationRejected = personId
-                    and rejectCrossedZombie(personId, rec) or false
-                local returnHeld = not representationRejected
-                    and (data.ZAOReturnToken ~= nil
+                local returnHeld = data.ZAOReturnToken ~= nil
                     or rec and rec.returnTransition ~= nil
-                    )
+                local representationRejected = personId
+                    and rejectZAOPersonZombie(personId, rec, returnHeld) or false
+                returnHeld = not representationRejected and returnHeld
                 if returnHeld and personId then Ctl.controlled[personId] = obj end
                 if personId and ZAO.Pathogen and ZAO.StateStore and not returnHeld
                     and not representationRejected then
@@ -573,7 +712,7 @@ function Ctl.tick(now)
                         ensurePathogenState(personId, rec, day, true)
                         state = ZAO.State.of(rec, hour)
                         mind = ZAO.Mind
-                            and ZAO.Mind.of(rec, hour) or nil
+                            and ZAO.Mind.of(rec, hour, obj) or nil
 
                         -- Recovery is lawful only where the pathogen
                         -- was still a course. Survival keeps the state
@@ -635,15 +774,15 @@ function Ctl.tick(now)
                         -- same roll, never another placement.
                         if (not policy or policy.settlement)
                             and ZAO.Settlement
-                            and (state.terminalState == "turned"
-                                or state.terminalState == "crossed") then
+                            and state.terminalState == "turned" then
                             local formed = ZAO.Settlement.notePresence(
-                                placeKeyOf(obj), personId, day)
+                                placeKeyOf(obj), personId, day, "turned", {
+                                    x = obj:getX(), y = obj:getY(),
+                                    z = obj:getZ(),
+                                })
                             if formed then
                                 state.settlementGroup = formed.id
-                                ZAO.StateStore.writeSettlement(
-                                    formed.id, formed.place,
-                                    formed.necessity)
+                                persistFormation(formed)
                                 log("settlement formed: " .. formed.id)
                             end
                         end
@@ -669,51 +808,13 @@ function Ctl.tick(now)
                                 mind.execution.canMove
                         end
 
-                        if (state.currentForm ~= "none"
-                            or state.terminalState == "crossed")
+                        if state.currentForm ~= "none"
                             and (not mind or mind.execution.canMove) then
-                            local preferAfflicted =
-                                state.terminalState == "crossed"
                             local engageDead = policy ~= nil
                                 and policy.crossedEngageDead == true
-                            local target = nearestTarget(
-                                obj:getX(), obj:getY(),
-                                preferAfflicted, engageDead)
-
-                            -- The crossed are executed ([A32]): the
-                            -- pass consumes the mind and commits
-                            -- deliberate movement; where it commits,
-                            -- the ordinary walk stands down for the
-                            -- scan. The hunt's ground is stamped as
-                            -- plain coordinates so a kin body can
-                            -- share the same hunt without any engine
-                            -- object crossing bodies.
-                            local committed = false
-                            if state.terminalState == "crossed"
-                                and mind
-                                and mind.execution.canMove
-                                and ZAO.Crossed
-                                and ZAO.Crossed.decide then
-                                local okCrossed, didCommit = pcall(
-                                    function()
-                                        return ZAO.Crossed.decide(
-                                            obj, personId, state, mind,
-                                            target, now, hours)
-                                    end)
-                                committed = okCrossed
-                                    and didCommit == true
-                                if target then
-                                    data.ZAOCrossedHuntX = target:getX()
-                                    data.ZAOCrossedHuntY = target:getY()
-                                else
-                                    data.ZAOCrossedHuntX = nil
-                                    data.ZAOCrossedHuntY = nil
-                                end
-                            end
-
-                            if not committed then
-                                driveForm(obj, state, target, now, hours)
-                            end
+                            local target = nearestTurnedTarget(
+                                obj, obj:getX(), obj:getY(), engageDead)
+                            driveForm(obj, state, target, now, hours)
                         end
                     end
                 end

@@ -81,14 +81,14 @@ local workResult, mindCanMove, derivedCrossed = false, true, false
 local adapter = nil
 local function clearCounts()
     counts = { begin = 0, advance = 0, write = 0, settle = 0,
-        mind = 0, decide = 0, work = 0, activity = "none" }
+        mind = 0, perceive = 0, decide = 0, work = 0, activity = "none" }
 end
 clearCounts()
 
 SAO = {
     History = { countyHours = function() return 24 end },
     Identity = {
-        all = function() return { person = rec } end,
+        all = function() return { person = rec, threat = threatRec } end,
         get = function(id)
             if id == "person" then return rec end
             if id == "threat" then return threatRec end
@@ -107,6 +107,10 @@ SAO = {
             return true
         end,
     },
+    Perception = { observe = function(id, seen)
+        assert(id == "person" and seen == humanBody)
+        counts.perceive = counts.perceive + 1
+    end },
     Controller = {
         coordinationRuntime = {},
         advanceExternalCoordination = function(id, seen, owner, activity)
@@ -134,7 +138,8 @@ ZAO = {
         writeSettlement = function() counts.write = counts.write + 1 end,
     },
     State = { of = function() return state end },
-    Mind = { of = function()
+    Mind = { of = function(seenRec, hour, seenBody)
+        assert(seenRec == rec and hour == 24 and seenBody == humanBody)
         counts.mind = counts.mind + 1
         return { execution = { canMove = mindCanMove,
             canTarget = mindCanMove } }
@@ -154,9 +159,20 @@ ZAO = {
         return true
     end },
 }
+ZAO.Driver = {
+    currentActivity = function() return "idle" end,
+    step = function(personId, seen, seenState, mind, now, hours)
+        local activity = threatenedDriver and "hunt" or "idle"
+        counts.work = counts.work + 1
+        counts.activity = activity
+        if not workResult then ZAO.Crossed.decide() end
+        return true, workResult and "coordination" or activity
+    end,
+}
 
 function __wrongBody() return wrongBody end
 function __humanBody() return humanBody end
+function __record() return rec end
 function __counts() return counts end
 function __adapter() return adapter end
 function __wrongScan()
@@ -188,6 +204,7 @@ function __validShell(coordinates, threatened)
     SAO.Body.foreign.person = humanBody
     ZAO.Controller.controlled.person = humanBody
     mindCanMove = true
+    threatenedDriver = threatened == true
     workResult = coordinates == true
     __processExternalCrossed(200, 24, 1)
 end
@@ -200,6 +217,7 @@ end
 '''
 
 PROBE = r'''
+local stage='wrong representation'
 local probeOk, probeProblem = pcall(function()
 __wrongScan()
 local rejected = __counts()
@@ -214,6 +232,7 @@ assert(rejected.mind == 0 and rejected.decide == 0,
 assert(ZAO.Controller.controlled.person == nil,
     "rejected IsoZombie entered the controlled roster")
 
+stage='derived representation'
 __derivedCrossedScan()
 local rejectedDerived = __counts()
 assert(__wrongBody().data.ZAOOwned == nil
@@ -223,40 +242,47 @@ assert(rejectedDerived.settle == 0 and rejectedDerived.write == 0
     and rejectedDerived.mind == 0 and rejectedDerived.decide == 0,
     "derived IsoZombie with Crossed state reached downstream side effects")
 
+stage='coordinated shell'
 __validShell(true)
 local coordinated = __counts()
 assert(coordinated.work == 1 and coordinated.decide == 0,
     "accepted coordination did not own the valid human shell")
 assert(coordinated.activity == "idle",
     "unpressured Crossed work was mislabeled as competing activity")
+assert(coordinated.perceive == 1 and coordinated.mind == 1,
+    "valid living shell did not acquire private sight before deliberation")
 assert(__humanBody().data.ZAOOwned == true,
     "valid human shell lost its ZAO projection")
 local owner = __adapter()
-assert(owner and owner.bodyFor("person", {
-    bodyOwner = "ZAO", dead = false }) == __humanBody(),
+stage='registered body resolution'
+assert(owner and owner.bodyFor("person", __record()) == __humanBody(),
     "communication could not resolve the registered ZAO execution owner")
-local snapshot = owner.snapshot("person", {
-    bodyOwner = "ZAO", dead = false })
+stage='capable snapshot'
+local snapshot = owner.snapshot("person", __record())
 assert(snapshot.represented and snapshot.canAcquire and snapshot.canDeliver
     and snapshot.canExecute and not snapshot.incapable,
     "ZAO execution owner hid retained human capability")
+stage='incapable snapshot'
 local incapable = __incapableSnapshot()
 assert(not incapable.canAcquire and not incapable.canCarry
     and not incapable.canDeliver and not incapable.canExecute
     and incapable.incapable,
     "ZAO execution owner leaked actions after retained verbs were unavailable")
 
+stage='ordinary shell'
 __validShell(false)
 local ordinary = __counts()
 assert(ordinary.work == 1 and ordinary.decide == 1,
     "ordinary Crossed deliberation did not resume when no work owned the tick")
 
+stage='competing driver activity'
 __validShell(false, true)
 local threatened = __counts()
 assert(threatened.activity == "hunt" and threatened.decide == 1,
     "an observed Crossed target did not become a competing activity")
 end)
-assert(probeOk, "Crossed ownership probe failed: " .. tostring(probeProblem))
+assert(probeOk, "Crossed ownership probe failed at " .. stage .. ": "
+ .. tostring(probeProblem))
 '''
 
 
@@ -286,14 +312,15 @@ def main() -> int:
         ("pre-admission representation guard",
          "and not representationRejected then", "then"),
         ("derived Crossed representation guard",
-         'local rejected = rec and rec.bodyOwner == "ZAO"',
-         'if not rec then return false end\n'
-         '    local rejected = rec.bodyOwner == "ZAO"'),
+         'local rejected = not returnHeld and (rec and rec.bodyOwner == "ZAO"\n'
+         '        or livingZAOState)',
+         'local rejected = not returnHeld and rec and rec.bodyOwner == "ZAO"'),
         ("coordination owns the valid shell",
-         "if not coordinated and mind and mind.execution",
-         "if mind and mind.execution"),
-        ("observed target interrupts coordination",
-         'activity = "hunt"', 'activity = "idle"'),
+         "if mind and ZAO.Driver and ZAO.Driver.step then",
+         "if false then"),
+        ("actor-private perception before deliberation",
+         'SAO.Perception.observe(personId, body, now, false)',
+         'return false'),
         ("retained capability gates execution",
          "canExecute = canAct == true", "canExecute = true"),
         ("communication execution-owner registration",
@@ -330,7 +357,7 @@ def main() -> int:
             if mutant.returncode == 0:
                 print(f"REFUSED: {name} mutation survived")
                 return 1
-    print("Border 11 PASS: Crossed coordination uses the retained human shell; IsoZombie admission is side-effect-free; threats and retained capability govern work; six controls fail")
+    print("Border 11 PASS: Crossed coordination uses the retained human shell; IsoZombie admission is side-effect-free; private sight, driver activity and retained capability govern work; six controls fail")
     return 0
 
 
