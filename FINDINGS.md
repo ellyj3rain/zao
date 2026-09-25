@@ -727,7 +727,7 @@ yield. Death supplies zero acute relief. Pending encounters, maintenance and
 consumed handovers persist; a lost native combat handle interrupts on reload.
 
 Borders 10 and 12-14 execute the protected exposure, shared driver/source owner,
-material diets, dormant passage and acute result boundaries with twenty-four
+material diets, dormant passage and acute result boundaries with thirty-one
 named source controls. The sister's Borders 162 and 179 cover external dormant
 ownership and registered native use. These remain mechanical/headless evidence;
 loaded-world action presentation, ecological balance, broad food-mod

@@ -102,7 +102,7 @@ SourceUse serialization. Border 13 proves exact timed eating, Afflicted corpse
 admission/dispreference and native SourceUse acquisition. Border 14 proves
 dormant rates, partition invariance, exact-once nutrition/predatory results,
 heard fear, native pain, completed control, death with zero relief and reload
-interruption. Twenty-four named controls across Borders 10 and 12-14 fail.
+interruption. Thirty-one named controls across Borders 10 and 12-14 fail.
 
 This is mechanical and headless evidence. No game window was opened. Loaded-
 world animation, player-facing presentation, combat feel, save/reopen play and
