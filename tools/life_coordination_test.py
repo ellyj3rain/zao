@@ -78,6 +78,18 @@ bodies={
 records={}
 for id,b in pairs(bodies) do records[id]={id=id,dead=false,bodyOwner='ZAO'} end
 records.crossed.homeX,records.crossed.homeY,records.crossed.homeZ=30,30,0
+records.affDormant={id='affDormant',dead=false,bodyOwner='ZAO',
+ x=40,y=40,z=0,homeX=40,homeY=40,homeZ=0,dormantSleeping=false,
+ speechAccessOrigin='generated-empty-traits'}
+records.affUnknown={id='affUnknown',dead=false,bodyOwner='ZAO',
+ x=41,y=40,z=0,homeX=41,homeY=40,homeZ=0,dormantSleeping=false,
+ speechAccessOrigin='generated-empty-traits'}
+records.crossDormant={id='crossDormant',dead=false,bodyOwner='ZAO',
+ x=50,y=50,z=0,homeX=50,homeY=50,homeZ=0,dormantSleeping=false,
+ speechAccessOrigin='generated-empty-traits'}
+records.crossPeer={id='crossPeer',dead=false,bodyOwner='ZAO',
+ x=51,y=50,z=0,homeX=51,homeY=50,homeZ=0,dormantSleeping=false,
+ speechAccessOrigin='generated-empty-traits'}
 states={}
 for _,id in ipairs({'afflicted','helper1','helper2'}) do
  states[id]={terminalState='afflicted',driver={version=1,currentActivity='idle'}}
@@ -85,18 +97,30 @@ end
 for _,id in ipairs({'crossed','crossedBad','peer1','peer2'}) do
  states[id]={terminalState='crossed',driver={version=1,currentActivity='idle'}}
 end
+states.affDormant={terminalState='afflicted',driver={version=1,
+ currentActivity='idle',settlementPressure={terminalState='afflicted',
+ hunger=.88,thirst=.12,value=.88,observedAtHours=19}}}
+states.affUnknown={terminalState='afflicted',driver={version=1,
+ currentActivity='idle'}}
+states.crossDormant={terminalState='crossed',settlementGroup='cross-hold',
+ driver={version=1,currentActivity='holding-home'}}
+states.crossPeer={terminalState='crossed',settlementGroup='cross-hold',
+ driver={version=1,currentActivity='holding-home'}}
 needs={
  afflicted={hunger=.82,thirst=.18,fatigue=0}, helper1={hunger=.1,thirst=.1,fatigue=0},
  helper2={hunger=.1,thirst=.1,fatigue=0}, crossed={hunger=.1,thirst=.1,fatigue=0},
  peer1={hunger=.1,thirst=.1,fatigue=0}, peer2={hunger=.1,thirst=.1,fatigue=0},
+ affUnknown={hunger=.92,thirst=.1,fatigue=0},
 }
 local relations={ helper1=.6,helper2=.2,crossedBad=.5,peer1=.5,peer2=-.7,ordinary=.4 }
 SAO={
- History={countyHours=function() return nowHours end},
- Identity={get=function(id) return records[id] end},
+ History={countyHours=function() return nowHours end,speedModOf=function() return 1 end},
+ Identity={get=function(id) return records[id] end,
+  updatePosition=function(rec,x,y,z) rec.x,rec.y,rec.z=x,y,z return true end},
  Body={active={},foreign=bodies,hasRepresentation=function(id) return bodies[id]~=nil end},
  Controller={agents={},coordinationRuntime={}},
- Perception={EARSHOT=10},
+ Perception={EARSHOT=10,noteContactAttempt=function() return true end},
+ Places={comfortHorizon=function() return 24 end},
  Standing={
   groupOf=function(id) return nil end,
   trust=function(id,other) return relations[other] or 0 end,
@@ -112,7 +136,9 @@ getSpecificPlayer=function() return nil end
 ZAO={
  StateStore={store=function() return root end},
  Pathogen={stateOf=function(id) return states[id] end},
- Settlement={groups={}},
+ Settlement={groups={['cross-hold']={id='cross-hold',kind='crossed',
+  occupied=true,place={x=50,y=50,z=0},
+  members={crossDormant=true,crossPeer=true}}}},
  Diet={options=function() return {} end},
  Maintenance={predatoryPressure=function() return .2 end},
  Exposure={called=0,activeFor=function() return nil end,
@@ -281,6 +307,119 @@ assert(abandon and ZAO.Crossed.execute(abandon,bodies.crossed,'crossed',
  states.crossed,crossMind,21,nowHours)==true and crossProcess.status=='withdrawn',
  'Crossed lost opportunity did not remain abandonable')
 
+-- The same registered ZAO execution owner now reaches both policies when no
+-- shell is loaded. Afflicted origin requires retained hunger/thirst evidence;
+-- Crossed origin requires retained associates and held ground. Neither may
+-- borrow the other policy's motive, matter kind, or hidden current state.
+local affDormant,affDormantStatus=SAO.Communication.actorMatter('affDormant',{
+ atHours=nowHours,currentActivity='dormant',knownContacts={
+  {id='helper1',hostile=false},
+  {id='crossedBad',hostile=false,form='crossed'},
+ }})
+assert(affDormant and affDormantStatus=='open'
+ and affDormant.kind=='provisioning'
+ and affDormant.revisions['1'].proposal.scope.category=='food'
+ and affDormant.participants.helper1~=nil
+ and affDormant.participants.crossedBad==nil
+ and affDormant.participants.helper1.receptions['1']==nil
+ and affDormant.privateInputs.affDormant['1'].source
+  =='retained-personal-necessity',
+ 'bodyless Afflicted origin lacked exact retained necessity or crossed policy')
+local beforeUnknown=#SAO.Organization.processOrder
+local affUnknown,affUnknownStatus=SAO.Communication.actorMatter('affUnknown',{
+ atHours=nowHours,currentActivity='dormant',knownContacts={{id='helper1'}}})
+assert(affUnknown==nil and affUnknownStatus=='no-afflicted-situation'
+ and #SAO.Organization.processOrder==beforeUnknown,
+ 'bodyless Afflicted origin invented need from an unowned current value')
+
+local crossDormant,crossDormantStatus=SAO.Communication.actorMatter(
+ 'crossDormant',{atHours=nowHours,currentActivity='dormant',
+  knownContacts={{id='helper1'}}})
+assert(crossDormant and crossDormantStatus=='open'
+ and crossDormant.kind=='rendezvous-holding'
+ and crossDormant.organizationId=='cross-hold'
+ and crossDormant.revisions['1'].proposal.scope.action=='rendezvous-holding'
+ and crossDormant.revisions['1'].proposal.scope.category==nil
+ and crossDormant.participants.crossPeer~=nil
+ and crossDormant.participants.helper1==nil
+ and crossDormant.participants.crossPeer.receptions['1']==nil,
+ 'bodyless Crossed origin borrowed provisioning or ignored retained holding')
+assert(SAO.Organization.openMatter('affDormant','rendezvous-holding')==nil
+ and SAO.Organization.openMatter('crossDormant','provisioning')==nil,
+ 'shared ZAO driver merged Afflicted and Crossed policy')
+local affContact={processId=affDormant.id,processRevision=1,
+ recipientId='helper1',beliefKey='Helper One',observedAt=100,x=44,y=40}
+local crossContact={processId=crossDormant.id,processRevision=1,
+ recipientId='crossPeer',beliefKey='Cross Peer',observedAt=100,x=54,y=50}
+local affMoving=SAO.Communication.actorContactStep('affDormant',affContact,
+ {atHours=20,tick=180000})
+local crossMoving=SAO.Communication.actorContactStep('crossDormant',crossContact,
+ {atHours=20,tick=180000})
+nowHours=24
+local affArrived,affArrival=SAO.Communication.actorContactStep(
+ 'affDormant',affContact,{atHours=24,tick=216000})
+local crossArrived,crossArrival=SAO.Communication.actorContactStep(
+ 'crossDormant',crossContact,{atHours=24,tick=216000})
+local arrivedWaiting=affDormant.contactAttempts[1].status=='waiting'
+ and crossDormant.contactAttempts[1].status=='waiting'
+ and affDormant.contactAttempts[1].arrivedAt==24
+ and crossDormant.contactAttempts[1].arrivedAt==24
+local affAttempt=affDormant.contactAttempts[1]
+local crossAttempt=crossDormant.contactAttempts[1]
+local affWaitUntil=affAttempt.waitUntilAt
+local crossWaitUntil=crossAttempt.waitUntilAt
+local affFresh={processId=affDormant.id,processRevision=1,
+ recipientId='helper1',beliefKey='Helper One',observedAt=101,x=45,y=40}
+local crossFresh={processId=crossDormant.id,processRevision=1,
+ recipientId='crossPeer',beliefKey='Cross Peer',observedAt=101,x=55,y=50}
+nowHours=25
+local affWaiting,affWaitStatus=SAO.Communication.actorContactStep(
+ 'affDormant',affFresh,{atHours=25,tick=225000})
+local crossWaiting,crossWaitStatus=SAO.Communication.actorContactStep(
+ 'crossDormant',crossFresh,{atHours=25,tick=225000})
+local freshSightingContinued=#affDormant.contactAttempts==1
+ and #crossDormant.contactAttempts==1
+ and states.affDormant.driver.contact.contactAttemptId==affAttempt.id
+ and states.crossDormant.driver.contact.contactAttemptId==crossAttempt.id
+ and affAttempt.waitUntilAt==affWaitUntil
+ and crossAttempt.waitUntilAt==crossWaitUntil
+nowHours=27
+local affUnanswered,affEndStatus=SAO.Communication.actorContactStep(
+ 'affDormant',affFresh,{atHours=27,tick=243000})
+local crossStillWaiting,crossStillStatus=SAO.Communication.actorContactStep(
+ 'crossDormant',crossFresh,{atHours=27,tick=243000})
+nowHours=39
+local crossUnanswered,crossEndStatus=SAO.Communication.actorContactStep(
+ 'crossDormant',crossFresh,{atHours=39,tick=351000})
+assert(affMoving==true and crossMoving==true
+ and affArrived==true and affArrival=='arrived-address'
+ and crossArrived==true and crossArrival=='arrived-address'
+ and records.affDormant.x==44 and records.crossDormant.x==54
+ and arrivedWaiting
+ and freshSightingContinued
+ and affWaiting==true and affWaitStatus=='waiting-address'
+ and crossWaiting==true and crossWaitStatus=='waiting-address'
+ and affUnanswered==true and affEndStatus=='unanswered'
+ and crossStillWaiting==true and crossStillStatus=='waiting-address'
+ and crossUnanswered==true and crossEndStatus=='unanswered'
+ and states.affDormant.driver.currentActivity=='idle'
+ and states.crossDormant.driver.currentActivity=='idle'
+ and #affDormant.contactAttempts==1
+ and affDormant.contactAttempts[1].status=='unanswered'
+ and affDormant.participants.helper1.receptions['1']==nil
+ and #crossDormant.contactAttempts==1
+ and crossDormant.contactAttempts[1].status=='unanswered'
+ and crossDormant.participants.crossPeer.receptions['1']==nil,
+ 'Afflicted and Crossed did not share ZAO-owned contact travel and waiting: '
+  ..tostring(affArrival)..'/'..tostring(crossArrival)..' wait='
+  ..tostring(affWaitStatus)..'/'..tostring(crossWaitStatus)..' end='
+  ..tostring(affEndStatus)..'/'..tostring(crossStillStatus)..'/'
+  ..tostring(crossEndStatus)..' status='
+  ..tostring(affDormant.contactAttempts[1].status)..'/'
+  ..tostring(crossDormant.contactAttempts[1].status)..' activity='
+  ..tostring(states.affDormant.driver.currentActivity)..'/'
+  ..tostring(states.crossDormant.driver.currentActivity))
+
 local continuity=SAO.Organization.raiseMatter('afflicted','continuity-probe',nil,{
  intentKey='before-conversion',destinationRequired=true,
  destination={minX=0,minY=0,maxX=2,maxY=2,z=0},
@@ -339,7 +478,8 @@ def run(work: Path, sources: dict[str, str]) -> subprocess.CompletedProcess[str]
 
 def static_contract(sources: dict[str, str]) -> tuple[bool, str]:
     if ("function Driver.performMatter" not in sources["driver"]
-            or "function Driver.matterNeedsAction" not in sources["driver"]):
+            or "function Driver.matterNeedsAction" not in sources["driver"]
+            or "function Driver.advanceDormantContact" not in sources["driver"]):
         return False, "the shared driver does not own matter continuity"
     if ("afflictedProvisioningSituation" not in sources["afflicted"]
             or '"provisioning"' not in sources["afflicted"]):
@@ -349,8 +489,11 @@ def static_contract(sources: dict[str, str]) -> tuple[bool, str]:
         return False, "Crossed rendezvous producer is absent"
     execution_owner = sources["execution_owner"]
     if ("function adapter.appraiseMatter" not in execution_owner
-            or "provider.appraiseMatter" not in execution_owner):
-        return False, "registered ZAO appraisal is not state-dispatched"
+            or "provider.appraiseMatter" not in execution_owner
+            or "function adapter.originateMatter" not in execution_owner
+            or "provider.originateMatter" not in execution_owner
+            or "function adapter.advanceContact" not in execution_owner):
+        return False, "registered ZAO appraisal/origination is not state-dispatched"
     forbidden = ("terminalState = terminal", "diet =", "dietKnown =")
     appraisal = sources["afflicted"] + sources["crossed"]
     if any(value in appraisal for value in forbidden):
@@ -402,16 +545,68 @@ def main() -> int:
             ("acquired matters do not repeat per tick", "afflicted",
              "if not shouldAct then return nil end",
              "if false then return nil end"),
+            ("bodyless Afflicted requires retained necessity", "afflicted",
+             "local personalEvidence = body ~= nil and (physical.hunger ~= nil\n"
+             "        or physical.thirst ~= nil)",
+             "local personalEvidence = physical.hunger ~= nil\n"
+             "        or physical.thirst ~= nil"),
+            ("Afflicted retained knowledge excludes known Crossed threats", "afflicted",
+             'and hostile ~= true and tostring(knownForm or "") ~= "crossed"\n'
+             "            and not seen[otherId] then",
+             "and hostile ~= true and not seen[otherId] then"),
+            ("bodyless Crossed requires retained holding", "crossed",
+             "local function retainedAssociates(personId, state)\n"
+             "    local groupId = state and state.settlementGroup or nil",
+             "local function retainedAssociates(personId, state)\n"
+             "    local groupId = nil"),
             ("Crossed matter does not collapse into provisioning", "crossed",
-             '"rendezvous-holding", option.organizationId, option.proposal,',
-             '"provisioning", option.organizationId, option.proposal,'),
+             "local _, status, process = ZAO.Driver.performMatter(personId,\n"
+             '        "rendezvous-holding", option.organizationId, option.proposal,',
+             "local _, status, process = ZAO.Driver.performMatter(personId,\n"
+             '        "provisioning", option.organizationId, option.proposal,'),
             ("appraisal exports no pathogen label", "crossed",
              'bodyOwner = "ZAO", currentActivity = activity,',
              'bodyOwner = "ZAO", terminalState = state.terminalState, '
              'currentActivity = activity,'),
-            ("conversion dispatches current state policy", "execution_owner",
-             'and ZAO.Crossed or nil',
-             'and ZAO.Afflicted or nil'),
+            ("conversion appraisal dispatches current state policy", "execution_owner",
+             '    local provider = state and state.terminalState == "afflicted"\n'
+             '        and ZAO.Afflicted or state and state.terminalState == "crossed"\n'
+             '        and ZAO.Crossed or nil\n'
+             '    if not (state and provider and type(provider.appraiseMatter) == "function") then',
+             '    local provider = state and state.terminalState == "afflicted"\n'
+             '        and ZAO.Afflicted or state and state.terminalState == "crossed"\n'
+             '        and ZAO.Afflicted or nil\n'
+             '    if not (state and provider and type(provider.appraiseMatter) == "function") then'),
+            ("bodyless origination dispatches current state policy", "execution_owner",
+             '    local provider = state and state.terminalState == "afflicted"\n'
+             '        and ZAO.Afflicted or state and state.terminalState == "crossed"\n'
+             '        and ZAO.Crossed or nil\n'
+             '    if not (state and provider and type(provider.originateMatter) == "function") then',
+             '    local provider = state and state.terminalState == "afflicted"\n'
+             '        and ZAO.Afflicted or state and state.terminalState == "crossed"\n'
+             '        and ZAO.Afflicted or nil\n'
+             '    if not (state and provider and type(provider.originateMatter) == "function") then'),
+            ("registered owner retains bodyless contact movement", "execution_owner",
+             "    return ZAO.Driver.advanceDormantContact(tostring(personId), rec, state,\n"
+             "        candidate, type(context) == \"table\" and context or {})",
+             "    return false, \"contact-disabled\""),
+            ("shared ZAO contact travel records a durable attempt", "driver",
+             "        contactAttemptId = attempt.id,",
+             "        contactAttemptId = nil,"),
+            ("ZAO arrival becomes presence rather than reception", "driver",
+             "        local waiting = arriveDriverContact(personId, state, {",
+             "        local waiting = nil and arriveDriverContact(personId, state, {"),
+            ("fresh sighting preserves shared ZAO contact attempt", "driver",
+             "        and tonumber(prior.processRevision) == tonumber(candidate.processRevision)\n",
+             "        and tonumber(prior.processRevision) == tonumber(candidate.processRevision)\n"
+             "        and tonumber(prior.observedAt) == tonumber(candidate.observedAt)\n"),
+            ("ZAO silence terminates unanswered", "driver",
+             '            finishDriverContact(personId, state, "unanswered", {\n'
+             '                owner = "ZAO.Driver",\n'
+             '                representation = "dormant-zao",',
+             '            finishDriverContact(personId, state, "arrived", {\n'
+             '                owner = "ZAO.Driver",\n'
+             '                representation = "dormant-zao",'),
         ]
         for name, file_name, old, new in controls:
             if sources[file_name].count(old) != 1:
@@ -425,9 +620,10 @@ def main() -> int:
                 return 1
     if not static_ok:
         return 1
-    print("  mutation controls: PASS (six production controls)")
+    print("  mutation controls: PASS (fifteen production controls)")
     print("  15) Afflicted provisioning and Crossed rendezvous originate, revise, "
-          "diverge, execute and end through one driver without merging policy")
+          "diverge, execute and end through one driver, loaded or bodyless, "
+          "without merging policy")
     return 0
 
 

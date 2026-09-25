@@ -10,6 +10,11 @@ ZAO = ZAO or {}
 ZAO.Driver = ZAO.Driver or {}
 local Driver = ZAO.Driver
 
+local function finite(value)
+    return type(value) == "number" and value == value
+        and value ~= math.huge and value ~= -math.huge
+end
+
 local function dataOf(body)
     local data = nil
     if body then pcall(function() data = body:getModData() end) end
@@ -56,6 +61,93 @@ local function routeToken(personId, kind)
         .. ":" .. tostring(root.driverSequence)
 end
 
+local function finishDriverContact(personId, state, outcome, evidence)
+    local row = state and state.driver or nil
+    local contact = row and row.contact or nil
+    if contact and contact.processId and contact.contactAttemptId
+        and SAO and SAO.Organization and SAO.Organization.finishContact then
+        pcall(SAO.Organization.finishContact, contact.processId,
+            contact.contactAttemptId, tostring(personId), outcome,
+            evidence or {
+                owner = "ZAO.Driver",
+                representation = "zao",
+            })
+    end
+    if row then row.contact = nil end
+end
+
+local function activeDriverContact(personId, state)
+    local contact = state and state.driver and state.driver.contact or nil
+    if not (contact and contact.processId and contact.recipientId
+        and SAO and SAO.Organization and SAO.Organization.activeContact) then
+        return nil
+    end
+    return SAO.Organization.activeContact(contact.processId,
+        tostring(personId), contact.recipientId)
+end
+
+local function arriveDriverContact(personId, state, evidence)
+    local contact = state and state.driver and state.driver.contact or nil
+    if not (contact and contact.processId and contact.contactAttemptId
+        and SAO and SAO.Organization and SAO.Organization.arriveContact) then
+        return nil
+    end
+    local ok, attempt = pcall(SAO.Organization.arriveContact,
+        contact.processId, contact.contactAttemptId, tostring(personId),
+        evidence or { owner = "ZAO.Driver", representation = "zao" })
+    if ok and attempt then
+        contact.waitUntilAt = attempt.waitUntilAt
+        return attempt
+    end
+    return nil
+end
+
+local function ensureDriverContact(personId, state, candidate, evidence)
+    if type(candidate) ~= "table" or not (SAO and SAO.Organization) then
+        return nil
+    end
+    local row = rowOf(state)
+    local prior = row.contact
+    local same = prior
+        and prior.processId == tostring(candidate.processId or "")
+        and prior.recipientId == tostring(candidate.recipientId or "")
+        and tonumber(prior.processRevision) == tonumber(candidate.processRevision)
+    -- A newer sighting or a small change in the retained address retargets
+    -- this same process/revision/recipient attempt. Restarting it here would
+    -- renew the waiting deadline every time the pair observed one another.
+    if prior and not same then
+        finishDriverContact(personId, state, "superseded", {
+            owner = "ZAO.Driver",
+            representation = "zao",
+            reason = "another current recipient/address",
+        })
+    end
+    local attempt = SAO.Organization.activeContact
+        and SAO.Organization.activeContact(candidate.processId,
+            tostring(personId), candidate.recipientId) or nil
+    if not attempt and SAO.Organization.beginContact then
+        attempt = SAO.Organization.beginContact(candidate.processId,
+            tostring(personId), candidate.recipientId, evidence or {
+                owner = "ZAO.Driver",
+                representation = "zao",
+            })
+    end
+    if not attempt then
+        row.contact = nil
+        return nil
+    end
+    row.contact = {
+        processId = tostring(candidate.processId or ""),
+        processRevision = tonumber(candidate.processRevision),
+        recipientId = tostring(candidate.recipientId or ""),
+        beliefKey = tostring(candidate.beliefKey or ""),
+        observedAt = tonumber(candidate.observedAt),
+        x = tonumber(candidate.x), y = tonumber(candidate.y),
+        contactAttemptId = attempt.id,
+    }
+    return row.contact
+end
+
 local function finishRoute(personId, state, route, outcome, reason, hours)
     local root = rootStore()
     if root and route and route.token and not root.driverResults[route.token] then
@@ -74,6 +166,29 @@ local function finishRoute(personId, state, route, outcome, reason, hours)
     end
     if SAO and SAO.Locomotion then
         pcall(SAO.Locomotion.cancel, tostring(personId))
+    end
+    if route and route.kind == "contact" then
+        if outcome == "completed" then
+            local arrived = arriveDriverContact(personId, state, {
+                owner = "ZAO.Driver", representation = "loaded-zao",
+                routeToken = route.token, reason = reason,
+                atHours = tonumber(hours) or 0,
+            })
+            if not arrived then
+                finishDriverContact(personId, state, "failed", {
+                    owner = "ZAO.Driver", representation = "loaded-zao",
+                    routeToken = route.token,
+                    reason = "contact-arrival-not-recorded",
+                    atHours = tonumber(hours) or 0,
+                })
+            end
+        else
+            finishDriverContact(personId, state, outcome, {
+                owner = "ZAO.Driver", representation = "loaded-zao",
+                routeToken = route.token, reason = reason,
+                atHours = tonumber(hours) or 0,
+            })
+        end
     end
     if state and state.driver and state.driver.route == route then
         state.driver.route = nil
@@ -142,6 +257,152 @@ function Driver.cancelRoute(personId, state, reason, hours)
     if not route then return false, "none" end
     return finishRoute(tostring(personId), state, route, "interrupted",
         reason or "policy-changed", hours)
+end
+
+-- Bodyless contact movement belongs to the same ZAO driver for both living
+-- states.  The motive and proposal remain state-policy owned; this continuation
+-- consumes only the common unheard envelope and the actor's last known address.
+-- Reaching that address can invalidate the lead but cannot record reception.
+function Driver.advanceDormantContact(personId, rec, state, candidate, context)
+    personId = tostring(personId or "")
+    context = type(context) == "table" and context or {}
+    local atHours = tonumber(context.atHours)
+    if personId == "" or not rec or rec.dead or type(state) ~= "table"
+        or (state.terminalState ~= "afflicted"
+            and state.terminalState ~= "crossed")
+        or not finite(atHours) or atHours < 0 then
+        return false, "invalid-contact-state"
+    end
+    local row = rowOf(state)
+    if type(candidate) ~= "table" then
+        finishDriverContact(personId, state, "interrupted", {
+            owner = "ZAO.Driver",
+            representation = "dormant-zao",
+            reason = "proposal-received-or-address-spent",
+            atHours = atHours,
+        })
+        row.contactWalkAtHours = atHours
+        if row.currentActivity == "seeking-contact" then
+            Driver.setActivity(state, "idle", "no pending contact", atHours)
+        end
+        return false, "no-pending-contact"
+    end
+    if SAO and SAO.Communication and SAO.Communication.exchangeProcesses then
+        local exchanged = SAO.Communication.exchangeProcesses(personId,
+            tostring(candidate.recipientId or ""), "dormant-encounter", {
+                exchange = "zao-contact-before-travel",
+                processId = candidate.processId,
+                tick = context.tick,
+            })
+        if exchanged and (tonumber(exchanged.proposals) or 0) > 0 then
+            -- recordReception has already ended any matching attempt. This
+            -- clears only the driver's disposable pointer.
+            row.contact = nil
+            Driver.setActivity(state, "idle", "proposal received in person",
+                atHours)
+            return true, "received"
+        end
+    end
+    local x, y = tonumber(candidate.x), tonumber(candidate.y)
+    local rx, ry = tonumber(rec.x), tonumber(rec.y)
+    if not (finite(x) and finite(y) and finite(rx) and finite(ry)) then
+        finishDriverContact(personId, state, "failed", {
+            owner = "ZAO.Driver",
+            representation = "dormant-zao",
+            reason = "contact-position-unavailable",
+            atHours = atHours,
+        })
+        return false, "contact-position-unavailable"
+    end
+    local perDay = nil
+    pcall(function() perDay = SAO.Places.comfortHorizon() end)
+    if not finite(perDay) or perDay <= 0 then
+        finishDriverContact(personId, state, "failed", {
+            owner = "ZAO.Driver",
+            representation = "dormant-zao",
+            reason = "contact-pace-unavailable",
+            atHours = atHours,
+        })
+        return false, "contact-pace-unavailable"
+    end
+    local pace = 1
+    pcall(function() pace = SAO.History.speedModOf(personId) or 1 end)
+    if not finite(pace) or pace <= 0 then pace = 1 end
+    local last = tonumber(row.contactWalkAtHours)
+    if not finite(last) or last < 0 or last > atHours then last = atHours end
+    local elapsed = math.max(0, atHours - last)
+    row.contactWalkAtHours = atHours
+    local contact = ensureDriverContact(personId, state, candidate, {
+        owner = "ZAO.Driver",
+        representation = "dormant-zao",
+        beliefKey = candidate.beliefKey,
+        observedAt = candidate.observedAt,
+        x = x, y = y,
+        atHours = atHours,
+        tick = context.tick,
+    })
+    if not contact then return false, "contact-not-pending" end
+    local attempt = activeDriverContact(personId, state)
+    if attempt and attempt.status == "waiting" then
+        if atHours > (tonumber(attempt.waitUntilAt) or atHours) then
+            local beliefKey, observedAt = contact.beliefKey, contact.observedAt
+            finishDriverContact(personId, state, "unanswered", {
+                owner = "ZAO.Driver",
+                representation = "dormant-zao",
+                reason = "recipient-did-not-arrive-during-contact-day",
+                atHours = atHours, tick = context.tick,
+            })
+            if SAO.Perception and SAO.Perception.noteContactAttempt then
+                SAO.Perception.noteContactAttempt(personId, beliefKey,
+                    observedAt, tonumber(context.tick)
+                        or math.floor(atHours * 9000))
+            end
+            Driver.setActivity(state, "idle", "contact remained unanswered",
+                atHours)
+            return true, "unanswered"
+        end
+        Driver.setActivity(state, "waiting-contact",
+            "present at the last known address", atHours, contact.processId)
+        return true, "waiting-address"
+    end
+    Driver.setActivity(state, "seeking-contact",
+        "walking to a privately known address", atHours,
+        contact.processId)
+    local dx, dy = x - rx, y - ry
+    local distance = math.sqrt(dx * dx + dy * dy)
+    local step = math.max(0, perDay * pace * elapsed / 24.0)
+    local arrived = distance < 1 or step >= distance
+    local nx, ny = x, y
+    if not arrived and distance > 0 then
+        nx, ny = rx + dx / distance * step, ry + dy / distance * step
+    end
+    if SAO.Identity and SAO.Identity.updatePosition then
+        SAO.Identity.updatePosition(rec, nx, ny, rec.z or rec.homeZ or 0)
+    else
+        rec.x, rec.y = nx, ny
+    end
+    if arrived then
+        local waiting = arriveDriverContact(personId, state, {
+            owner = "ZAO.Driver",
+            representation = "dormant-zao",
+            x = x, y = y,
+            atHours = atHours,
+            tick = context.tick,
+        })
+        if not waiting then
+            finishDriverContact(personId, state, "failed", {
+                owner = "ZAO.Driver",
+                representation = "dormant-zao",
+                reason = "contact-arrival-not-recorded",
+                atHours = atHours, tick = context.tick,
+            })
+            return false, "contact-arrival-not-recorded"
+        end
+        Driver.setActivity(state, "waiting-contact",
+            "present at the last known address", atHours, contact.processId)
+        return true, "arrived-address"
+    end
+    return true, "moving"
 end
 
 function Driver.setActivity(state, activity, detail, hours, workRef)
@@ -703,6 +964,24 @@ function Driver.step(personId, body, state, mind, now, hours)
         return false, "unavailable"
     end
     personId = tostring(personId)
+    -- Communication is a shared county service, not a survivor controller.
+    -- Let either living ZAO state carry addressed matters and return privately
+    -- formed answers whenever its retained human shell is actually in speech
+    -- range; the transport rechecks hearing and does not imply assent.
+    if SAO and SAO.Communication and SAO.Communication.exchangeProcesses
+        and ZAO.Mind and ZAO.Mind.visiblePeople then
+        local reach = SAO.Perception and SAO.Perception.EARSHOT or 10
+        local people = ZAO.Mind.visiblePeople(mind, body, now, reach) or {}
+        for _, person in ipairs(people) do
+            if person.id and tostring(person.id) ~= personId then
+                pcall(SAO.Communication.exchangeProcesses, personId,
+                    tostring(person.id), nil, {
+                        exchange = "ZAO.Driver.shared-matter",
+                        atHours = tonumber(hours) or 0,
+                    })
+            end
+        end
+    end
     local personalSource = personalSourceReservation(personId)
     if personalSource then
         local interrupter = sourceInterrupter(stateOptions(personId, body,
@@ -734,12 +1013,102 @@ function Driver.step(personId, body, state, mind, now, hours)
         Driver.setActivity(state, activity, "existing native timed action", hours)
         return true, activity
     end
-    local activity, detail, option = Driver.intent(personId, body, state, mind,
-        now, hours)
+    local option = Driver.chooseOption(stateOptions(personId, body, state,
+        mind, now, hours))
+    local activity = option and tostring(option.activity or option.id) or "idle"
+    local detail = option and option.detail or nil
+    local row = rowOf(state)
+    local contact = SAO and SAO.Coordination
+        and SAO.Coordination.pendingContact
+        and SAO.Coordination.pendingContact(personId) or nil
+    if (row.contact or row.route and row.route.kind == "contact")
+        and (not contact or option and option.interruptsWork == true) then
+        local reason = contact and "state-pressure-interrupted-contact"
+            or "proposal-received-or-address-spent"
+        if row.route and row.route.kind == "contact" then
+            Driver.cancelRoute(personId, state, reason, hours)
+        else
+            finishDriverContact(personId, state, "interrupted", {
+                owner = "ZAO.Driver",
+                representation = "loaded-zao",
+                reason = reason,
+                atHours = tonumber(hours) or 0,
+            })
+        end
+    end
+    if contact and not (option and option.interruptsWork == true) then
+        if SAO and SAO.Communication
+            and SAO.Communication.exchangeProcesses then
+            local exchanged = SAO.Communication.exchangeProcesses(personId,
+                tostring(contact.recipientId or ""), nil, {
+                    exchange = "zao-contact-before-travel",
+                    processId = contact.processId,
+                    tick = now,
+                })
+            if exchanged and (tonumber(exchanged.proposals) or 0) > 0 then
+                row.contact = nil
+                Driver.setActivity(state, "idle",
+                    "proposal received in person", hours)
+                return true, "contact-received"
+            end
+        end
+        local contactRow = ensureDriverContact(personId, state, contact, {
+            owner = "ZAO.Driver",
+            representation = "loaded-zao",
+            beliefKey = contact.beliefKey,
+            observedAt = contact.observedAt,
+            x = contact.x, y = contact.y,
+            atHours = tonumber(hours) or 0,
+            tick = now,
+        })
+        if contactRow then
+            local attempt = activeDriverContact(personId, state)
+            if attempt and attempt.status == "waiting" then
+                local contactHours = tonumber(hours) or 0
+                if contactHours > (tonumber(attempt.waitUntilAt)
+                    or contactHours) then
+                    local beliefKey, observedAt = contactRow.beliefKey,
+                        contactRow.observedAt
+                    finishDriverContact(personId, state, "unanswered", {
+                        owner = "ZAO.Driver",
+                        representation = "loaded-zao",
+                        reason = "recipient-did-not-arrive-during-contact-day",
+                        atHours = tonumber(hours) or 0,
+                    })
+                    if SAO.Perception
+                        and SAO.Perception.noteContactAttempt then
+                        SAO.Perception.noteContactAttempt(personId, beliefKey,
+                            observedAt, now)
+                    end
+                    Driver.setActivity(state, "idle",
+                        "contact remained unanswered", hours)
+                    return true, "contact-unanswered"
+                end
+                Driver.setActivity(state, "waiting-contact",
+                    "present at the last known address", hours,
+                    contact.processId)
+                return true, "waiting-contact"
+            end
+            local active, outcome = Driver.routeTo(personId, body, state,
+                "contact", contact.recipientId, contact.x, contact.y,
+                math.floor(body:getZ()), false, hours)
+            if active then
+                Driver.setActivity(state, "seeking-contact",
+                    "walking to a privately known address", hours,
+                    contact.processId)
+                return true, "seeking-contact"
+            end
+            Driver.setActivity(state, outcome == "completed"
+                and "waiting-contact" or "idle",
+                outcome == "completed" and "present at the last known address"
+                    or "contact route failed", hours)
+            return true, outcome == "completed"
+                and "contact-address-reached" or "contact-route-failed"
+        end
+    end
     Driver.setActivity(state, activity, detail, hours,
         option and option.workRef or nil)
 
-    local row = rowOf(state)
     if row.resting and (not option
         or option.owner ~= "ZAO.Driver.humanPhysiology") then
         endRest(body, row)

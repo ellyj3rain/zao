@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Findings |
 |---|---|
-| Version | `0.5.1.0-pre-alpha` |
+| Version | `0.5.2.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `FINDINGS.md` |
 | Status | CANONICAL, APPEND-ONLY - verified engine findings from F-001. |
@@ -757,3 +757,33 @@ acts and Afflicted-to-Crossed reappraisal under one process revision. Six source
 mutations reverse those boundaries. This is installed-Kahlua/headless evidence;
 loaded-world speech, animation, routing, save/reopen play and long-horizon
 population consequences remain unobserved.
+
+## F-024 | 2026-09-25 21:45 UTC / 14:45 PST | Shared execution was allowed to flatten Crossed maintenance and contact evidence
+
+F-022 and the canonical summaries around A39 incorrectly assigned reduced
+caloric pressure to Crossed and admitted Afflicted remains as dispreferred
+Crossed food. Those claims were inferred during implementation rather than
+established by the operator. The corrected boundary is ordinary human caloric
+passage on the retained shell. Ordinary food is valid. Eligible ordinary-human
+flesh may be preferred for Crossed motives, but Crossed cannot feed on
+Afflicted. Eating and intentional blood exposure remain distinct. This
+correction does not specify or change Afflicted food policy.
+
+A42 removes the unsupported caloric multiplier and validates donor identity at
+every material boundary: option generation, timed-action start, continued
+validity, native completion and SourceUse consumption. Raw human-origin items
+and evolved dishes retain provenance. Known ordinary-human donors remain
+eligible, known Afflicted donors are rejected and anonymous legacy human-origin
+food fails closed.
+
+The same batch continues Afflicted- and Crossed-authored matters toward
+particular privately retained contacts through their common driver. The shared
+adapter is not shared policy: address arrival, Communication reception,
+recipient appraisal and returned response remain separate, and missing
+representation cannot manufacture hearing or assent. Loaded, dormant and
+headless execution use the same owner.
+
+Focused Crossed material, maintenance/predation and shared-driver controls plus
+the full repository gate provide mechanical evidence. Loaded-world food
+diversity, speech, animation, movement, save/reopen presentation, balance and
+long-horizon ecology remain unobserved.

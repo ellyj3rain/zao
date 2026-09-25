@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Mutation System |
 |---|---|
-| Version | `0.5.1.0-pre-alpha` |
+| Version | `0.5.2.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `MUTATION.md` |
 | Status | CANONICAL - the system as the operator defined it on 2026-09-09. Specifics not yet ratified into `DECISION_REGISTRY.md` are marked. |
@@ -311,8 +311,9 @@ are not substitutes for that policy.
 cognition, physiology and capability within their constraints. Ordinary food
 can sustain them; human-origin food is preferred when sustenance and altered
 motives reinforce one another. They can hunt and mutilate ordinary humans,
-butcher bodies into human flesh, and preserve that origin through cooking.
-Afflicted human remains are possible but dispreferred food. Crossed can
+butcher eligible ordinary-human bodies into human flesh, and preserve donor
+provenance through cooking. Afflicted donor provenance is categorically
+unavailable to Crossed feeding. Crossed can
 deliberately expose a living Afflicted person and may
 choose to contaminate an equipped melee or projectile weapon so a later native
 wound carries their blood. These are implemented producers, not a closed list,

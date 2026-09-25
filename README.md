@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul |
 |---|---|
-| Version | `0.5.1.0-pre-alpha` |
+| Version | `0.5.2.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `README.md` |
 | Status | CANONICAL - human entry point. |
@@ -78,10 +78,11 @@ conversion changes policy without replacing the executor. Afflicted fear
 observed Crossed, seek actual Afflicted peers and travel to evidenced ground.
 They require water, prefer meat/protein, can use penalized non-dairy alternatives
 and may individually choose human-origin food with donor-conditioned exposure
-protection. Crossed retain human physiology under reduced caloric pressure, so
-ordinary food can sustain them. Human flesh remains preferred where sustenance,
+protection. Crossed retain ordinary human caloric passage, so ordinary food can
+sustain them. Human flesh remains preferred where sustenance,
 cruelty, domination, fear and contagion reinforce one another; eligible human
-corpses can be butchered and their origin retained through cooked dishes.
+corpses can be butchered and their origin retained through cooked dishes, but
+Afflicted donor provenance is categorically unavailable to Crossed feeding.
 Crossed blood can be deliberately prepared on an equipped melee or projectile
 weapon for finite native hits, while an Afflicted target still uses the
 separate intentional-exposure action. Target options use the actor's private
@@ -110,6 +111,18 @@ coordination therefore cannot fall back into SAO ownership. A missing shell
 remains an observation gap; no alternate body, mortality, migration or
 conversion rule is inferred. Updated Borders 11 and 15 control the shared seam;
 loaded-world behavior remains unobserved.
+
+A42 continues each state-authored matter through actual retained contacts in
+loaded, dormant and headless execution. Address arrival does not establish
+hearing; reception, private appraisal and the returned answer remain distinct.
+It also corrects Crossed maintenance: the retained human shell uses ordinary
+human caloric passage, and no reduced-calorie multiplier is applied. Crossed
+may use ordinary food and eligible ordinary-human provenance, but cannot feed
+on Afflicted. Donor identity is revalidated through raw items, evolved dishes
+and every timed/native action boundary; anonymous legacy human-origin food
+fails closed. Intentional blood exposure remains separate. Afflicted food
+policy is unchanged. These paths are mechanically controlled; loaded-world
+presentation and long-horizon ecology remain unobserved.
 
 G0 closed at `[A6]`: the engine's turn surface is established from the
 installed build with file-and-line evidence, in F-001 through F-011.

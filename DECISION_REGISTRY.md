@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Decision Registry |
 |---|---|
-| Version | `0.5.1.0-pre-alpha` |
+| Version | `0.5.2.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `DECISION_REGISTRY.md` |
 | Status | CANONICAL, APPEND-ONLY - ratified decisions. |
@@ -811,3 +811,35 @@ exposure, captivity, settlement or a common target.
 `skill-61bcc92d536b113d`, item `seam-61bcc92d536b113d`, selected `approved`
 without notes. The approved plan evidence is
 `field-test:plan-sha256:b034d3db2599033973b37158332d10998eec79de2b24bceaebdf629cabaf6738`.
+
+## DR-033 | 2026-09-25 21:45 UTC / 14:45 PST | Crossed ordinary calories and Afflicted-donor prohibition
+
+**Status.** RATIFIED by direct operator correction during A42. This supersedes
+only DR-031's reduced-calorie and Afflicted-food clauses. It does not merge
+Afflicted and Crossed maintenance, alter the shared-driver decision or create a
+new Afflicted food rule.
+
+**Decision.** Crossed retain the living human shell's ordinary caloric passage.
+Ordinary food is valid. Eligible ordinary-human flesh may be motivationally
+preferred because sustenance can coincide with cruelty, mutilation, fear,
+domination and contagion; it is not a biologically exclusive zombie hunger.
+Crossed cannot feed on Afflicted. Eating, killing, weapon contamination and
+intentional blood exposure are separate acts and outcomes.
+
+**Consequences.** Crossed donor admission is revalidated at option generation,
+timed-action start, continued validity, native completion and SourceUse
+consumption. Raw human-origin food and evolved dishes retain donor provenance.
+Known ordinary-human donors may pass, known Afflicted donors are rejected and
+anonymous legacy human-origin items fail closed. `ZAO_Maintenance` observes the
+retained human shell's native hunger and thirst without the unsupported
+Crossed multiplier. Afflicted maintenance remains separately owned and is not
+revised by this decision.
+
+The common driver also continues each state's own situation toward particular
+retained contacts. Contact attempt, address arrival, reception, private
+appraisal, returned answer and completed work remain distinct. A shared driver
+is execution ownership, not shared policy.
+
+**Origin.** Direct operator correction and supplied source discussion on
+2026-09-25 during the already-approved implementation. It corrects an
+assistant-inferred mechanism rather than reopening approval.

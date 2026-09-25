@@ -152,22 +152,30 @@ local function near(a,b,epsilon)
  return math.abs(a-b)<(epsilon or .00001)
 end
 
--- Dormant physiology is state-owned: Crossed keep ordinary food viability but
--- accrue caloric pressure at one quarter the survivor rate; water is shared.
+-- Dormant physiology is state-owned while both living states retain ordinary
+-- human caloric and water passage. Their state-specific food consequences and
+-- predatory motives remain separate from that physiology.
 local crossed=__state('dormant-crossed','crossed',0)
 local crossedBody=__body('dormant-crossed',0,0)
 assert(ZAO.Maintenance.advanceDormant('dormant-crossed',crossed,crossedBody,
  10,10)==true)
-assert(near(crossedBody:getStats():get(CharacterStat.HUNGER),.23)
+assert(near(crossedBody:getStats():get(CharacterStat.HUNGER),.32)
  and near(crossedBody:getStats():get(CharacterStat.THIRST),.30),
- 'Crossed dormant physiology borrowed survivor hunger or lost human thirst')
+ 'Crossed dormant shell did not retain ordinary human hunger and thirst')
 local afflicted=__state('dormant-afflicted','afflicted')
 local afflictedBody=__body('dormant-afflicted',0,0)
 assert(ZAO.Maintenance.advanceDormant('dormant-afflicted',afflicted,
  afflictedBody,10,10)==true)
 assert(near(afflictedBody:getStats():get(CharacterStat.HUNGER),.32)
  and near(afflictedBody:getStats():get(CharacterStat.THIRST),.30),
- 'Afflicted dormant physiology did not retain distinct caloric pressure')
+ 'Afflicted dormant shell lost ordinary human caloric passage')
+local loaded=__state('loaded-crossed','crossed',0)
+local loadedBody=__body('loaded-crossed',0,0)
+assert(ZAO.Maintenance.observeLoaded('loaded-crossed',loaded,loadedBody,0))
+loadedBody:getStats():set(CharacterStat.HUNGER,.56)
+assert(ZAO.Maintenance.observeLoaded('loaded-crossed',loaded,loadedBody,1)
+ and near(loadedBody:getStats():get(CharacterStat.HUNGER),.56),
+ 'loaded observation rewrote native Crossed hunger')
 
 local whole=__state('whole','crossed',0)
 local split=__state('split','crossed',0)
@@ -316,9 +324,13 @@ def main() -> int:
         return 0
     sources = {path.name: path.read_text(encoding="utf-8-sig") for path in FILES}
     controls = [
-        ("Crossed reduced caloric pressure", "ZAO_Maintenance.lua",
-         "and Maintenance.profile.crossedCaloricFactor or 1.0",
-         "and 1.0 or 1.0"),
+        ("Crossed full dormant caloric passage", "ZAO_Maintenance.lua",
+         "* Maintenance.profile.survivorHungerPerHour",
+         "* Maintenance.profile.survivorHungerPerHour * 0.25"),
+        ("loaded native hunger remains authoritative", "ZAO_Maintenance.lua",
+         "physiology.lastObservedHunger = stat(body, CharacterStat.HUNGER)",
+         "setStat(body, CharacterStat.HUNGER, "
+         "stat(body, CharacterStat.HUNGER) * 0.25)"),
         ("exact-once predatory result", "ZAO_Maintenance.lua",
          'or state.terminalState ~= "crossed" then return nil end\n'
          "    if root.maintenanceResults[token] then return root.maintenanceResults[token] end",
@@ -367,7 +379,7 @@ def main() -> int:
             if result.returncode == 0:
                 print(f"REFUSED: {name} control survived")
                 return 1
-    print("Border 14 PASS: Afflicted and Crossed maintenance stays distinct across dormancy; completed nutrition and acute predatory effects are exact-once; heard flight, native pain, and completed yield each require their own evidence; death grants none; seven controls fail")
+    print("Border 14 PASS: Afflicted and Crossed keep ordinary human caloric passage across dormant and loaded ownership while their nutrition and predatory motives remain distinct; completed effects are exact-once; heard flight, native pain, and completed yield each require their own evidence; death grants none; eight controls fail")
     return 0
 
 
