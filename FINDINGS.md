@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Findings |
 |---|---|
-| Version | `0.4.0.0-pre-alpha` |
+| Version | `0.5.0.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `FINDINGS.md` |
 | Status | CANONICAL, APPEND-ONLY - verified engine findings from F-001. |
@@ -732,3 +732,28 @@ named source controls. The sister's Borders 162 and 179 cover external dormant
 ownership and registered native use. These remain mechanical/headless evidence;
 loaded-world action presentation, ecological balance, broad food-mod
 compatibility and long-horizon population consequences are unobserved.
+
+## F-023 | 2026-09-25 08:55 UTC / 01:55 PST | Immediate option scoring could not sustain a social purpose
+
+A39 gave both states one execution owner and materially distinct actions, but
+its providers primarily emitted options for the current tick. An Afflicted
+person's necessity could not address particular people and persist through
+their different answers into real provision. A Crossed person's retained
+knowledge and relationships could not sustain a revisable rendezvous through
+movement and arrival. Treating current option selection or generic speech as
+that continuity would have manufactured assent and success.
+
+A40 keeps the common driver mechanical and moves the durable process to SAO's
+existing owner. Afflicted provisioning is caused by actual hunger, thirst or
+settlement necessity; Crossed rendezvous is caused by evidenced associates and
+ground. Their separate appraisal providers use current private evidence after
+actual acquisition. Conversion preserves the process but changes current
+policy dispatch. Work completes only through the sister's exact material or
+arrival result, and no arrival manufactures predation or exposure.
+
+Border 15 executes both producers, revision and withdrawal, mixed responses,
+missing-representation deferral, exact arrival, absence of downstream invented
+acts and Afflicted-to-Crossed reappraisal under one process revision. Six source
+mutations reverse those boundaries. This is installed-Kahlua/headless evidence;
+loaded-world speech, animation, routing, save/reopen play and long-horizon
+population consequences remain unobserved.

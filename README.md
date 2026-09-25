@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul |
 |---|---|
-| Version | `0.4.0.0-pre-alpha` |
+| Version | `0.5.0.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `README.md` |
 | Status | CANONICAL - human entry point. |
@@ -55,8 +55,8 @@ the canonical Crossed human action system remains open in the sister roadmap.
 
 A37 implements the opposite ownership direction for an Afflicted person who
 becomes Crossed. A reachable Crossed decision approaches and holds contact
-through an interruptible blood action. Afflicted people are excluded from
-ordinary feeding; only the completed durable action can produce the existing
+through an interruptible blood action. That exposure action does not itself
+feed; only the completed durable action can produce the existing
 Crossed-odds times susceptibility roll. Success transfers the same living human
 shell and dormant snapshot from SAO to ZAO exactly once, with retry across busy
 state, save/reload and later death. This closes the exposure/ownership slice;
@@ -88,6 +88,18 @@ separate intentional-exposure action. Target options use the actor's private
 observations rather than a controller-wide nearest-person scan. These are first
 material producers, not a closed Crossed feature list or automatic behavior
 loop. Borders 12 and 13 cover the mechanisms headlessly; loaded-world play
+remains unobserved.
+
+A40 gives both living states durable shared matters without making their
+motives interchangeable. Afflicted raise and revise food or water provisioning
+from actual personal or settlement necessity, then withdraw it when the need
+resolves. Crossed raise bounded rendezvous/holding proposals to currently
+evidenced associates and ground. Each recipient answers from current ZAO-owned
+activity, capability, pressure, relationships and disposition after actual
+communication. Accepted work uses SAO's native acquisition, handover and
+locomotion owners; rendezvous completes only at the exact promised arrival.
+Conversion retains the process but reappraises it through current Crossed
+policy. Border 15 controls this combined path headlessly; loaded-world behavior
 remains unobserved.
 
 G0 closed at `[A6]`: the engine's turn surface is established from the

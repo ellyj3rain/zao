@@ -1,0 +1,111 @@
+{
+  "schema": "mousecat.skill-invocation/2",
+  "action": "await",
+  "skillRef": "field-test",
+  "interactionId": "skill-61bcc92d536b113d",
+  "status": "answered",
+  "idempotentReplay": false,
+  "intake": {
+    "schema": "mousecat.skill-intake/2",
+    "skillRef": "field-test",
+    "source": {
+      "host": "codex",
+      "sessionId": "01a0d224-efca-7f01-a4f5-113b2d7ce569",
+      "invocationId": "zao-life-depth-001"
+    },
+    "sessionIds": [
+      "01a0d224-efca-7f01-a4f5-113b2d7ce569"
+    ],
+    "seamCount": 1,
+    "ordering": "input",
+    "fingerprint": "8e59cd115d3d426a",
+    "rawTranscriptAccepted": false,
+    "returnExpectation": "typed-responses-with-lineage",
+    "frameworkRef": "recursive-deliberation",
+    "availableSkillRefs": [
+      "crucible",
+      "total-recall",
+      "mass-assault",
+      "field-test"
+    ]
+  },
+  "items": [
+    {
+      "id": "seam-61bcc92d536b113d",
+      "shape": "ratification",
+      "lineage": {
+        "host": "codex",
+        "sessionId": "01a0d224-efca-7f01-a4f5-113b2d7ce569",
+        "threadId": "zao-life-depth-001",
+        "parentThreadId": null,
+        "evidenceRef": "field-test:plan-sha256:b034d3db2599033973b37158332d10998eec79de2b24bceaebdf629cabaf6738",
+        "originInteractionId": null,
+        "originItemId": null,
+        "delegationId": null,
+        "delegationAttempt": null,
+        "occurredAt": null,
+        "ordinal": null,
+        "sourceIndex": 0,
+        "sequence": 1
+      }
+    }
+  ],
+  "responses": [
+    {
+      "itemId": "seam-61bcc92d536b113d",
+      "shape": "ratification",
+      "status": "answered",
+      "value": "approved",
+      "selectedOption": "approved",
+      "selectedOptions": [
+        "approved"
+      ],
+      "ranking": null,
+      "checklist": null,
+      "notes": null,
+      "lineage": {
+        "host": "codex",
+        "sessionId": "01a0d224-efca-7f01-a4f5-113b2d7ce569",
+        "threadId": "zao-life-depth-001",
+        "parentThreadId": null,
+        "evidenceRef": "field-test:plan-sha256:b034d3db2599033973b37158332d10998eec79de2b24bceaebdf629cabaf6738",
+        "originInteractionId": null,
+        "originItemId": null,
+        "delegationId": null,
+        "delegationAttempt": null,
+        "occurredAt": null,
+        "ordinal": null,
+        "sourceIndex": 0,
+        "sequence": 1
+      }
+    }
+  ],
+  "progress": {
+    "total": 1,
+    "resolved": 1,
+    "open": 0,
+    "deferred": 0,
+    "held": 0,
+    "answered": 1,
+    "withdrawn": 0
+  },
+  "reason": null,
+  "continuation": {
+    "obligation": "route-framework-context",
+    "recurse": true,
+    "framework": {
+      "frameworkRef": "recursive-deliberation",
+      "routing": "contextual-capability-routing",
+      "previousSkillRef": "field-test",
+      "availableSkillRefs": [
+        "crucible",
+        "total-recall",
+        "mass-assault",
+        "field-test"
+      ],
+      "fixedNextSkill": null,
+      "resultRef": "skill-61bcc92d536b113d",
+      "resultToken": "continuation-6025181b-a027-4405-9813-2092ee4b0ad9"
+    }
+  }
+}

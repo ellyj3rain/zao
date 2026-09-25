@@ -92,6 +92,192 @@ local function outcastDestination(personId, mind)
     return candidate
 end
 
+local function clamp01(value)
+    value = tonumber(value) or 0
+    if value < 0 then return 0 end
+    if value > 1 then return 1 end
+    return value
+end
+
+local function afflictedProvisioningSituation(body, personId, state, mind,
+        now, hours)
+    if not (body and mind and ZAO.Driver and SAO and SAO.Organization) then
+        return nil
+    end
+    local physical = mind.physical or {}
+    local hunger, thirst = clamp01(physical.hunger), clamp01(physical.thirst)
+    local groupId = state and state.settlementGroup or nil
+    local group = groupId and ZAO.Settlement and ZAO.Settlement.groups
+        and ZAO.Settlement.groups[groupId] or nil
+    local settlementNeed = group and group.occupied
+        and clamp01(group.necessity) or 0
+    local groupHunger, groupThirst, observed = 0, 0, 0
+    for _, evidence in pairs(group and group.needEvidence or {}) do
+        if type(evidence) == "table" then
+            groupHunger = groupHunger + clamp01(evidence.hunger)
+            groupThirst = groupThirst + clamp01(evidence.thirst)
+            observed = observed + 1
+        end
+    end
+    if observed > 0 then
+        groupHunger, groupThirst = groupHunger / observed, groupThirst / observed
+    end
+    -- The settlement's aggregate necessity can motivate attention, but only
+    -- its recorded hunger/thirst evidence can name a provisioning category.
+    -- Fatigue or injury never silently turns into a request for food.
+    local foodPressure = math.max(hunger, groupHunger)
+    local waterPressure = math.max(thirst, groupThirst)
+    local category = waterPressure > foodPressure and "water" or "food"
+    local pressure = math.max(foodPressure, waterPressure)
+    local open = SAO.Organization.openMatter
+        and SAO.Organization.openMatter(tostring(personId), "provisioning") or nil
+    if pressure <= 0.25 and open then
+        return {
+            id = "afflicted:provisioning:withdraw:" .. tostring(open.id),
+            kind = "provisioning-withdraw",
+            activity = "revising-provisioning", score = 76,
+            interruptsWork = false,
+            detail = "the evidenced provisioning pressure has passed",
+        }
+    end
+    if pressure < 0.55 then return nil end
+
+    local people = ZAO.Mind and ZAO.Mind.visiblePeople
+        and ZAO.Mind.visiblePeople(mind, body, now, GATHER_RADIUS) or {}
+    local addressed = {}
+    for _, person in ipairs(people) do
+        if person.state ~= "crossed" and person.relationship > -0.35 then
+            addressed[#addressed + 1] = person.id
+            if #addressed >= 3 then break end
+        end
+    end
+    if #addressed == 0 then return nil end
+
+    local x, y, z = body:getX(), body:getY(), math.floor(body:getZ())
+    if group and group.place and tonumber(group.place.x)
+        and tonumber(group.place.y) then
+        x, y, z = group.place.x, group.place.y, group.place.z or z
+    end
+    x, y, z = math.floor(x), math.floor(y), math.floor(z)
+    local band = math.max(1, math.min(4, math.floor(pressure * 4) + 1))
+    local intentKey = table.concat({ category, tostring(x), tostring(y),
+        tostring(z), tostring(band) }, ":")
+    local proposal = {
+        intentKey = intentKey,
+        purpose = "provisioning under current necessity",
+        destinationRequired = true,
+        destination = { minX = x - 2, minY = y - 2,
+            maxX = x + 2, maxY = y + 2, z = z },
+        requiredCapabilities = { acquire = true, carry = true, deliver = true },
+        responsePolicy = "first-completion",
+        expiresAtHours = (tonumber(hours) or 0) + 6,
+        scope = { action = "deliver-material", category = category,
+            quantity = 1 },
+    }
+    local shouldAct = ZAO.Driver.matterNeedsAction(personId, "provisioning",
+        intentKey, addressed, hours, 2)
+    if not shouldAct then return nil end
+    return {
+        id = "afflicted:provisioning:" .. intentKey,
+        kind = "provisioning-matter",
+        activity = "requesting-provisioning",
+        score = 38 + pressure * 45
+            + (tonumber(mind.disposition.talkativeness) or 0) * 4,
+        interruptsWork = false,
+        detail = "current personal or held-ground necessity",
+        organizationId = groupId or mind.standing and mind.standing.group,
+        proposal = proposal,
+        addressedIds = addressed,
+        privateEvidence = {
+            source = group and "settlement-necessity" or "personal-necessity",
+            needOwner = "ZAO.Driver<-SAO.Needs",
+            foodPressure = foodPressure, waterPressure = waterPressure,
+            settlementNecessity = settlementNeed,
+        },
+    }
+end
+
+-- ZAO chooses from the current person's own activity, capability, relations
+-- and pressures after SAO has proved reception.  The context contains no
+-- diagnosis or diet label; Organization remains the response owner.
+function Afflicted.appraiseMatter(personId, body, state, mind, processView,
+        base, hours)
+    local activity = string.lower(tostring(base.currentActivity or "dormant"))
+    local relationship = tonumber(base.relationship) or 0
+    local ownNeed = tonumber(base.ownNeed)
+    local needAvailable = ownNeed ~= nil
+    ownNeed = ownNeed or 0
+    local prior = processView and processView.response or nil
+    local hostile = base.contest == true or relationship <= -0.45
+    local dead = base.dead == true
+    local executionAvailable = not (base.constraints
+        and base.constraints.executionOwnerAvailable == false)
+    local represented = body ~= nil and not (base.constraints
+        and base.constraints.represented == false)
+    local missingExecutionEvidence = not executionAvailable or not represented
+    local incapable = not missingExecutionEvidence and not dead
+        and (base.incapable == true or base.canExecute == false)
+    local destinationKnown = base.destinationKnown == true
+    local disposition = mind and mind.disposition or {}
+    local choice, terms = nil, {}
+    if prior and prior.response == "accept" and (hostile or dead or incapable) then
+        choice = "withdraw"
+    elseif hostile then
+        choice = "contest"
+    elseif dead or incapable then
+        choice = "decline"
+    elseif missingExecutionEvidence then
+        -- Absence of the current ZAO-owned body or execution snapshot is not
+        -- evidence of incapacity.  Preserve a revisable answer until the
+        -- execution owner can report the actor's actual capability.
+        choice = "defer"
+    elseif activity ~= "idle" and activity ~= "dormant"
+        and activity ~= "holding-place" and activity ~= "gathered" then
+        choice = "defer"
+    elseif not needAvailable then
+        choice = "defer"
+    elseif not destinationKnown then
+        choice, terms = "counter-propose", { requireDestination = true }
+    elseif ownNeed >= 0.80 then
+        choice, terms = "qualify", { afterOwnNeed = true, quantity = 1 }
+    elseif relationship >= 0.25
+        or (tonumber(disposition.compassion) or 0)
+            + (tonumber(disposition.discipline) or 0) >= 0.75 then
+        choice = "accept"
+    elseif relationship <= -0.15 then
+        choice = "decline"
+    else
+        choice, terms = "counter-propose", { quantity = 1,
+            requireDestination = true }
+    end
+    return {
+        owner = "ZAO.Driver.appraisal", executor = "ZAO.Driver",
+        bodyOwner = "ZAO", currentActivity = activity,
+        canAcquire = base.canAcquire == true,
+        canCarry = base.canCarry == true,
+        canDeliver = base.canDeliver == true,
+        canExecute = base.canExecute == true,
+        incapable = incapable or dead, dead = dead,
+        contest = hostile, ownNeed = ownNeed,
+        relationship = relationship, destinationKnown = destinationKnown,
+        choice = choice, terms = terms,
+        reconsider = prior and prior.response == "defer"
+            and choice ~= "defer" or false,
+        interests = { relationship = relationship,
+            compassion = tonumber(disposition.compassion) or 0,
+            discipline = tonumber(disposition.discipline) or 0 },
+        constraints = { represented = represented,
+            currentActivity = activity,
+            executionOwnerAvailable = executionAvailable,
+            ownNeedAvailable = needAvailable },
+        inputOwners = { currentActivity = "ZAO.Driver",
+            capabilities = "ZAO.Mind", ownNeed = base.inputOwners
+                and base.inputOwners.ownNeed or "ZAO.Driver",
+            relationship = "SAO.Standing", interests = "SAO.Disposition",
+            constraints = "ZAO.Driver" },
+    }
+end
+
 function Afflicted.options(body, personId, state, mind, now, hours)
     local options = {}
     if ZAO.Diet and ZAO.Diet.options then
@@ -108,6 +294,9 @@ function Afflicted.options(body, personId, state, mind, now, hours)
             for _, option in ipairs(bodyOptions) do options[#options + 1] = option end
         end
     end
+    local provisioning = afflictedProvisioningSituation(body, personId, state,
+        mind, now, hours)
+    if provisioning then options[#options + 1] = provisioning end
     local threatId, threat = Afflicted.threatFor(body, personId, mind, now)
     local route = state and state.driver and state.driver.route or nil
     if threatId then
@@ -171,7 +360,17 @@ function Afflicted.execute(option, body, personId, state, mind, now, hours)
     personId = tostring(personId)
     if type(option) ~= "table" then return false, "idle" end
     local route = state.driver and state.driver.route or nil
-    if string.sub(tostring(option.kind), 1, 5) == "diet-"
+    if option.kind == "provisioning-matter" then
+        local committed, result = ZAO.Driver.performMatter(personId,
+            "provisioning", option.organizationId, option.proposal,
+            option.addressedIds, option.privateEvidence, hours)
+        return committed == true, committed and "requesting-provisioning"
+            or tostring(result or "idle")
+    elseif option.kind == "provisioning-withdraw" then
+        local withdrawn = ZAO.Driver.withdrawMatter(personId, "provisioning",
+            "necessity-resolved", { owner = "ZAO.Driver" })
+        return withdrawn == true, withdrawn and "revising-provisioning" or "idle"
+    elseif string.sub(tostring(option.kind), 1, 5) == "diet-"
         or option.kind == "butcher-human" then
         if ZAO.Diet and ZAO.Diet.step then
             local ok, committed, activity = pcall(ZAO.Diet.step,

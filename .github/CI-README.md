@@ -5,7 +5,7 @@ Project Zomboid and governed-history contracts.
 
 | Check | Contract |
 |---|---|
-| `ci-verify` | Checks committed diff hygiene and runs the full border gate (`tools/check.sh`). Borders that read the installed game must report SKIPPED rather than passing. |
+| `ci-verify` | Checks committed diff hygiene and runs the full border gate (`tools/check.sh`). Border 15 receives the exact merged SAO C83 source tree; borders that require the installed game still report SKIPPED rather than passing. |
 | `codeql-python` | Advisory code scanning over `tools/` on pull requests, `main`, and the weekly schedule. |
 
 `ci-verify` is the required merge gate on `main` and is also the pre-commit
@@ -27,9 +27,8 @@ Named so the gap is a decision rather than an oversight.
 
 - **No `gate_reach_test.py`.** SAO's gate proves every mirror in `tools/` is
   wired into `check.sh`, because thirty-three of its mirrors once existed and
-  eleven ran. ZAO has two borders and one structural check, all three named in
-  `check.sh` directly. The border arrives when the count makes it possible to
-  lose one.
+  eleven ran. ZAO currently names all fifteen borders in `check.sh` directly.
+  The reachability border remains outstanding.
 - **No `RECEIPTS.md`.** SAO carries one under DR-025 because its doc-pack was
   claiming perpetual untestedness. ZAO has no such claim to retire and no play
   evidence yet; the ledger arrives with the first observation.

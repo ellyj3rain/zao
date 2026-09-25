@@ -153,6 +153,14 @@ if ! "$PY" tools/maintenance_predation_test.py; then
     fail=1
 fi
 
+# 15. Afflicted necessity and Crossed retained strategy originate different
+# acquired matters, independent answers and receipt-backed material/arrival
+# work under the same ZAO execution driver.
+if ! "$PY" tools/life_coordination_test.py; then
+    note "BORDER 15 REFUSED: distinct long-horizon life coordination"
+    fail=1
+fi
+
 if [ "$fail" -ne 0 ]; then
     note "GATE REFUSED"
 else

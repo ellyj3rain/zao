@@ -399,6 +399,26 @@ function executionAdapter.snapshot(personId, rec)
     }
 end
 
+-- SAO proves acquisition and freezes the eventual response.  ZAO supplies only
+-- the current actor-private appraisal because it owns this living person's
+-- policy; no pathogen label or diet field is returned across the seam.
+function executionAdapter.appraiseMatter(personId, rec, processView, baseContext)
+    local body = executionAdapter.bodyFor(personId, rec)
+    local hours = 0
+    pcall(function() hours = SAO.History.countyHours() end)
+    local state = ZAO.Pathogen and ZAO.Pathogen.stateOf(tostring(personId)) or nil
+    local provider = state and state.terminalState == "afflicted"
+        and ZAO.Afflicted or state and state.terminalState == "crossed"
+        and ZAO.Crossed or nil
+    if not (state and provider and type(provider.appraiseMatter) == "function") then
+        return nil
+    end
+    local mind = ZAO.Mind and ZAO.Mind.of(rec, hours, body) or nil
+    if not mind then return nil end
+    return provider.appraiseMatter(tostring(personId), body, state, mind,
+        processView, type(baseContext) == "table" and baseContext or {}, hours)
+end
+
 function executionAdapter.advanceDormant(personId, rec, body, elapsedHours,
         atHours)
     local state = ZAO.Pathogen and ZAO.Pathogen.stateOf(tostring(personId))
