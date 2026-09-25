@@ -30,6 +30,47 @@ local function bodyData(body)
     return type(data) == "table" and data or nil
 end
 
+local function personBody(personId)
+    personId = tostring(personId or "")
+    if SAO and SAO.Communication and SAO.Communication.bodyFor then
+        local body = SAO.Communication.bodyFor(personId)
+        if body then return body end
+    end
+    if SAO and SAO.Body then
+        return SAO.Body.foreign and SAO.Body.foreign[personId]
+            or SAO.Body.active and SAO.Body.active[personId] or nil
+    end
+    return nil
+end
+
+local function ensureCrossedOwnership(personId, target, hours)
+    local rec = SAO and SAO.Identity and SAO.Identity.get(personId) or nil
+    local state = ZAO.Pathogen and ZAO.Pathogen.stateOf(personId) or nil
+    local token = state and (state.driverToken or state.crossedTransferToken)
+    if not (rec and state and state.terminalState == "crossed" and token) then
+        return false, "crossed-driver-unavailable"
+    end
+    if rec.bodyOwner == "ZAO" then
+        if tostring(rec.bodyOwnerToken or "") ~= tostring(token) then
+            return false, "zao-driver-token-mismatch"
+        end
+        if ZAO.Controller and ZAO.Controller.acceptExternal then
+            ZAO.Controller.acceptExternal(personId, target, token, "crossed")
+        end
+        return true, "already-zao-owned"
+    end
+    local transfer = SAO and (SAO.ZAOPersonTransfer or SAO.CrossedTransfer)
+    if not (transfer and transfer.begin) then
+        return false, "transfer-seam-unavailable"
+    end
+    return transfer.begin(personId, target, token, hours, "crossed")
+end
+
+-- Weapon-borne blood uses the same conversion/ownership boundary after its
+-- own native hit receipt completes. The action journals remain separate; only
+-- this idempotent transfer operation is shared.
+Exposure.ensureCrossedOwnership = ensureCrossedOwnership
+
 local function distance(a, b)
     local value = nil
     pcall(function()
@@ -52,6 +93,15 @@ local function clearMarks(action, carrier, target)
 end
 
 local function archive(root, action, phase, reason, hours)
+    local carrierState = ZAO.Pathogen
+        and ZAO.Pathogen.stateOf(action.carrierId) or nil
+    local route = carrierState and carrierState.driver
+        and carrierState.driver.route or nil
+    if route and route.kind == "exposure" and ZAO.Driver
+        and ZAO.Driver.cancelRoute then
+        ZAO.Driver.cancelRoute(action.carrierId, carrierState,
+            "exposure-" .. tostring(phase), hours)
+    end
     action.phase = phase
     action.reason = reason
     action.resolvedAtHours = hours
@@ -102,11 +152,8 @@ local function complete(root, action, carrierState, carrier, target, hours)
     end
     action.receipt = receipt
     if receipt.converted then
-        local moved, reason = false, "transfer-seam-unavailable"
-        if SAO and SAO.CrossedTransfer and SAO.CrossedTransfer.begin then
-            moved, reason = SAO.CrossedTransfer.begin(
-                action.targetId, target, action.token, hours)
-        end
+        local moved, reason = ensureCrossedOwnership(
+            action.targetId, target, hours)
         if not moved then
             action.phase = "transfer-pending"
             action.reason = reason
@@ -134,17 +181,12 @@ function Exposure.step(carrier, carrierId, carrierState, target, targetId,
 
     local action = root.exposures[carrierId]
     if action and action.targetId ~= targetId then
-        local priorTarget = SAO and SAO.Body and SAO.Body.active
-            and SAO.Body.active[action.targetId] or nil
+        local priorTarget = personBody(action.targetId)
         interrupt(root, action, carrier, priorTarget, "target-changed", hours)
         action = nil
     end
     if action and action.phase == "transfer-pending" then
-        local moved, reason = false, "transfer-seam-unavailable"
-        if SAO and SAO.CrossedTransfer and SAO.CrossedTransfer.begin then
-            moved, reason = SAO.CrossedTransfer.begin(
-                targetId, target, action.token, hours)
-        end
+        local moved, reason = ensureCrossedOwnership(targetId, target, hours)
         if moved then
             clearMarks(action, carrier, target)
             archive(root, action, "converted", "transferred", hours)
@@ -158,7 +200,8 @@ function Exposure.step(carrier, carrierId, carrierState, target, targetId,
     local targetRec = SAO and SAO.Identity and SAO.Identity.get(targetId) or nil
     if not targetState or targetState.terminalState ~= "afflicted"
         or not targetRec or targetRec.dead
-        or not SAO.Body or SAO.Body.active[targetId] ~= target
+        or not SAO.Body or personBody(targetId) ~= target
+        or (targetRec.bodyOwner ~= nil and targetRec.bodyOwner ~= "ZAO")
         or not SAO.Body.canTransfer(target) then
         if action then
             return interrupt(root, action, carrier, target,
@@ -192,8 +235,27 @@ function Exposure.step(carrier, carrierId, carrierState, target, targetId,
     end
     if action.phase == "approaching" then
         if apart > CONTACT_RANGE then
-            pcall(function() carrier:pathToCharacter(target) end)
+            local active, outcome = false, "unavailable"
+            if ZAO.Driver and ZAO.Driver.routeTo then
+                active, outcome = ZAO.Driver.routeTo(carrierId, carrier,
+                    carrierState, "exposure", targetId, target:getX(),
+                    target:getY(), target:getZ(), true, hours)
+            end
+            if active ~= true and outcome ~= "completed" then
+                local route = carrierState.driver and carrierState.driver.route
+                    or nil
+                if not route then
+                    return interrupt(root, action, carrier, target,
+                        "approach-route-refused", hours)
+                end
+            end
             return true
+        end
+        local route = carrierState.driver and carrierState.driver.route or nil
+        if route and route.kind == "exposure" and ZAO.Driver
+            and ZAO.Driver.cancelRoute then
+            ZAO.Driver.cancelRoute(carrierId, carrierState,
+                "contact-reached", hours)
         end
         action.phase = "contact"
         action.contactAtHours = hours
@@ -234,8 +296,7 @@ function Exposure.resumePending(hours)
                 and ZAO.Controller.controlled[action.carrierId] or nil
             local rec = SAO and SAO.Identity
                 and SAO.Identity.get(action.targetId) or nil
-            local target = SAO and SAO.Body and SAO.Body.active
-                and SAO.Body.active[action.targetId] or nil
+            local target = personBody(action.targetId)
             if not rec then
                 clearMarks(action, carrier, target)
                 archive(root, action, "interrupted", "target-missing", hours)
@@ -244,12 +305,8 @@ function Exposure.resumePending(hours)
                 archive(root, action, "converted", "target-died-before-transfer",
                     hours)
             else
-                local moved, reason = false, "transfer-seam-unavailable"
-                if SAO and SAO.CrossedTransfer
-                    and SAO.CrossedTransfer.begin then
-                    moved, reason = SAO.CrossedTransfer.begin(
-                        action.targetId, target, action.token, hours)
-                end
+                local moved, reason = ensureCrossedOwnership(
+                    action.targetId, target, hours)
                 if moved then
                     clearMarks(action, carrier, target)
                     archive(root, action, "converted", "transferred", hours)

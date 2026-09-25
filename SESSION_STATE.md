@@ -1,14 +1,54 @@
 | Document | Zombie Awareness Overhaul Session State |
 |---|---|
-| Version | `0.3.3.0-pre-alpha` |
+| Version | `0.4.0.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `SESSION_STATE.md` |
 | Status | CANONICAL - where the work actually stands. |
 
 # Session state
 
-**Current implementation, 2026-09-24:** A38 on
-`neo/a38-crossed-coordination-ownership` binds a ZAO-owned Crossed person's
+**Current implementation, 2026-09-24:** A39 on
+`neo/a39-shared-person-drivers` makes the execution boundary match the
+pathogen boundary. ZAO now owns behavioral execution for both Afflicted and
+Crossed through `ZAO.Driver`; their state selects distinct policy rather than a
+second controller. Authorized Afflicted return hands the living shell directly
+to ZAO. Afflicted-to-Crossed conversion keeps the same driver token across
+loaded and dormant representation, save/reload and later death.
+
+The shared owner arbitrates current options and performs durable locomotion
+through existing native SAO services. Afflicted policy fears observed Crossed,
+gathers with actual Afflicted peers and travels to evidenced ground. Afflicted
+require water, prefer meat/protein, can use penalized non-dairy alternatives
+and may individually choose human-origin food with donor-conditioned exposure
+protection. Crossed policy admits human wound care, drinking, rest and ordinary
+food under reduced caloric pressure alongside predation, intentional exposure,
+driving and holding. A
+settlement requires state-specific holding acts by distinct people across days;
+mere proximity and repeat scans cannot form one.
+
+Crossed material action is now concrete. Ordinary food sustains the retained
+human physiology; human-origin food receives a separate preference because it
+can combine sustenance with altered motives. Timed butchery yields human flesh once
+from an eligible ordinary or Afflicted human corpse, with Afflicted sources
+dispreferred. Items and evolved dishes—including stew—remain eligible only while
+their native ingredient provenance contains that flesh. Crossed, mutant, zombie
+and animal bodies are refused.
+A separately selected timed blood action stamps the exact equipped melee or
+projectile weapon with finite uses. It is not automatically run before every
+attack. A later native hit resolves after a wound exists; ordinary living
+targets take the engine infection path, Afflicted enter the separate ZAO
+exposure receipt, and other ZAO states are refused. Crossed target options come
+only from the actor's fresh private observations and can prefer a non-nearest
+person based on present evidence; routine planning is not modeled as a rare
+subtype. Crossed predatory pressure is separate from hunger and changes only
+through evidenced fear, native pain, completed yield/control or exact
+consumption/desecration; death supplies none. Personal food acquisition reuses
+SAO SourceUse, and dormant restoration advances only ZAO-owned physiology.
+Borders 10 and 12-14 execute these paths and their source mutations.
+Gameplay presentation and long-horizon population behavior remain unobserved.
+
+**Before that, 2026-09-24:** A38 on
+`neo/a38-crossed-coordination-ownership` bound a ZAO-owned Crossed person's
 retained living human shell into SAO's enacted communication and work runtime.
 The registered execution owner derives current capability from `ZAO.Mind`,
 reports the actual body owner and executor, and carries current activity so a
@@ -319,18 +359,16 @@ alone.
 principle is their own frame: three repositories, one project, and
 each machinery runs what it owns.
 
-**SAO executes the afflicted**, because a person again is a person
-- the four pillars run them and the house argues over them because
-they never left the county's machinery. **This project owns the
-pathogen state on an afflicted body** - the susceptibility to
-crossed, the passive infection, the identity-decay dials - and that
-state is the boundary the claim surface lives on, its concrete shape
-staying with F-012 until mod code is near. **This project executes
-the crossed**, who came through death as the risen did. **The
+That batch assigned Afflicted execution to SAO because the person remained in
+the county's living social machinery. **DR-030 supersedes that execution
+assignment:** ZAO now executes both Afflicted and Crossed through one driver,
+while SAO supplies the county services and never a second planner. ZAO also
+owns the pathogen state on an Afflicted body - susceptibility to Crossed,
+passive infection and identity-decay dials. **The
 crossed's vocabulary is a bidirectional goal**: read the sister's
 action machinery stripped of what humanity gave it, and what the
-crossed need from driving feeds forward into the sister's not-yet
-mapping of it. **How the crossed hold ground is variable, and the
+Crossed need from a native verb feeds through its established owner; examples
+do not define the vocabulary. **How the crossed hold ground is variable, and the
 variability is the design**: they still enjoy things and have
 leisure, differently; some groups settle and some stay nomadic, and
 which one happens is what their drives did, never a placement.
@@ -347,7 +385,8 @@ holding both capability mutations and attribute mutations, with crossed
 rarer and carrying its own number, plus a rare per-infection variable
 that makes a body sicker faster and takes it PAST death. The two ends
 are opposite in how much of a person is left, and appearance is
-independent of it: **crossed** looks like a person and is not one;
+independent of it: **Crossed** retains the person's human shell, identity and
+cognition within its established constraints;
 **afflicted** looks like a monster and is a person again, cannot become
 one of the dead, and is likelier than anyone to become crossed. Houses
 decide about their own and can split over it. The crossed organise, act

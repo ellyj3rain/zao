@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Architecture |
 |---|---|
-| Version | `0.3.3.0-pre-alpha` |
+| Version | `0.4.0.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `ARCHITECTURE.md` |
 | Status | ACTIVE - ratified framework shape. Engine surfaces claimed here are unverified until `FINDINGS.md` carries them. |
@@ -9,11 +9,14 @@
 
 ## Product boundary
 
-ZAO owns the turned body while ZAO is enabled: what remains of the person's
-mind, how it rots, what the pathogen does to the body, and what anyone is
-permitted to know about either. It owns none of the living — a living person
-is SAO's until the turn, vanilla's where SAO is absent — and it owns nothing
-when disabled: switch ZAO off and vanilla handles every corpse (DR-004).
+ZAO owns the turned body and the living states its pathogen creates while ZAO
+is enabled: what remains of the person's mind, how it rots, what the pathogen
+does to the body, what anyone is permitted to know about either, and how an
+Afflicted or Crossed person acts. SAO owns ordinary living-survivor execution
+and supplies county identity, communication, material-action and locomotion
+services to ZAO-owned people. It is not a second planner. When ZAO is disabled,
+vanilla handles every corpse and ZAO's living pathogen states are absent
+(DR-004, DR-030).
 
 Project Zomboid owns the active engine representation and every world
 mechanic that can be reused safely. The engine surfaces this project needs —
@@ -24,16 +27,18 @@ until then every one is a hypothesis.
 
 ## The ownership seam
 
-The turn is the first seam. A completed Afflicted blood exposure is the second.
-At either boundary exactly one owner runs the body:
+The turn is the first seam. An authorized return into Afflicted is the second.
+A completed Afflicted blood exposure changes the living state but not the
+execution owner. At every boundary exactly one owner runs the body:
 
-| ZAO state | Owner of the turned body |
+| Person state | Execution owner |
 |---|---|
-| enabled | ZAO |
-| disabled | vanilla |
-| afflicted | SAO executes the living person; ZAO owns pathogen state |
-| completed Crossed exposure | ZAO takes the same living human shell from SAO |
-| (any) | never a second brain beside another owner |
+| ordinary living survivor | SAO |
+| turned or mutant, ZAO enabled | ZAO |
+| Afflicted, ZAO enabled | ZAO driver on the living human shell; Afflicted policy |
+| Crossed, ZAO enabled | the same ZAO driver on the living human shell; Crossed policy |
+| ZAO disabled | vanilla owns corpses; no ZAO Afflicted/Crossed state is produced |
+| any | never a second brain beside another owner |
 
 Knox Survivors may be in the load order; it does not own the infected. SAO's
 social handling of the turn — witnesses, grief, promises kept — is SAO's and
@@ -120,28 +125,68 @@ save; it replays after global data load and before native reanimated-player load
 The journal contains only participating return identities and reconciles an
 exact source receipt or tombstone rather than duplicating general world state.
 
-A37 adds the opposite ownership direction for a living Afflicted person who
-becomes Crossed. The exposure action and pathogen receipt persist separately
-from body transfer. SAO checkpoints the supported human shell before ZAO takes
-its external-owner token; a busy action retries, and reload can transfer the
-dormant envelope without briefly re-adopting the person under SAO. A later
-death returns the corpse through SAO's existing death and witness path.
+A37 established the transfer machinery using Afflicted-to-Crossed conversion.
+A39 generalizes it to the actual boundary: an authorized Afflicted return hands
+the living shell directly to ZAO, and conversion later preserves the same
+driver token. Action and pathogen receipts remain distinct from ownership.
+Busy actions retry, reload can transfer the dormant envelope without briefly
+adopting the person under SAO, and later death returns the corpse through SAO's
+existing death and witness path.
 
-### Crossed execution owner
+### Living ZAO execution owner
 
-The retained living shell is also the Crossed person's communication and work
-body. `ZAO_Controller` registers the `ZAO` execution owner with SAO and exposes
-only current body presence, the present competing activity and capabilities
-derived from `ZAO.Mind`. SAO may address and advance an accepted shared process
-through that adapter; ZAO remains the executor and ordinary Crossed deliberation
-continues whenever coordination does not own the tick.
+The retained living shell is the Afflicted or Crossed person's communication
+and work body. `ZAO_Controller` registers `ZAO.Driver` with SAO and exposes only
+current body presence, competing activity and capabilities derived from that
+person's current mind. SAO may address the person and perform an accepted
+native action through the adapter; ZAO decides whether the actor does it.
+
+The shared driver supplies arbitration, current activity, durable movement and
+exact-once route outcomes. Each state provider admits its own motives and
+actions. Afflicted fear actual Crossed threats, seek other Afflicted and travel
+toward evidenced ground. They require water, prefer meat/protein, can accept
+non-dairy alternatives with reduced relief, and may individually choose
+human-origin food. Crossed retain human physiology under reduced caloric
+pressure and may choose native wound care, drinking, rest or ordinary food
+alongside their distinct predation, exposure, driving, holding and material
+actions. Predation appraisal may use distress visible to that observer, such
+as running or sprinting; it never reads the target's hidden moodles. Settlement formation requires state-specific
+acts of holding ground by distinct people over time; proximity is not assent.
+
+Crossed can subsist on ordinary food. Human-origin food remains a preferred
+option because sustenance can coincide with cruelty, mutilation, domination,
+terror and contagion; it is not a biological-only diet. Their first material
+producer butchers eligible ordinary or Afflicted human corpses into human flesh
+and preserves that origin through evolved dishes. Afflicted sources are
+dispreferred; Crossed, mutant, zombie and animal bodies remain excluded. Weapon contamination is a
+separately selected tactic on an exact equipped melee or projectile weapon;
+finite native hits resolve only after an actual wound exists. An Afflicted
+target enters the separate intentional-exposure pathogen action when that act
+is chosen; feeding does not imply exposure.
+
+`ZAO_Maintenance` owns the state-specific passage of time. Afflicted alternative
+food applies a bounded nutrition penalty, protein clears it, and a chosen human
+meal may provide temporary exposure protection derived from donor health and
+Knox adaptation. Crossed predatory pressure is separate from hunger. It changes
+only after an exact result: heard threat plus public flight, native health loss,
+a completed post-threat yield, or completed consumption/desecration. Death
+closes the encounter without manufacturing fear, pain, control or sustenance.
+
+Private food knowledge invokes SAO's existing SourceUse owner. That owner keeps
+the exact source revision, locomotion, transfer, carried item and native-use
+receipt. `ZAO_Diet` registers only the state-specific eating action after the
+item is physically carried. Dormant external shells restore at zero survivor
+elapsed time before ZAO advances its own hunger, thirst and predatory state.
 
 An `IsoZombie` carrying a ZAO-owned or durably Crossed identity is malformed at
 this boundary. The controller rejects it before ownership, pathogen,
 settlement, persistence or cognition side effects. Rejection is an admission
 rule, not a body transition: it does not manufacture death, revival, migration
 or a substitute shell. The separate retained-shell driving adapter is
-unchanged.
+unchanged. Crossed planning is ordinary retained cognition, not a rare subtype.
+Butchery, cooked human dishes and weapon contamination are concrete producers,
+not an exhaustive vocabulary, an automatic encounter sequence or a claim that
+those examples define the state.
 
 ## What is not ratified
 

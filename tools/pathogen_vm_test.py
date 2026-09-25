@@ -157,7 +157,10 @@ local function same(left, right, path)
         return
     end
     for key, value in pairs(left) do
-        if key ~= "personId" then same(value, right[key], path .. "." .. tostring(key)) end
+        if key ~= "personId" and key ~= "driverToken"
+            and key ~= "crossedTransferToken" then
+            same(value, right[key], path .. "." .. tostring(key))
+        end
     end
     for key in pairs(right) do
         assert(left[key] ~= nil, "gap replay differs from daily state: extra " .. tostring(key))
@@ -166,6 +169,10 @@ end
 local daily, dailyDraws = course("daily", false)
 local skipped, skippedDraws = course("skipped", true)
 same(daily, skipped, "course")
+assert(daily.driverToken == "zao-person:daily:reversion:1"
+    and skipped.driverToken == "zao-person:skipped:reversion:1"
+    and daily.driverToken ~= skipped.driverToken,
+    "driver ownership token lost actor identity or deterministic transition basis")
 assert(dailyDraws == 16 and skippedDraws == dailyDraws, "gap replay changed draw sequence")
 assert(daily.currentForm == "Husk" and daily.attributeMutations.Strength > 0)
 assert(daily.terminalState == "afflicted" and #daily.history == 4)

@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Mutation System |
 |---|---|
-| Version | `0.3.3.0-pre-alpha` |
+| Version | `0.4.0.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `MUTATION.md` |
 | Status | CANONICAL - the system as the operator defined it on 2026-09-09. Specifics not yet ratified into `DECISION_REGISTRY.md` are marked. |
@@ -184,14 +184,28 @@ and the capabilities they carry forward.
 
 ## The crossed
 
-**They organise**, and that is what makes them the worst thing in the
-county. They plan, hold ground, and work together, with nothing
-restraining any of it.
+ZAO's Crossed are an original simulation model informed by the fiction, not a
+literal transcription of its cast or incidents. The source establishes a wide
+human capability and motive space; it does not supply a closed behavior list.
 
-**They act with a person's vocabulary.** They drive. They plant
-explosives. They use loudspeakers. Mechanically this is the sister's own
-survivor machinery with what humanity gave it stripped out - no fear for
-others, no loyalty, no restraint.
+**They organise**, and that is what makes them the worst thing in the
+county. Planning is not reserved to a rare clever subtype. They retain human
+cognition, identity, memory and learned capabilities within their established
+constraints, so immediate tactics, patience, long plans, cooperation and
+adaptation remain available to the people who could perform them.
+
+**They act with a person's vocabulary.** They may drive, farm, plant
+explosives, use loudspeakers, hold captives, cook or do other human work when
+their knowledge, means and motives make the action feasible. Those are examples,
+not a checklist or defining loop. What humanity no longer restrains changes why
+and how they use the vocabulary; it does not collapse them into nearest-target
+pursuit or remove strategy, relationships and organization by template.
+
+**Their bodies retain ordinary human sustenance.** Ordinary food can keep them
+alive. Human flesh can be preferred because hunting, fear, mutilation,
+domination and contagion may satisfy altered motives at the same time as
+hunger. Cannibalism is therefore neither a mandatory biological diet nor an
+incidental impossibility when ordinary food exists.
 
 **The dead do not concern them.** By default they ignore the dead and
 hunt the living; this is controllable. In practice they are largely
@@ -277,27 +291,37 @@ The seam *Where this lives* opened. Ruled on by the operator on
 2026-09-09, under one principle of their own framing: three
 repositories, one project, and each machinery runs what it owns.
 
-**SAO executes the afflicted.** A person again is a person - the four
-pillars run them, the house argues over them because they never left
-the county's machinery, and their bonds and records keep their
-provenance.
+**ZAO executes the afflicted and the crossed through one living-person
+driver.** The state selects a different policy, not a different controller.
+SAO's county still carries their identity, bonds, communication, material
+handoffs and native locomotion, but calling those services does not give SAO a
+second brain for the same shell.
 
 **This project owns the pathogen state on an afflicted body.** The
 susceptibility to crossed, the passive infection, the identity-decay
-dials - what the pathogen did and still threatens is here, and the
-behavior is the sister's to run. The state is the boundary the claim
-surface lives on, and its concrete shape stays with F-012 until mod
-code is near.
+dials - what the pathogen did and still threatens is here. The same owner now
+runs Afflicted behavior: actual Crossed danger produces fear, other Afflicted
+can be sought, and evidenced ground can be travelled to and held. Their body
+pressure is observed, but how they maintain themselves has not been
+established; survivor maintenance and Crossed motives are not substitutes.
 
-**This project executes the crossed.** They came through death as the
-risen did, and exactly one controller runs any body.
+**Crossed policy remains distinct.** They retain human appearance, identity,
+cognition, physiology and capability within their constraints. Ordinary food
+can sustain them; human-origin food is preferred when sustenance and altered
+motives reinforce one another. They can hunt and mutilate ordinary humans,
+butcher bodies into human flesh, and preserve that origin through cooking.
+They never feed on Afflicted. They can deliberately expose Afflicted and may
+choose to contaminate an equipped melee or projectile weapon so a later native
+wound carries their blood. These are implemented producers, not a closed list,
+an automatic preparation sequence or the definition of a Crossed life.
 
 A37 implements the Afflicted-conversion boundary. A Crossed body approaches
 and holds contact through a persisted blood-exposure action; ordinary attack
 targeting is cleared because the Afflicted are not food. Only the completed
 action authorizes the Crossed-odds times Afflicted-susceptibility roll. Success
-transfers the same living human shell and dormant person envelope from SAO to
-ZAO exactly once. Interruption, busy actions, reload and death retain one owner.
+changes the person's policy to Crossed while retaining the same living human
+shell, ZAO driver identity and dormant envelope. Interruption, busy actions,
+reload and death retain one owner.
 
 **The crossed's vocabulary is a bidirectional goal.** The direction is
 ratified: read the sister's action machinery, stripped of what
@@ -306,10 +330,11 @@ the record to the living vocabulary. The sister has mapped driving:
 `[C82]`, at their `F-067`, found no gate on the wheel path that
 requires a player - every identity gate exists to exclude the blocked
 local player - so the doorway is surface-mapped and its live receipt
-is owed, no shipped code exercising it. What the crossed need from
-driving rides in the record as named consumers of that map;
-explosives and loudspeakers remain unmapped, so the seam still runs
-two ways in time for them, and neither side invents its half alone.
+is owed. What the crossed need from driving rides in the record as a named
+consumer of that map. Every additional native action must be mapped from the
+relevant engine and SAO owner. Named examples are examples, never the
+cornerstone or boundary of the Crossed vocabulary, and neither repository
+invents the other's half alone.
 
 **How the crossed hold ground is variable, and the variability is the
 design.** They still enjoy things and have leisure, differently. Their
@@ -325,8 +350,9 @@ law, applied to them as to every arrangement in the county.
 
 The numbers are defined (DR-019 above), and the gradient's contents are
 enumerated in the runtime as the six capability forms and four attribute
-mutations. The second seam's exposure and ownership boundary is implemented;
-what remains open is the crossed's wider living vocabulary - driving is mapped (`C82`, surface-mapped at the
-sister's `F-067`), explosives and loudspeakers are not - and ZAO's half
-of that seam is the named consumers in the record, never an invented
-implementation.
+mutations. The second seam's ownership boundary and first state-specific
+producers are implemented. What remains open is the wider Afflicted and Crossed
+living vocabulary. Driving is mapped (`C82`, surface-mapped at the sister's
+`F-067`); ordinary and human-origin sustenance, human butchery, food provenance
+and selectable finite contaminated-weapon uses are now mapped. Future verbs
+remain new causal producers, never inferences from an example list.

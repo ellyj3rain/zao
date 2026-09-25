@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Decision Registry |
 |---|---|
-| Version | `0.3.3.0-pre-alpha` |
+| Version | `0.4.0.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `DECISION_REGISTRY.md` |
 | Status | CANONICAL, APPEND-ONLY - ratified decisions. |
@@ -676,6 +676,7 @@ clearance and the next `BodyDamage.Update`.
 
 **Status.** RATIFIED by the approved SAO/ZAO/Speakeasy implementation contract
 (`../survivor-awareness/artifacts/audits/20260924-cao-prior-art/IMPLEMENTATION_SPEC.md`).
+DR-031 supersedes only the categorical Afflicted-feeding consequence below.
 
 **Decision.** A living Crossed person retains human appearance, cognition,
 identity, history and capabilities within the established decay constraints.
@@ -697,3 +698,87 @@ death and current activity remain authoritative. The existing human-shell
 driving adapter remains separate. Intentional Afflicted blood exposure remains
 an action distinct from feeding, and Afflicted people cannot be feeding
 targets.
+
+## DR-030 | 2026-09-24 20:16 UTC / 13:16 PST | ZAO executes both living pathogen states through one driver
+
+**Status.** RATIFIED by the operator's correction during the approved
+SAO/ZAO/Speakeasy implementation. This supersedes the execution split recorded
+in A12 and the narrower Crossed-only scope of DR-029. It does not merge
+Afflicted and Crossed policy. DR-031 supersedes the unresolved-maintenance
+paragraph; the shared-driver decision remains current.
+
+**Decision.** ZAO owns behavioral execution for both Afflicted and Crossed.
+They retain one durable driver identity across an Afflicted-to-Crossed change;
+the state chooses the applicable motives, actions, constraints and satisfiers. SAO
+continues to own county identity, social communication, handover, material
+transfer and locomotion services. Calling those services is execution by the
+ZAO-owned person, not SAO possession of that person.
+
+Crossed retain human physiology, so ordinary food can sustain them. Human
+victims and human flesh may be preferred because sustenance, mutilation,
+cruelty, domination, terror and contagion can reinforce one another; the
+preference is motivational rather than biological exclusivity. Crossed plan
+with retained human cognition as a normal capability, including short- and
+long-horizon action when their knowledge, capability and circumstances support
+it. The source fiction informs that capability and motive space; ZAO is not a
+literal transcription and no cited incident becomes a mandatory species loop.
+Agriculture, tools and other human actions are neither guaranteed nor
+forbidden by state. Intentional exposure of an Afflicted person is separate
+from feeding. Crossed blood may be deliberately prepared on weapons and
+transmitted through an actual native wound. None of these examples is an
+automatic loop, exhaustive list or definition of Crossed behavior.
+
+No governed source yet establishes how Afflicted maintain themselves,
+including what satisfies hunger. Their physical pressures remain real and may
+constrain activity, but survivor maintenance and Crossed motives are not
+inferred into the gap.
+
+**Consequences.** An authorized Afflicted return transfers directly to ZAO;
+SAO does not resume its controller. `ZAO.Driver` owns both living states,
+delegates to distinct policies, records current activity and durable movement,
+and exposes common body readings without installing common behavior. Crossed
+human maintenance is admitted by Crossed policy; unresolved Afflicted
+maintenance remains a named producer gap. Settlement
+formation requires state-specific holding evidence from distinct people.
+Afflicted-to-Crossed conversion preserves the same driver token. Save/reload,
+dormant representation and later death retain one execution owner.
+
+## DR-031 | 2026-09-25 00:24 UTC / 17:24 PST | Distinct maintenance and evidenced predatory relief
+
+**Status.** RATIFIED by direct operator clarification during A39. This decision
+does not make Afflicted and Crossed similar; it specifies the different
+physiological and motivational mechanisms that DR-030 left unresolved.
+
+**Decision.** Afflicted require water and have altered nutrition: meat/protein
+is strongly preferred, while non-dairy alternatives remain feasible with
+reduced relief and a temporary performance penalty. Human-origin food is a
+possible individual choice, not a species reflex. Current hunger,
+self-preservation, aggression, compassion and prior personal conduct contribute
+to that choice. A completed human meal can create temporary resistance to later
+intentional Crossed exposure according to the donor's evidenced living health
+and Knox adaptation. It cannot create immunity or a spontaneous conversion.
+
+Crossed ordinary food remains physiologically valid, with substantially reduced
+caloric pressure. A separate durable predatory pressure may motivate feasible
+cruel, controlling or violent conduct. It is not hunger and cannot be relieved
+by selecting an option or starting an animation. Heard threat plus public
+flight evidences fear; actual native health loss evidences pain; an exact
+post-threat completed yield evidences control; completed consumption and
+desecration retain their own results. Death closes live fear/control and grants
+no substitute result. Afflicted human remains are possible but dispreferred
+Crossed food. Intentional exposure remains distinct from eating.
+
+**Consequences.** `ZAO_Maintenance` advances state-owned physiology and
+predatory pressure through loaded, dormant and reload paths. `ZAO_Diet`
+classifies actual native Food composition and human provenance, performs exact
+timed eating, and invokes SAO SourceUse for privately known acquisition rather
+than creating a parallel source owner. `ZAO_Predation` persists encounter
+phases and exact result tokens; Communication, native combat and Handover own
+the evidence it consumes. Pathogen exposure multiplies current risk by the
+unexpired nutrition protection and records the source token.
+
+**Origin.** Direct operator clarification followed by Mousecat Crucible
+interaction `skill-31bd395ca19f6aea`, item `seam-55277a5afc86a418`, selected
+`predatory-pressure-acute-flows`. The note requires need to remain separate
+from behavior and capacity and treats this as a revisable first mechanism, not
+an exhaustive permanent model.
