@@ -233,7 +233,7 @@ def main() -> int:
     pathogen = PATHOGEN.read_text(encoding="utf-8-sig")
     exposure = EXPOSURE.read_text(encoding="utf-8-sig")
     controls = [
-        ("exposure", "feeding exclusion", "carrier:setTarget(nil)",
+        ("exposure", "exposure is distinct from feeding", "carrier:setTarget(nil)",
          "carrier:getTarget()"),
         ("exposure", "contact duration", "< CONTACT_HOURS then", "< 0.0 then"),
         ("exposure", "contact interruption", "and apart > BREAK_RANGE then",
@@ -283,7 +283,7 @@ def main() -> int:
                 print(f"REFUSED: {name} mutation survived\n"
                       + mutant.stdout + mutant.stderr)
                 return 1
-    print("Border 10 PASS: approach, contact time, interruption, feeding exclusion, exact-once result, durable live-action authorization, and donor-conditioned Afflicted susceptibility execute in Kahlua; six controls fail")
+    print("Border 10 PASS: approach, contact time, interruption, exposure without feeding, exact-once result, durable live-action authorization, and donor-conditioned Afflicted susceptibility execute in Kahlua; six controls fail")
     return 0
 
 

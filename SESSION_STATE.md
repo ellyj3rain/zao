@@ -1,13 +1,39 @@
 | Document | Zombie Awareness Overhaul Session State |
 |---|---|
-| Version | `0.4.0.0-pre-alpha` |
+| Version | `0.5.0.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `SESSION_STATE.md` |
 | Status | CANONICAL - where the work actually stands. |
 
 # Session state
 
-**Current implementation, 2026-09-24:** A39 on
+**Current implementation, 2026-09-25:** A40 on
+`neo/a40-distinct-life-coordination` makes Afflicted and Crossed participants
+in durable shared matters through their common ZAO execution owner without
+making their lives similar. `ZAO.Driver` is only the bridge into SAO's one
+Organization/Communication process store; each state policy supplies its own
+reason to originate, current evidence and recipient appraisal.
+
+Afflicted originate food or water provisioning from actual hunger, thirst or
+an evidenced settlement necessity. Fatigue, injury and the state label cannot
+manufacture caloric pressure. The matter is revised when the needed category or
+recipients change and withdrawn when necessity resolves. Crossed instead
+originate bounded rendezvous/holding with currently evidenced associates at
+retained home, held ground or a present opportunity. Current work, capability,
+pressure, relationships, initiative and discipline can produce accept, qualify,
+counter-propose, decline, defer, contest, withdraw or no answer independently.
+
+Actual communication is required in both directions. Accepted provisioning
+uses the sister's native SourceUse, carrying, Locomotion and Handover owners;
+accepted rendezvous completes only from the exact promised arrival activity.
+Missing body or execution-owner evidence defers. Conversion preserves the same
+process and proposal revision, but current-state dispatch can revise an earlier
+Afflicted answer under Crossed policy. Border 15 executes these paths and six
+source mutations together with the sister's Border 194. This is headless
+mechanical evidence. Loaded-world speech, routing, animation, save/reopen play
+and long-horizon population behavior remain unobserved.
+
+**Before that, 2026-09-24:** A39 on
 `neo/a39-shared-person-drivers` makes the execution boundary match the
 pathogen boundary. ZAO now owns behavioral execution for both Afflicted and
 Crossed through `ZAO.Driver`; their state selects distinct policy rather than a
@@ -97,7 +123,7 @@ then reconciles the exact source receipt or tombstone by person, event,
 incarnation and token. Existing unmarked saves remain readable.
 
 Borders 5, 9 and 10 verify exact pathogen time, external living/dormant/dead
-ownership, approach, contact, interruption, non-feeding behavior, exact-once
+ownership, approach, contact, interruption, exposure without feeding, exact-once
 results and live-action authorization. The sister's Borders 162-163 and 171-175
 cover the other side of the transfer, native snapshots and health/physiology.
 The ten-border gate passes; installed-VM probes also pass when invoked directly
@@ -106,7 +132,7 @@ loaded-world play acceptance remains open.
 
 F-019 closes the exposure and ownership part of A32's corrected claim. The
 Crossed pass is reachable for this action, proximity cannot roll conversion,
-the Afflicted path cannot feed and terminal success moves the same human shell
+the Afflicted exposure path does not itself feed and terminal success moves the same human shell
 to one ZAO controller. The canonical retained combat, weapon, tool and general
 action vocabulary remains sister R7-R9 work, with grounded dormant opportunity
 in R10. A37 does not claim that larger system.

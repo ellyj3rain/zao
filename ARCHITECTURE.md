@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Architecture |
 |---|---|
-| Version | `0.4.0.0-pre-alpha` |
+| Version | `0.5.0.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `ARCHITECTURE.md` |
 | Status | ACTIVE - ratified framework shape. Engine surfaces claimed here are unverified until `FINDINGS.md` carries them. |
@@ -177,6 +177,27 @@ the exact source revision, locomotion, transfer, carried item and native-use
 receipt. `ZAO_Diet` registers only the state-specific eating action after the
 item is physically carried. Dormant external shells restore at zero survivor
 elapsed time before ZAO advances its own hunger, thirst and predatory state.
+
+### Distinct durable coordination
+
+`ZAO.Driver` exposes one common bridge into SAO's Organization and
+Communication owners. It may originate, revise, deliver or withdraw a matter,
+but it does not store a second social process. The Afflicted provider raises
+food or water provisioning from current personal hunger/thirst or an evidenced
+settlement necessity. The Crossed provider raises a bounded rendezvous/holding
+matter for currently evidenced associates using retained home, held ground or
+present opportunity. These are different action producers sharing an execution
+adapter, not a shared motive or maintenance rule.
+
+After actual proposal acquisition, the current state provider appraises the
+recipient from their own activity, capabilities, pressure, relationship and
+disposition. Missing representation defers. An Afflicted-to-Crossed change
+keeps the same person, process and proposal revision but changes which provider
+forms a later response. Accepted provisioning returns to SAO's exact SourceUse,
+Locomotion and Handover owners. Accepted rendezvous returns to Locomotion and
+records holding activity only after the matching promised arrival. The result
+can therefore inform existing settlement evidence without proximity becoming
+assent or completion.
 
 An `IsoZombie` carrying a ZAO-owned or durably Crossed identity is malformed at
 this boundary. The controller rejects it before ownership, pathogen,

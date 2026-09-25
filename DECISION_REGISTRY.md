@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Decision Registry |
 |---|---|
-| Version | `0.4.0.0-pre-alpha` |
+| Version | `0.5.0.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `DECISION_REGISTRY.md` |
 | Status | CANONICAL, APPEND-ONLY - ratified decisions. |
@@ -782,3 +782,32 @@ interaction `skill-31bd395ca19f6aea`, item `seam-55277a5afc86a418`, selected
 `predatory-pressure-acute-flows`. The note requires need to remain separate
 from behavior and capacity and treats this as a revisable first mechanism, not
 an exhaustive permanent model.
+
+## DR-032 | 2026-09-25 08:55 UTC / 01:55 PST | Distinct state policies originate durable shared matters
+
+**Status.** RATIFIED through the approved first ZAO life-depth implementation
+unit. It applies DR-030's common execution owner and DR-031's distinct lives; it
+does not introduce another planner or make either policy exhaustive.
+
+**Decision.** Afflicted and Crossed use the same `ZAO.Driver` only for common
+execution mechanics and access to SAO services. Afflicted policy may originate,
+revise or withdraw food/water provisioning from current personal hunger or
+thirst and evidenced settlement necessity. Crossed policy may originate,
+revise or withdraw a bounded rendezvous/holding matter for currently evidenced
+associates at retained home, held ground or present opportunity. Neither state
+label manufactures a proposal, recipient, answer or result.
+
+Each recipient appraises an actually acquired proposal from their own current
+activity, capability, pressure, relationships and disposition. Missing
+representation defers. Afflicted-to-Crossed conversion preserves person,
+driver, process and proposal revision, then later appraisal uses current
+Crossed policy. Accepted provisioning reaches SAO SourceUse, Locomotion and
+Handover; accepted rendezvous reaches native Locomotion and records holding
+only after the exact promised arrival. Arrival does not manufacture predation,
+exposure, captivity, settlement or a common target.
+
+**Origin.** Mousecat Crucible interaction `skill-8ab3a6c22938008a`, item
+`seam-715fed80d31d2f9a`, selected `zao-life-depth`; Field Test interaction
+`skill-61bcc92d536b113d`, item `seam-61bcc92d536b113d`, selected `approved`
+without notes. The approved plan evidence is
+`field-test:plan-sha256:b034d3db2599033973b37158332d10998eec79de2b24bceaebdf629cabaf6738`.

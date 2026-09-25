@@ -240,6 +240,175 @@ local function relationFixation(value)
     return math.min(1, math.abs(value))
 end
 
+local function rendezvousSituation(body, personId, state, mind, associates,
+        hours)
+    if not (body and mind and ZAO.Driver and SAO and SAO.Organization) then
+        return nil
+    end
+    local open = SAO.Organization.openMatter
+        and SAO.Organization.openMatter(tostring(personId),
+            "rendezvous-holding") or nil
+    if #associates == 0 then
+        if open then
+            return { id = "crossed:rendezvous:withdraw:" .. tostring(open.id),
+                kind = "rendezvous-withdraw",
+                activity = "revising-rendezvous", score = 34,
+                interruptsWork = false,
+                detail = "no currently evidenced addressed associate" }
+        end
+        return nil
+    end
+    local addressed = {}
+    for _, associate in ipairs(associates) do
+        addressed[#addressed + 1] = associate.id
+        if #addressed >= 3 then break end
+    end
+
+    local disposition = mind.disposition or {}
+    local record = SAO.Identity and SAO.Identity.get(personId) or nil
+    local groupId = state and state.settlementGroup or nil
+    local group = groupId and ZAO.Settlement and ZAO.Settlement.groups
+        and ZAO.Settlement.groups[groupId] or nil
+    local x, y, z, source, arrival = nil, nil, nil, nil, nil
+    if group and group.occupied and group.place and tonumber(group.place.x)
+        and tonumber(group.place.y) then
+        x, y, z = group.place.x, group.place.y,
+            group.place.z or body:getZ()
+        source, arrival = "held-ground", "holding-home"
+    elseif record and tonumber(record.homeX) and tonumber(record.homeY)
+        and (tonumber(disposition.discipline) or 0) >= 0.35 then
+        x, y, z = record.homeX, record.homeY, record.homeZ or body:getZ()
+        source, arrival = "retained-home", "holding-home"
+    else
+        x, y, z = body:getX(), body:getY(), body:getZ()
+        source, arrival = "present-opportunity", "holding-with-kin"
+    end
+    x, y, z = math.floor(x), math.floor(y), math.floor(z)
+    local intentKey = table.concat({ source, tostring(x), tostring(y),
+        tostring(z) }, ":")
+    local proposal = {
+        intentKey = intentKey,
+        purpose = "rendezvous and hold evidenced ground",
+        destinationRequired = true,
+        destination = { minX = x - 2, minY = y - 2,
+            maxX = x + 2, maxY = y + 2, z = z },
+        requiredCapabilities = { execute = true },
+        expiresAtHours = (tonumber(hours) or 0) + 18,
+        scope = { action = "rendezvous-holding",
+            arrivalActivity = arrival },
+    }
+    local shouldAct = ZAO.Driver.matterNeedsAction(personId,
+        "rendezvous-holding", intentKey, addressed, hours, 4)
+    if not shouldAct then return nil end
+    local relationshipWeight = 0
+    for _, associate in ipairs(associates) do
+        relationshipWeight = relationshipWeight
+            + relationFixation(associate.relationship)
+            + (associate.priorGroup and 0.25 or 0)
+    end
+    relationshipWeight = relationshipWeight / math.max(1, #associates)
+    return {
+        id = "crossed:rendezvous:" .. intentKey,
+        kind = "rendezvous-matter", activity = "proposing-rendezvous",
+        score = 25 + (tonumber(disposition.discipline) or 0) * 16
+            + (tonumber(disposition.initiative) or 0) * 12
+            + relationshipWeight * 8 + math.min(3, #associates) * 2,
+        interruptsWork = false,
+        detail = "known associates and evidenced ground",
+        organizationId = groupId or mind.standing and mind.standing.group,
+        proposal = proposal, addressedIds = addressed,
+        privateEvidence = {
+            source = source,
+            knowledgeOwner = source == "present-opportunity"
+                and "current-body-observation" or "SAO.Identity+ZAO.Settlement",
+            capabilityOwner = "ZAO.Mind",
+            relationshipOwner = "SAO.Standing",
+            addressedCount = #addressed,
+        },
+    }
+end
+
+function Crossed.appraiseMatter(personId, body, state, mind, processView,
+        base, hours)
+    local activity = string.lower(tostring(base.currentActivity or "dormant"))
+    local relationship = tonumber(base.relationship) or 0
+    local ownNeed = tonumber(base.ownNeed)
+    local needAvailable = ownNeed ~= nil
+    ownNeed = ownNeed or 0
+    local prior = processView and processView.response or nil
+    local hostile = base.contest == true or relationship <= -0.45
+    local dead = base.dead == true
+    local executionAvailable = not (base.constraints
+        and base.constraints.executionOwnerAvailable == false)
+    local represented = body ~= nil and not (base.constraints
+        and base.constraints.represented == false)
+    local missingExecutionEvidence = not executionAvailable or not represented
+    local incapable = not missingExecutionEvidence and not dead
+        and (base.incapable == true or base.canExecute == false)
+    local destinationKnown = base.destinationKnown == true
+    local disposition = mind and mind.disposition or {}
+    local urgent = activity == "combat" or activity == "hunt"
+        or activity == "driving" or activity == "exposure"
+        or activity == "predation-active"
+    local choice, terms = nil, {}
+    if prior and prior.response == "accept" and (hostile or dead or incapable) then
+        choice = "withdraw"
+    elseif hostile then
+        choice = "contest"
+    elseif dead or incapable then
+        choice = "decline"
+    elseif missingExecutionEvidence then
+        -- Missing representation is an observation gap, not proof that this
+        -- person cannot act.  A later loaded or dormant handoff may supply the
+        -- current execution evidence and revise this answer.
+        choice = "defer"
+    elseif urgent or activity ~= "idle" and activity ~= "dormant"
+        and activity ~= "holding-with-kin" and activity ~= "holding-home" then
+        choice = "defer"
+    elseif not needAvailable then
+        choice = "defer"
+    elseif not destinationKnown then
+        choice, terms = "counter-propose", { requireDestination = true }
+    elseif ownNeed >= 0.88 then
+        choice, terms = "qualify", { afterOwnPressure = true }
+    elseif relationship >= 0.10
+        or (tonumber(disposition.discipline) or 0) >= 0.55 then
+        choice = "accept"
+    elseif relationship <= -0.20 then
+        choice = "decline"
+    elseif (tonumber(disposition.initiative) or 0) >= 0.45 then
+        choice, terms = "qualify", { ownRoute = true }
+    else
+        choice, terms = "counter-propose", { nearerGround = true }
+    end
+    return {
+        owner = "ZAO.Driver.appraisal", executor = "ZAO.Driver",
+        bodyOwner = "ZAO", currentActivity = activity,
+        canAcquire = base.canAcquire == true,
+        canCarry = base.canCarry == true,
+        canDeliver = base.canDeliver == true,
+        canExecute = base.canExecute == true,
+        incapable = incapable or dead, dead = dead,
+        contest = hostile, ownNeed = ownNeed,
+        relationship = relationship, destinationKnown = destinationKnown,
+        choice = choice, terms = terms,
+        reconsider = prior and prior.response == "defer"
+            and choice ~= "defer" or false,
+        interests = { relationship = relationship,
+            initiative = tonumber(disposition.initiative) or 0,
+            discipline = tonumber(disposition.discipline) or 0 },
+        constraints = { represented = represented,
+            currentActivity = activity,
+            executionOwnerAvailable = executionAvailable,
+            ownNeedAvailable = needAvailable },
+        inputOwners = { currentActivity = "ZAO.Driver",
+            capabilities = "ZAO.Mind", ownNeed = base.inputOwners
+                and base.inputOwners.ownNeed or "ZAO.Driver",
+            relationship = "SAO.Standing", interests = "SAO.Disposition",
+            constraints = "ZAO.Driver" },
+    }
+end
+
 function Crossed.options(body, personId, state, mind, now, hours)
     if not (body and mind and mind.execution and mind.execution.canMove) then
         return {}
@@ -302,6 +471,10 @@ function Crossed.options(body, personId, state, mind, now, hours)
     local associateIds = {}
     for _, entry in ipairs(associates) do associateIds[entry.id] = true end
     local predationDistance, predationFear = nil, 0
+
+    local rendezvous = rendezvousSituation(body, personId, state, mind,
+        associates, hours)
+    if rendezvous then add(options, rendezvous) end
 
     for _, person in ipairs(people) do
         if person.state == "afflicted" then
@@ -420,7 +593,18 @@ function Crossed.execute(option, body, personId, state, mind, now, hours)
     local data = dataOf(body)
     if not data then return false, "unavailable" end
 
-    if option.kind == "driving" then
+    if option.kind == "rendezvous-matter" then
+        local committed, result = ZAO.Driver.performMatter(personId,
+            "rendezvous-holding", option.organizationId, option.proposal,
+            option.addressedIds, option.privateEvidence, hours)
+        return committed == true, committed and "proposing-rendezvous"
+            or tostring(result or "idle")
+    elseif option.kind == "rendezvous-withdraw" then
+        local withdrawn = ZAO.Driver.withdrawMatter(personId,
+            "rendezvous-holding", "opportunity-no-longer-evidenced",
+            { owner = "ZAO.Driver" })
+        return withdrawn == true, withdrawn and "revising-rendezvous" or "idle"
+    elseif option.kind == "driving" then
         return driveTick(body, data, hours), "driving"
     elseif option.kind == "combat" then
         return tickCombat(body, data, hours)

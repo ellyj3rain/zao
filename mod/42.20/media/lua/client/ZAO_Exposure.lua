@@ -224,8 +224,8 @@ function Exposure.step(carrier, carrierId, carrierState, target, targetId,
     end
     if tdata then tdata.ZAOExposureThreat = action.token end
 
-    -- An Afflicted person is not food.  Zombie-shaped legacy carriers have
-    -- their ordinary attack target cleared while this action owns the body.
+    -- Exposure is distinct from feeding. Zombie-shaped legacy carriers have
+    -- their ordinary attack target cleared only while this action owns the body.
     pcall(function() carrier:setTarget(nil) end)
 
     local apart = distance(carrier, target)

@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Roadmap |
 |---|---|
-| Version | `0.4.0.0-pre-alpha` |
+| Version | `0.5.0.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `ROADMAP.md` |
 | Status | CANONICAL - gate order and the open-fork ledger. |
@@ -77,6 +77,15 @@ body lifecycle, action authorization, retained-shell coordination, shared
 execution, private non-nearest target selection, settlement evidence,
 sustenance, distinct maintenance, evidenced predatory results and contamination. G1-G3 still require
 loaded-world observation and the wider living action vocabulary.
+
+A40 adds the first durable state-authored social matters. Afflicted can ask
+actual known people for food or water from evidenced personal or settlement
+necessity; Crossed can ask evidenced associates to rendezvous and hold bounded
+ground. Each recipient appraises after actual acquisition from their current
+state, and accepted work reaches the sister's exact material or arrival owners.
+The process survives revision, conversion, interruption and reload. Border 15
+proves these paths mechanically; loaded-world presentation and the wider life
+vocabulary remain open.
 
 ## Open forks — reserved to the operator
 

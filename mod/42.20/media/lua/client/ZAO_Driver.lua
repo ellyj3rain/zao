@@ -272,6 +272,108 @@ function Driver.snapshot(personId, rec, body, state, mind)
     }
 end
 
+local function authoredProposal(process)
+    local view = process and SAO and SAO.Organization
+        and SAO.Organization.viewFor
+        and SAO.Organization.viewFor(process.originatorId, process.id, false)
+        or nil
+    return view and view.proposal and view.proposal.proposal or nil
+end
+
+-- State policies ask whether their current situation still needs a social act;
+-- Organization remains the only registry of the matter itself.  A continuing
+-- open matter is revised, never recreated per tick, and an acquired current
+-- revision needs no repeated speech.
+function Driver.matterNeedsAction(personId, kind, intentKey, addressedIds,
+        hours, cooldownHours)
+    if not (SAO and SAO.Organization and SAO.Organization.openMatter) then
+        return false, nil
+    end
+    personId, kind = tostring(personId or ""), tostring(kind or "")
+    local process = SAO.Organization.openMatter(personId, kind)
+    if process then
+        local proposal = authoredProposal(process) or {}
+        if tostring(proposal.intentKey or "") ~= tostring(intentKey or "") then
+            return true, process
+        end
+        for _, recipientId in ipairs(type(addressedIds) == "table"
+                and addressedIds or {}) do
+            local view = SAO.Organization.viewFor(tostring(recipientId),
+                process.id, false)
+            if not view or tonumber(view.currentRevision) ~= tonumber(process.revision)
+                or not view.reception then return true, process end
+        end
+        return false, process
+    end
+    local latest = SAO.Organization.latestMatter
+        and SAO.Organization.latestMatter(personId, kind) or nil
+    local endedAt = latest and tonumber(latest.closedAt) or nil
+    if endedAt and (tonumber(hours) or 0) < endedAt
+        + math.max(0, tonumber(cooldownHours) or 0) then return false, latest end
+    return personId ~= "" and kind ~= "", nil
+end
+
+function Driver.performMatter(personId, kind, organizationId, proposal,
+        addressedIds, privateEvidence, hours)
+    if not (SAO and SAO.Organization and SAO.Communication
+        and SAO.Organization.raiseMatter
+        and SAO.Communication.deliverProcessProposal) then
+        return false, "coordination-unavailable"
+    end
+    personId, kind = tostring(personId or ""), tostring(kind or "")
+    if personId == "" or kind == "" or type(proposal) ~= "table" then
+        return false, "invalid-matter"
+    end
+    addressedIds = type(addressedIds) == "table" and addressedIds or {}
+    local process = SAO.Organization.openMatter(personId, kind)
+    local changed = false
+    if process then
+        local prior = authoredProposal(process) or {}
+        if tostring(prior.intentKey or "")
+            ~= tostring(proposal.intentKey or "") then
+            process = SAO.Organization.reviseMatter(process.id, personId,
+                proposal, privateEvidence)
+            changed = process ~= nil
+        end
+    else
+        process = SAO.Organization.raiseMatter(personId, kind, organizationId,
+            proposal, addressedIds, privateEvidence)
+        changed = process ~= nil
+    end
+    if not process then return false, "matter-refused" end
+    if SAO.Organization.addressMatter then
+        SAO.Organization.addressMatter(process.id, personId, addressedIds)
+    end
+    local delivered = 0
+    for _, recipientId in ipairs(addressedIds) do
+        recipientId = tostring(recipientId or "")
+        local view = recipientId ~= "" and SAO.Organization.viewFor(
+            recipientId, process.id, false) or nil
+        if recipientId ~= "" and (not view or not view.reception
+            or tonumber(view.revision) ~= tonumber(process.revision)) then
+            local message = SAO.Communication.deliverProcessProposal(
+                personId, recipientId, process.id, nil, {
+                    source = "ZAO.Driver.performMatter",
+                    proposedAtHours = tonumber(hours) or 0,
+                })
+            if message then delivered = delivered + 1 end
+        end
+    end
+    return changed or delivered > 0, delivered > 0 and "delivered" or "open",
+        process
+end
+
+function Driver.withdrawMatter(personId, kind, reason, evidence)
+    local process = SAO and SAO.Organization and SAO.Organization.openMatter
+        and SAO.Organization.openMatter(tostring(personId), tostring(kind)) or nil
+    if not process or not SAO.Organization.withdrawMatter then
+        return false, "no-open-matter"
+    end
+    local withdrawn = SAO.Organization.withdrawMatter(process.id,
+        tostring(personId), reason, evidence)
+    return withdrawn == true, withdrawn and "withdrawn" or "withdrawal-refused"
+end
+
 local SETTLEMENT_ACTIVITY = {
     afflicted = {
         gathered = true,
@@ -643,20 +745,25 @@ function Driver.step(personId, body, state, mind, now, hours)
         endRest(body, row)
     end
 
-    local coordinated = false
+    local coordinated, coordinationStatus = false, nil
     if SAO and SAO.Controller and SAO.Controller.advanceExternalCoordination then
         local coordinationActivity = option and option.interruptsWork == true
             and activity or "idle"
-        local ok, didWork = pcall(function()
+        local ok, didWork, result = pcall(function()
             return SAO.Controller.advanceExternalCoordination(
                 personId, body, "ZAO", coordinationActivity)
         end)
         coordinated = ok and didWork == true
+        coordinationStatus = ok and result or nil
     end
     if coordinated then
-        Driver.setActivity(state, "coordination", "accepted scoped work",
-            hours)
-        return true, "coordination"
+        local completedActivity = type(coordinationStatus) == "string"
+            and string.match(coordinationStatus, "^completed:(.+)$") or nil
+        local performed = completedActivity or "coordination"
+        Driver.setActivity(state, performed, completedActivity
+            and "arrived under an accepted bounded commitment"
+            or "accepted scoped work", hours)
+        return true, performed
     end
 
     local committed, performed = false, activity

@@ -27,6 +27,14 @@ jobs:
           # a shallow clone would not have it.
           fetch-depth: 0
 
+      - name: Check out SAO C83 coordination sources
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: ellyj3rain/sao
+          ref: d846afea7a53b16bc0ad50367f26ca765315e04c
+          path: sao-c83
+          fetch-depth: 1
+
       - name: Set up Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
@@ -48,4 +56,6 @@ jobs:
       # this runner has no Project Zomboid installation and never will.
       - name: Run the borders
         shell: bash
+        env:
+          SAO_ROOT: ${{ github.workspace }}/sao-c83
         run: bash tools/check.sh

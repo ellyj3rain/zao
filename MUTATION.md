@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Mutation System |
 |---|---|
-| Version | `0.4.0.0-pre-alpha` |
+| Version | `0.5.0.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `MUTATION.md` |
 | Status | CANONICAL - the system as the operator defined it on 2026-09-09. Specifics not yet ratified into `DECISION_REGISTRY.md` are marked. |
@@ -302,22 +302,25 @@ susceptibility to crossed, the passive infection, the identity-decay
 dials - what the pathogen did and still threatens is here. The same owner now
 runs Afflicted behavior: actual Crossed danger produces fear, other Afflicted
 can be sought, and evidenced ground can be travelled to and held. Their body
-pressure is observed, but how they maintain themselves has not been
-established; survivor maintenance and Crossed motives are not substitutes.
+pressure drives a distinct maintenance policy: they require water, strongly
+prefer meat/protein, can use penalized non-dairy alternatives, and may make an
+individual human-origin food choice. Survivor maintenance and Crossed motives
+are not substitutes for that policy.
 
 **Crossed policy remains distinct.** They retain human appearance, identity,
 cognition, physiology and capability within their constraints. Ordinary food
 can sustain them; human-origin food is preferred when sustenance and altered
 motives reinforce one another. They can hunt and mutilate ordinary humans,
 butcher bodies into human flesh, and preserve that origin through cooking.
-They never feed on Afflicted. They can deliberately expose Afflicted and may
+Afflicted human remains are possible but dispreferred food. Crossed can
+deliberately expose a living Afflicted person and may
 choose to contaminate an equipped melee or projectile weapon so a later native
 wound carries their blood. These are implemented producers, not a closed list,
 an automatic preparation sequence or the definition of a Crossed life.
 
 A37 implements the Afflicted-conversion boundary. A Crossed body approaches
 and holds contact through a persisted blood-exposure action; ordinary attack
-targeting is cleared because the Afflicted are not food. Only the completed
+targeting is cleared because exposure is distinct from feeding. Only the completed
 action authorizes the Crossed-odds times Afflicted-susceptibility roll. Success
 changes the person's policy to Crossed while retaining the same living human
 shell, ZAO driver identity and dormant envelope. Interruption, busy actions,
