@@ -161,6 +161,13 @@ if ! "$PY" tools/life_coordination_test.py; then
     fail=1
 fi
 
+# 16. Form windups use the installed character-facing API. The original missing
+# method remains a control even though the production call sits inside pcall.
+if ! "$PY" tools/native_facing_test.py; then
+    note "BORDER 16 REFUSED: native form facing"
+    fail=1
+fi
+
 if [ "$fail" -ne 0 ]; then
     note "GATE REFUSED"
 else

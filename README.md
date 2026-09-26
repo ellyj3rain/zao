@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul |
 |---|---|
-| Version | `0.5.2.0-pre-alpha` |
+| Version | `0.5.3.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `README.md` |
 | Status | CANONICAL - human entry point. |
@@ -123,6 +123,32 @@ and every timed/native action boundary; anonymous legacy human-origin food
 fails closed. Intentional blood exposure remains separate. Afflicted food
 policy is unchanged. These paths are mechanically controlled; loaded-world
 presentation and long-horizon ecology remain unobserved.
+
+A43 repairs native form facing and vocals and integrates detached-observer exclusion.
+Puker, Wrecker and Leaper windups call the installed
+`faceThisObject(IsoObject)` method, verified by reflection and production
+execution in Kahlua with the original invalid call as a failing control.
+Vocal cues use the body's native voice name through its character sound emitter;
+the missing body-level vocal call is a second failing control.
+The actor-facing `ZAO.Participants.player(index)` lookup excludes an engine
+slot marked `SAO_ObserverAnchor` from ZAO's player targeting, Weeper listeners,
+inspector and overlay. `ZAO.Participants.residencyCenter()` separately supplies
+the infrastructure coordinates used by the Controller to materialize nearby
+and hibernate distant living Afflicted and Crossed. The observed region can
+therefore host those people without admitting the observer as a participant.
+The Controller also honors SAO's body-recovery result: unresolved native unload
+retains ownership while withholding driving and materialization.
+Border 9 exercises the production Controller and Participants for both states
+and rejects four lifecycle controls, including residency and native unload.
+The expanded sixteen-border gate passes with no skips and exit code zero.
+Native workbench run 19
+verifies the engine hook and separation of manual panning from region residency;
+it stopped and saved with zero player membership. Same-save attempt 2 has
+resumed cleanly from game hour 2.659274 with the same 32 people and new
+observation sequence 4. The reopened attempt's final stop and the broader SAO
+body-visibility repair remain pending. A43 closes facing/vocals, participant exclusion
+and residency; overall observer acceptance remains separate. Observed scenarios
+require operator evaluation before dataset ratification.
 
 G0 closed at `[A6]`: the engine's turn surface is established from the
 installed build with file-and-line evidence, in F-001 through F-011.

@@ -77,7 +77,7 @@ local function nearestTurnedTarget(source, zx, zy, engageDead)
         end
     end
 
-    local me = getSpecificPlayer(0)
+    local me = (ZAO.Participants and ZAO.Participants.player or getSpecificPlayer)(0)
     if me then consider(me) end
 
     return best
@@ -373,8 +373,15 @@ end
 
 local function processExternalPeople(now, hours, day, policy)
     if not (SAO and SAO.Identity and SAO.Body and ZAO.Pathogen) then return end
-    local player = nil
-    pcall(function() player = getSpecificPlayer(0) end)
+    local regionX, regionY = nil, nil
+    pcall(function()
+        if ZAO.Participants then
+            regionX, regionY = ZAO.Participants.residencyCenter()
+        else
+            local reference = getSpecificPlayer(0)
+            if reference then regionX, regionY = reference:getX(), reference:getY() end
+        end
+    end)
     for personId, rec in pairs(SAO.Identity.all()) do
         if rec.bodyOwner == "ZAO" then
             personId = tostring(personId)
@@ -400,22 +407,27 @@ local function processExternalPeople(now, hours, day, policy)
                         body = nil
                     end
                 end
-                local distanceToPlayer = nil
-                if not deadBody and player then
+                local available = true
+                if not deadBody and SAO.Body.recover then
+                    available = SAO.Body.recover(rec) == true
+                    body = available and SAO.Body.foreign[personId] or nil
+                end
+                local distanceToRegion = nil
+                if available and not deadBody and regionX and regionY then
                     pcall(function()
-                        local dx = (body and body:getX() or rec.x) - player:getX()
-                        local dy = (body and body:getY() or rec.y) - player:getY()
-                        distanceToPlayer = math.sqrt(dx * dx + dy * dy)
+                        local dx = (body and body:getX() or rec.x) - regionX
+                        local dy = (body and body:getY() or rec.y) - regionY
+                        distanceToRegion = math.sqrt(dx * dx + dy * dy)
                     end)
                 end
-                if not deadBody and not body and distanceToPlayer
-                    and distanceToPlayer <= CONTROL_RADIUS * 2.0 then
+                if available and not deadBody and not body and distanceToRegion
+                    and distanceToRegion <= CONTROL_RADIUS * 2.0 then
                     pcall(function()
                         body = SAO.Body.materializeExternal(rec, "ZAO",
                             rec.bodyOwnerToken)
                     end)
-                elseif not deadBody and body and distanceToPlayer
-                    and distanceToPlayer > CONTROL_RADIUS * 3.0
+                elseif available and not deadBody and body and distanceToRegion
+                    and distanceToRegion > CONTROL_RADIUS * 3.0
                     and SAO.Body.canTransfer(body) then
                     local slept = SAO.Body.hibernateExternal(rec, body, "ZAO",
                         rec.bodyOwnerToken)
@@ -424,7 +436,7 @@ local function processExternalPeople(now, hours, day, policy)
                         body = nil
                     end
                 end
-                if not deadBody and body then
+                if available and not deadBody and body then
                     Ctl.controlled[personId] = body
                     pcall(function()
                         rec.x, rec.y, rec.z = body:getX(), body:getY(), body:getZ()

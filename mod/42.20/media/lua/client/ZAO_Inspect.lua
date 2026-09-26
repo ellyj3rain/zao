@@ -14,7 +14,7 @@ local FONT_M = UIFont.Medium
 
 local function nearestSurvivor()
     if not SAO or not SAO.Body or not SAO.Body.active then return nil end
-    local me = getSpecificPlayer(0)
+    local me = (ZAO.Participants and ZAO.Participants.player or getSpecificPlayer)(0)
     if not me then return nil end
     local px, py = me:getX(), me:getY()
     local best, bestD = nil, nil

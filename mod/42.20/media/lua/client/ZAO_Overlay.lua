@@ -25,7 +25,7 @@ end
 
 function ZAOOverlay:render()
     ISUIElement.render(self)
-    local me = getSpecificPlayer(0)
+    local me = (ZAO.Participants and ZAO.Participants.player or getSpecificPlayer)(0)
     if not me then
         return
     end

@@ -1,13 +1,53 @@
 | Document | Zombie Awareness Overhaul Session State |
 |---|---|
-| Version | `0.5.2.0-pre-alpha` |
+| Version | `0.5.3.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `SESSION_STATE.md` |
 | Status | CANONICAL - where the work actually stands. |
 
 # Session state
 
-**Current implementation, 2026-09-25:** A42 on
+**Current implementation, 2026-09-26:** A43 closes native facing and vocals, observer
+exclusion and living-person residency on `neo/a43-native-facing`. Form windups
+now use the installed `faceThisObject(IsoObject)` API. SAO's isolated C86 native
+run 08 exposed the missing method during a form windup; runs 09 and 10 completed
+after the fix.
+Border 16 checks Puker, Wrecker and Leaper windups in installed Kahlua, binds
+the method to the installed engine by reflection and rejects the original
+invalid-call control. Run 20 then exposed the absent body-level `playVocals()`
+method. Vocal cues now follow the installed emitter's `playVocals(String)`
+using `getVoiceSoundName()`. Border 16 reflects those signatures and rejects
+the original vocal call while preserving each production windup's cue.
+
+The shared `ZAO.Participants.player(index)` lookup excludes the exact Boolean
+`SAO_ObserverAnchor` marker from turned targets, Weeper listeners, the inspector
+and the overlay. Ordinary players retain their existing path. The separate
+`ZAO.Participants.residencyCenter()` returns the infrastructure reference's raw
+coordinates. The Controller's `processExternalPeople` uses that center to
+materialize nearby and hibernate distant living Afflicted and Crossed without
+requiring a participating player or changing their state policies and ownership.
+Border 9 now executes the production Controller and Participants with an
+observer-marked reference. Both living states materialize near it and hibernate
+after the region moves away, while the participant lookup stays empty.
+The Controller now also honors `SAO.Body.recover(rec)` before driving or
+materializing a retained external body. Unresolved native unload keeps the
+ownership handle while execution waits. Border 9's residency-loss, native-unload,
+death and transfer controls all fail as required.
+
+The batch record, chronology and machine-derived version are current. The
+earlier full sixteen-border gate is retained under `_scratch/a43-final-gate/`;
+the residency/unload extension passes all sixteen borders with no skips and
+exit code zero in `gate-unload.log`. The emitter repair passes the expanded
+Border 16; publication runs the combined full gate again. Native workbench run 19
+verifies the real engine hook and separation of manual panning from region residency.
+Run 19 stopped and saved with zero player membership. At the recorded checkpoint,
+same-save attempt 2 resumed cleanly from game hour 2.659274 with the same 32 people
+and new observation sequence 4. Its final stop and the broader body-visibility
+repair in SAO remain pending. A43 publication covers the closed facing/vocal, participant-exclusion and
+residency scope; overall observer acceptance remains separate. Scenarios remain
+unreviewed until operator evaluation and explicit dataset ratification.
+
+**Before that, 2026-09-25:** A42 on
 `neo/a42-private-situation-producers` continues Afflicted- and Crossed-authored
 matters through particular privately retained contacts under the same ZAO
 driver. The two providers remain different policies. Contact address arrival is
@@ -595,14 +635,17 @@ that build the outcomes; `[A29]` states them for the outcomes it builds.
 
 ## Instruments
 
-Five borders run through `tools/check.sh`: document currency, version replay,
-state producer mapping, the Java bridge build, and pathogen behavior in the
-installed Kahlua VM. The gate also checks every Lua file structurally.
-The build and VM check report explicit skips where their engine or JDK is
-absent. Local A34 validation includes the installed game and the SAO event seam.
+Sixteen borders run through `tools/check.sh`, covering document and version
+currency, state mapping, the Java bridge, pathogen behavior, native return and
+physiology, reconstruction, living ownership and observer-region residency,
+exposure, material actions,
+maintenance, coordination and native form facing. The gate also checks every
+Lua file structurally. Engine-dependent checks report explicit skips where
+their engine or JDK is absent.
 
 ## The condition
 
-Every batch is OPEN pending play receipts, and play is later — one project
-at a time, when the operator says. The idea is the success condition,
-entire. The pass continues until the operator ends it.
+Closed implementation batches name their outstanding play and durability
+evidence separately. Native study checks establish the mechanisms they
+actually exercise; the operator remains the judge of how the game looks and
+plays. Scenario evaluation and explicit ratification precede dataset admission.

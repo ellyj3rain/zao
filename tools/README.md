@@ -24,7 +24,22 @@ It reports a skip when the engine or JDK is absent.
 `external_crossed_test.py` runs the transferred Crossed controller path in the
 installed Kahlua VM. It proves that a living human shell remains ZAO-owned and
 that death enters SAO's common county death funnel without driving the corpse.
+The same production Controller and Participants exercise observer-centered
+materialization and hibernation for living Afflicted and Crossed while the
+observer remains excluded as a participant. A retained body whose native unload
+is unresolved stays owned but cannot execute or rematerialize. Removing the
+unload guard, residency coordinates, dead-body detection or pending-transfer
+retry must fail its four controls.
 
 `intentional_exposure_test.py` executes the Crossed blood-exposure action and
 pathogen receipt together. It requires approach, sustained contact, feeding
 exclusion, interruption, durable action authorization, and exact-once replay.
+
+`native_facing_test.py` binds `faceThisObject(IsoObject)` to the installed
+engine and executes production Puker, Wrecker and Leaper windups in Kahlua.
+It also binds the character emitter's `playVocals(String)` and native
+`getVoiceSoundName()` selection to each windup. Restoring either original
+`faceObject` or body-level `playVocals()` call must fail by name despite the
+protected Lua call.
+`check.sh` includes this as Border 16 and reports unavailable engine/JDK
+dependencies as a skip rather than a pass.
