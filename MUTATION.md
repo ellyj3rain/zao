@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Mutation System |
 |---|---|
-| Version | `0.5.2.0-pre-alpha` |
+| Version | `0.5.3.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `MUTATION.md` |
 | Status | CANONICAL - the system as the operator defined it on 2026-09-09. Specifics not yet ratified into `DECISION_REGISTRY.md` are marked. |

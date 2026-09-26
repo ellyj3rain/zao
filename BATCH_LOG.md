@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Batch Log |
 |---|---|
-| Version | `0.5.2.0-pre-alpha` |
+| Version | `0.5.3.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `BATCH_LOG.md` |
 | Status | REGULATORY - chronological batch index. |
@@ -58,3 +58,4 @@ history tree. The last row below is the tip.
 | [A40](Batches/A40-20260925-0855Z-0155PST-distinct-life-coordination.md) | 2026-09-25 | Distinct life coordination | [`T-001`](Batches/THREADS.md#t-001), [`T-002`](Batches/THREADS.md#t-002) |
 | [A41](Batches/A41-20260925-1201Z-0501PST-shared-living-execution-owner.md) | 2026-09-25 | Shared living execution owner | [`T-001`](Batches/THREADS.md#t-001), [`T-002`](Batches/THREADS.md#t-002) |
 | [A42](Batches/A42-20260925-2145Z-1445PST-private-contact-and-crossed-maintenance-correction.md) | 2026-09-25 | Private contact and Crossed maintenance correction | [`T-001`](Batches/THREADS.md#t-001), [`T-002`](Batches/THREADS.md#t-002) |
+| [A43](Batches/A43-20260926-0457Z-2157PST-native-facing-and-observer-exclusion.md) | 2026-09-26 | Native facing and observer exclusion | [`T-001`](Batches/THREADS.md#t-001), [`T-002`](Batches/THREADS.md#t-002) |

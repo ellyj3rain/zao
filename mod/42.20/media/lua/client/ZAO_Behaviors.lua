@@ -51,12 +51,16 @@ end
 
 local function faceTarget(zombie, target)
     pcall(function()
-        zombie:faceObject(target)
+        zombie:faceThisObject(target)
     end)
 end
 
 local function vocal(zombie)
-    pcall(function() zombie:playVocals() end)
+    pcall(function()
+        local emitter = zombie:getEmitter()
+        local name = zombie:getVoiceSoundName()
+        if emitter and name then emitter:playVocals(name) end
+    end)
 end
 
 local function worldSound(x, y, z, radius, volume)
@@ -529,7 +533,7 @@ local function weeper(zombie, state, target, now)
     if now < (tonumber(data.ZAOWeeperCryNextAt) or 0) then return end
 
     local listeners = {}
-    local me = getSpecificPlayer(0)
+    local me = (ZAO.Participants and ZAO.Participants.player or getSpecificPlayer)(0)
     if me then listeners[#listeners + 1] = me end
     if SAO and SAO.Body and SAO.Body.active then
         for _, body in pairs(SAO.Body.active) do

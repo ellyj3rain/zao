@@ -42,7 +42,11 @@ public class ExternalCrossedRun {
 
 HOST = r'''
 Events = { OnTick = { Add = function() end } }
-local player = { getX = function() return 0 end, getY = function() return 0 end }
+local player = { x = 0, y = 0,
+    getX = function(self) return self.x end, getY = function(self) return self.y end,
+    getZ = function() return 0 end,
+    getModData = function() return { SAO_ObserverAnchor = true } end }
+local terminalState, hibernations = "crossed", 0
 getSpecificPlayer = function() return player end
 getCell = function() return nil end
 local rec = { id = "person", bodyOwner = "ZAO", bodyOwnerToken = "blood:1",
@@ -62,10 +66,16 @@ SAO = {
     },
     Body = {
         active = {}, foreign = { person = body },
-        canTransfer = function() return false end,
+        canTransfer = function() return true end,
+        hibernateExternal = function()
+            hibernations = hibernations + 1
+            SAO.Body.foreign.person = nil
+            return true
+        end,
         materializeExternal = function()
             materializations = materializations + 1
-            return SAO.Body.foreign.person
+            SAO.Body.foreign.person = body
+            return body
         end,
     },
     Controller = {
@@ -82,7 +92,7 @@ SAO = {
 ZAO = {
     Pathogen = {
         stateOf = function() return {
-            terminalState = "crossed", currentForm = "none", history = {},
+            terminalState = terminalState, currentForm = "none", history = {},
         } end,
     },
     StateStore = { write = function() writes = writes + 1 end },
@@ -91,6 +101,8 @@ ZAO = {
     end },
 }
 function __reset(dead, accepted)
+    SAO.Body.recover = nil
+    player.x, player.y, terminalState, hibernations = 0, 0, "crossed", 0
     rec.dead, rec.bodyOwner, rec.bodyOwnerToken = nil, "ZAO", "blood:1"
     body.dead, body.data = dead == true, {}
     SAO.Body.foreign.person = body
@@ -104,6 +116,13 @@ function __materializations() return materializations end
 function __exposureResumes() return exposureResumes end
 function __body() return body end
 function __rec() return rec end
+function __dormant(state)
+    terminalState = state
+    SAO.Body.foreign.person = nil
+    ZAO.Controller.controlled.person = nil
+end
+function __moveRegion(x, y) player.x, player.y = x, y end
+function __hibernations() return hibernations end
 '''
 
 PROBE = r'''
@@ -141,6 +160,30 @@ local beforeResume = __exposureResumes()
 ZAO.Controller.tick(100)
 assert(__exposureResumes() == beforeResume + 1,
     "controller did not resume a converted action whose transfer was pending")
+
+assert(ZAO.Participants.player(0) == nil, "observer admitted as participant")
+__reset(false, true)
+SAO.Body.recover = function(rec) return false, "native-unload-pending" end
+__processExternalCrossed(150, 150, 0)
+assert(ZAO.Controller.controlled.person == nil and __writes() == 0
+    and SAO.Body.foreign.person == __body() and __materializations() == 0,
+    "unresolved native unload still drove external person")
+SAO.Body.recover = function(rec) return true end
+__processExternalCrossed(151, 151, 0)
+assert(ZAO.Controller.controlled.person == __body() and __writes() == 1,
+    "resolved native presence did not resume external person")
+for _, state in ipairs({ "afflicted", "crossed" }) do
+    __reset(false, true)
+    __dormant(state)
+    __processExternalCrossed(200, 200, 0)
+    assert(__materializations() == 1 and ZAO.Controller.controlled.person == __body(),
+        "observer region did not materialize living external person")
+    assert(__body().data.ZAOTerminalState == state, "living state changed during residency")
+    __moveRegion(1000, 1000)
+    __processExternalCrossed(201, 201, 0)
+    assert(__hibernations() == 1 and SAO.Body.foreign.person == nil,
+        "observer region did not hibernate distant external person")
+end
 '''
 
 
@@ -156,6 +199,7 @@ def run(work: Path, source: str) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
         [str(JDK / "java.exe"), "-cp", f"{GAME / 'projectzomboid.jar'}{os.pathsep}{work}",
          "ExternalCrossedRun", str(work / "host.lua"),
+         str(ROOT / "mod/42.20/media/lua/shared/ZAO_Participants.lua"),
          str(work / "controller.lua"), str(work / "probe.lua")],
         cwd=work, capture_output=True, text=True, timeout=30)
 
@@ -168,6 +212,8 @@ def main() -> int:
         return 0
     source = CONTROLLER.read_text(encoding="utf-8-sig")
     controls = [
+        ("native unload ownership", "available = SAO.Body.recover(rec) == true", "SAO.Body.recover(rec) available = true"),
+        ("observer residency", "ZAO.Participants.residencyCenter()", "nil, nil"),
         ("dead-body detection", "if dead then", "if false then"),
         ("pending transfer retry", "ZAO.Exposure.resumePending()",
          "-- pending exposure retry omitted"),
@@ -197,7 +243,7 @@ def main() -> int:
             if mutant.returncode == 0:
                 print(f"REFUSED: {label} mutation survived")
                 return 1
-    print("Border 9 PASS: living Crossed stays controlled; death hands the corpse to SAO, retries refusal, never drives the dead, and resumes pending conversion transfer; two controls fail")
+    print("Border 9 PASS: living Crossed stays controlled; death hands the corpse to SAO, retries refusal, never drives the dead, and resumes pending conversion transfer; observer-driven residency covers Afflicted and Crossed without a participant; unresolved native unload retains ownership without driving; four controls fail")
     return 0
 
 
