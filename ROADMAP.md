@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Roadmap |
 |---|---|
-| Version | `0.5.3.0-pre-alpha` |
+| Version | `0.5.4.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `ROADMAP.md` |
 | Status | CANONICAL - gate order and the open-fork ledger. |
@@ -102,6 +102,14 @@ and SourceUse boundaries. Anonymous legacy human-origin food fails closed;
 intentional exposure remains separate and Afflicted food policy is unchanged.
 Focused controls and the full gate provide mechanical evidence. Loaded-world
 presentation, balance and long-horizon ecology remain open.
+
+A44 extends the same living driver with explicit auditory-orientation
+admission after action arbitration and state-owned rollback during elapsed
+body restoration. The paired SAO runtime owns fresh sound occurrence, native
+head/body pose, actual gaze and pharmacology; ZAO owns its driver and maintenance
+state. Border 12 reuses the shared instruments against exact current sources.
+The unchanged full gate passes against production C89 with no skips.
+Loaded-world sound response and restoration presentation remain open evidence.
 
 ## Open forks — reserved to the operator
 

@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import tempfile
 
 
@@ -520,6 +521,13 @@ def main() -> int:
             if result.returncode == 0:
                 print(f"REFUSED: {name} control survived")
                 return 1
+    shared = subprocess.run([sys.executable, str(ROOT / "tools/living_orientation_test.py")],
+        capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=240)
+    print(shared.stdout)
+    if shared.returncode:
+        print(shared.stderr)
+        print("REFUSED: shared living orientation or elapsed ownership proof failed")
+        return 1
     print("Border 12 PASS: one ZAO driver arbitrates distinct living-state options from real Perception, Disposition and Standing inputs; dormant people cannot execute native work without a body; Afflicted fear, gathering and evidenced travel coexist with shared human physiology; personal acquisition stays serialized under SAO SourceUse; Crossed strategy uses privately visible distress while Afflicted exposure cannot fall through to prey selection; distinct-person settlement formation is required; eleven controls fail")
     return 0
 

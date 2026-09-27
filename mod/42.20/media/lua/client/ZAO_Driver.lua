@@ -959,7 +959,15 @@ function Driver.executeHumanPhysiology(option, personId, body, state, mind,
     return false, "unavailable"
 end
 
-function Driver.step(personId, body, state, mind, now, hours)
+-- A completed arbitration may admit a glance without changing its result.
+-- Native timed work, combat, driving and SourceUse keep their existing gates.
+local GLANCE_KIND = {
+    route = true, kin = true, home = true, ["hold-kin"] = true,
+    ["hold-home"] = true, gather = true, settlement = true, ground = true,
+    ["body-water-route"] = true,
+}
+
+local function step(personId, body, state, mind, now, hours)
     if not (body and type(state) == "table" and mind and mind.execution) then
         return false, "unavailable"
     end
@@ -1049,7 +1057,7 @@ function Driver.step(personId, body, state, mind, now, hours)
                 row.contact = nil
                 Driver.setActivity(state, "idle",
                     "proposal received in person", hours)
-                return true, "contact-received"
+                return true, "contact-received", "head"
             end
         end
         local contactRow = ensureDriverContact(personId, state, contact, {
@@ -1082,12 +1090,12 @@ function Driver.step(personId, body, state, mind, now, hours)
                     end
                     Driver.setActivity(state, "idle",
                         "contact remained unanswered", hours)
-                    return true, "contact-unanswered"
+                    return true, "contact-unanswered", "head"
                 end
                 Driver.setActivity(state, "waiting-contact",
                     "present at the last known address", hours,
                     contact.processId)
-                return true, "waiting-contact"
+                return true, "waiting-contact", "head"
             end
             local active, outcome = Driver.routeTo(personId, body, state,
                 "contact", contact.recipientId, contact.x, contact.y,
@@ -1096,14 +1104,14 @@ function Driver.step(personId, body, state, mind, now, hours)
                 Driver.setActivity(state, "seeking-contact",
                     "walking to a privately known address", hours,
                     contact.processId)
-                return true, "seeking-contact"
+                return true, "seeking-contact", "head"
             end
             Driver.setActivity(state, outcome == "completed"
                 and "waiting-contact" or "idle",
                 outcome == "completed" and "present at the last known address"
                     or "contact route failed", hours)
             return true, outcome == "completed"
-                and "contact-address-reached" or "contact-route-failed"
+                and "contact-address-reached" or "contact-route-failed", "head"
         end
     end
     Driver.setActivity(state, activity, detail, hours,
@@ -1132,7 +1140,7 @@ function Driver.step(personId, body, state, mind, now, hours)
         Driver.setActivity(state, performed, completedActivity
             and "arrived under an accepted bounded commitment"
             or "accepted scoped work", hours)
-        return true, performed
+        return true, performed, "head"
     end
 
     local committed, performed = false, activity
@@ -1150,6 +1158,27 @@ function Driver.step(personId, body, state, mind, now, hours)
         if ok and actual then performed = actual end
     end
     Driver.setActivity(state, performed or "idle", detail, hours)
+    local orienting = not option and (performed or "idle") == "idle"
+        and not row.route and not row.resting and "idle" or nil
+    if option and GLANCE_KIND[option.kind] and option.interruptsWork ~= true then
+        orienting = "head"
+    end
+    return committed, performed, orienting
+end
+
+function Driver.step(personId, body, state, mind, now, hours)
+    local committed, performed, orienting = step(personId, body, state, mind, now, hours)
+    if SAO and SAO.Orienting then
+        if orienting and not (state and state.driver and state.driver.resting) then
+            local rec = SAO.Identity and SAO.Identity.get
+                and SAO.Identity.get(tostring(personId)) or nil
+            SAO.Orienting.consider(personId, body, { owner = "ZAO",
+                bodyOwnerToken = rec and rec.bodyOwnerToken,
+                allowBodyTurn = orienting == "idle" })
+        else
+            SAO.Orienting.forget(personId, body)
+        end
+    end
     return committed, performed
 end
 
