@@ -1,13 +1,33 @@
 | Document | Zombie Awareness Overhaul Session State |
 |---|---|
-| Version | `0.5.3.0-pre-alpha` |
+| Version | `0.5.4.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `SESSION_STATE.md` |
 | Status | CANONICAL - where the work actually stands. |
 
 # Session state
 
-**Current implementation, 2026-09-26:** A43 closes native facing and vocals, observer
+**Current implementation, 2026-09-27:** A44 closes the frozen Driver,
+Maintenance and ExecutionOwner inputs paired with SAO C89. Living Afflicted
+and Crossed admit auditory orientation through their sole ZAO driver after
+existing work arbitration. Active routes permit a head glance; idle unclaimed
+execution may request a body pivot. Shared native cue, gaze and Neuro owners
+retain their authority, and hearing never identifies an actor by itself.
+
+Elapsed restoration now has a ZAO-owned maintenance transaction. The exact
+person, human shell and owner token admit a bounded field snapshot; failure
+restores that owner state once. SAO owns native pharmacology and body lifecycle,
+while the existing ZAO owner continues state-specific elapsed physiology.
+
+Border 12 retains its original eleven controls and invokes a thin shared-test
+adapter. Against current production SAO C89, 45 auditory cases and 12 controls
+pass, as do 16 actual Body/ZAO transaction cases and 14 controls. The unchanged
+full `tools/check.sh` passes all sixteen borders with exit code zero and no
+skips; `_scratch/a44/gate-production.json` records the exact source inventory
+and transcript hash. Loaded-world presentation and behavioral acceptance
+remain separate.
+
+**Before that, 2026-09-26:** A43 closes native facing and vocals, observer
 exclusion and living-person residency on `neo/a43-native-facing`. Form windups
 now use the installed `faceThisObject(IsoObject)` API. SAO's isolated C86 native
 run 08 exposed the missing method during a form windup; runs 09 and 10 completed
@@ -639,7 +659,8 @@ Sixteen borders run through `tools/check.sh`, covering document and version
 currency, state mapping, the Java bridge, pathogen behavior, native return and
 physiology, reconstruction, living ownership and observer-region residency,
 exposure, material actions,
-maintenance, coordination and native form facing. The gate also checks every
+maintenance, coordination, living auditory orientation, elapsed-owner rollback
+and native form facing. The gate also checks every
 Lua file structurally. Engine-dependent checks report explicit skips where
 their engine or JDK is absent.
 

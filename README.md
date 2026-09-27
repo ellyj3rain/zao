@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul |
 |---|---|
-| Version | `0.5.3.0-pre-alpha` |
+| Version | `0.5.4.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `README.md` |
 | Status | CANONICAL - human entry point. |
@@ -149,6 +149,17 @@ observation sequence 4. The reopened attempt's final stop and the broader SAO
 body-visibility repair remain pending. A43 closes facing/vocals, participant exclusion
 and residency; overall observer acceptance remains separate. Observed scenarios
 require operator evaluation before dataset ratification.
+
+A44 connects both living states to SAO C89's native auditory orientation.
+After the common ZAO driver arbitrates current work, a personally heard fresh
+sound may prompt a head glance or an idle body turn. Existing physiology shapes
+the response; visual identification still requires actual sight. Sound cannot
+steer a route or displace an owned action. A44 also gives the ZAO maintenance
+owner a bounded rollback transaction for failed elapsed body restoration.
+Border 12 reuses SAO's actual policy and body-transaction instruments against
+current ZAO sources, preserving one test owner for the shared runtime. The
+unchanged sixteen-border gate passes against production SAO C89 with no skips.
+Loaded-world presentation and behavioral acceptance remain open.
 
 G0 closed at `[A6]`: the engine's turn surface is established from the
 installed build with file-and-line evidence, in F-001 through F-011.

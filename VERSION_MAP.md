@@ -16,9 +16,9 @@ the machine. Names, dates, and threads below come from
 | Form | `major.minor.kohai.patch-maturity` |
 | Hard caps | minor 12; kohai 16; patch 24 |
 | Replay start | `0.1.0.0-pre-alpha` |
-| Current version | `0.5.3.0-pre-alpha` |
-| Closed chronology | `A1-A43` |
-| Next batch | `A44` |
+| Current version | `0.5.4.0-pre-alpha` |
+| Closed chronology | `A1-A44` |
+| Next batch | `A45` |
 | Executable source | [`tools/version_replay.py`](tools/version_replay.py) |
 
 ## Tier meanings
@@ -78,6 +78,7 @@ the machine. Names, dates, and threads below come from
 | `A41` | 2026-09-25 | kohai | `0.5.1.0-pre-alpha` | Shared living execution owner | Move the registered living execution adapter from the loaded controller into one shared owner usable by loaded, dormant and headless execution. The adapter preserves one common ZAO driver while dispatching recipient appraisal to distinct Afflicted or Crossed policy and retaining missing representation as an observation gap. This structurally matures the A39-A40 ownership and coordination boundary without adding a new life, body or action family, so kohai. |
 | `A42` | 2026-09-25 | kohai | `0.5.2.0-pre-alpha` | Private contact and Crossed maintenance correction | Continue each state-authored matter through private retained contacts and the common ZAO driver while preserving distinct policy, and correct Crossed maintenance to ordinary human caloric passage with categorical rejection of Afflicted donor provenance at every material-action boundary. This coherently matures the A39-A41 living execution capability without adding a state, planner or action family, so kohai. |
 | `A43` | 2026-09-26 | kohai | `0.5.3.0-pre-alpha` | Native facing and observer exclusion | Repair native form windups against the installed facing API and integrate a shared participant lookup across turned targets, Weeper listeners, living external-person processing and inspection so a marked detached observer is excluded. The facing change alone is a patch; the combined unit coherently integrates observer isolation into existing execution consumers without adding a pathogen state or action family, so kohai. |
+| `A44` | 2026-09-27 | kohai | `0.5.4.0-pre-alpha` | Living orientation and elapsed rollback | Integrate both living state drivers with shared personally heard native sound orientation after their existing arbitration, and give the registered ZAO maintenance owner a bounded rollback transaction during elapsed body restoration. This coherently matures existing living execution and ownership without adding a pathogen state, planner or action family, so kohai. |
 
 ## Maturity
 
@@ -87,11 +88,11 @@ says.
 
 ## Next movement
 
-`A44` is the next batch. Its content determines its tier after it
+`A45` is the next batch. Its content determines its tier after it
 exists:
 
-| If A44 is | Result |
+| If A45 is | Result |
 |---|---|
-| patch or hotfix | `0.5.3.1-pre-alpha` |
-| kohai | `0.5.4.0-pre-alpha` |
+| patch or hotfix | `0.5.4.1-pre-alpha` |
+| kohai | `0.5.5.0-pre-alpha` |
 | minor | `0.6.0.0-pre-alpha` |

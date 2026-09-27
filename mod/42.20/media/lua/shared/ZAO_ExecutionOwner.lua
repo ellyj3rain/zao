@@ -156,6 +156,24 @@ function adapter.advanceContact(personId, rec, candidate, context)
         candidate, type(context) == "table" and context or {})
 end
 
+function adapter.beginDormancy(personId, rec, body)
+    personId = tostring(personId or "")
+    if personId == "" or not rec or rec.bodyOwner ~= "ZAO"
+        or tostring(rec.id or "") ~= personId or not body
+        or not (SAO and SAO.Body and SAO.Body.foreign[personId] == body) then return nil end
+    local data = body:getModData()
+    if data.SAOPersonId ~= rec.id or data.SAOExternalOwner ~= "ZAO"
+        or data.SAOExternalToken ~= rec.bodyOwnerToken then return nil end
+    local state = ZAO.Pathogen and ZAO.Pathogen.stateOf(personId)
+    if not state or not ZAO.Maintenance or not ZAO.Maintenance.beginDormancy then return nil end
+    return ZAO.Maintenance.beginDormancy(state)
+end
+
+function adapter.rollbackDormancy(token)
+    return ZAO.Maintenance and ZAO.Maintenance.rollbackDormancy
+        and ZAO.Maintenance.rollbackDormancy(token) == true
+end
+
 function adapter.advanceDormant(personId, rec, body, elapsedHours, atHours)
     local state = ZAO.Pathogen and ZAO.Pathogen.stateOf(tostring(personId))
         or nil

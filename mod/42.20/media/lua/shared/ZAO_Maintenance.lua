@@ -94,6 +94,44 @@ function Maintenance.advanceState(state, atHours)
     return true
 end
 
+-- A materialization may fail after one native minute has been applied.
+-- Only this owner knows which durable fields that replay changes. The snapshot
+-- is runtime-only; successful synchronous replay needs no second commit.
+local function copyMaintenance(value, depth, seen)
+    if type(value) ~= "table" then
+        if value ~= nil and type(value) ~= "string" and type(value) ~= "number"
+            and type(value) ~= "boolean" then error("non-scalar-maintenance") end
+        return value
+    end
+    depth, seen = depth or 0, seen or {}
+    if depth > 8 or seen[value] then error("invalid-maintenance-shape") end
+    seen[value] = true
+    local out, count = {}, 0
+    for key, item in pairs(value) do
+        count = count + 1
+        if count > 128 or (type(key) ~= "string" and type(key) ~= "number") then
+            error("invalid-maintenance-field")
+        end
+        out[key] = copyMaintenance(item, depth + 1, seen)
+    end
+    seen[value] = nil
+    return out
+end
+
+function Maintenance.beginDormancy(state)
+    if type(state) ~= "table" or (state.terminalState ~= "afflicted"
+        and state.terminalState ~= "crossed") then return nil end
+    return { state = state, before = copyMaintenance(state.maintenance) }
+end
+
+function Maintenance.rollbackDormancy(token)
+    if type(token) ~= "table" or type(token.state) ~= "table"
+        or token.retired then return false end
+    token.state.maintenance = token.before
+    token.retired = true
+    return true
+end
+
 local function stat(body, key)
     local value = nil
     pcall(function() value = body:getStats():get(key) end)

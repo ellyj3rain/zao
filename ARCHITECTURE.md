@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Architecture |
 |---|---|
-| Version | `0.5.3.0-pre-alpha` |
+| Version | `0.5.4.0-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `ARCHITECTURE.md` |
 | Status | ACTIVE - ratified framework shape. Engine surfaces claimed here are unverified until `FINDINGS.md` carries them. |
@@ -144,6 +144,14 @@ dormant and headless execution use the same shared module. SAO may address the
 person and perform an accepted native action through the adapter; ZAO decides
 whether the actor does it.
 
+Auditory orientation is admitted by this same driver after action arbitration.
+SAO's shared orienting owner accepts only the body's personally acquired fresh
+native sound occurrence and current owner token. Existing Neuro clarity and
+motor steadiness shape the native head/body response. A route admits head
+movement only; idle unclaimed execution may admit a body turn. Owned actions
+yield the glance. The shared native gaze is the authority for subsequent sight;
+hearing itself supplies no actor identity or new route.
+
 The shared driver supplies arbitration, current activity, durable movement and
 exact-once route outcomes. Each state provider admits its own motives and
 actions. Afflicted fear actual Crossed threats, seek other Afflicted and travel
@@ -181,7 +189,13 @@ the exact source revision, locomotion, transfer, carried item and native-use
 receipt. `ZAO_Diet` registers only the state-specific eating action after the
 item is physically carried. Dormant external shells restore at zero survivor
 elapsed time before ZAO observes native hunger and thirst and advances the
-separately owned predatory state.
+separately owned predatory state. When SAO replays active pharmacology through
+elapsed native physiology, it calls that same registered ZAO owner for each
+state-owned slice. The exact body and owner token admit
+`ZAO_ExecutionOwner.beginDormancy`; `ZAO_Maintenance` captures only its own
+bounded maintenance field. Failed restoration invokes `rollbackDormancy` once;
+success drops the transient snapshot. SAO owns the body journal and native
+teardown, while ZAO owns rollback of its state. Neither persists a body handle.
 
 ### Private contact continuation and maintenance correction (A42)
 
