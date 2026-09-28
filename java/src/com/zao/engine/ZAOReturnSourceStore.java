@@ -277,6 +277,17 @@ public final class ZAOReturnSourceStore {
         return true;
     }
 
+    /** Build 42.21 packs the live population through this list argument rather
+     * than the 42.20 begin-save selectors. Preserve the caller's list and pass
+     * the native packer a bounded view without held return sources. */
+    public static List<IsoZombie> populationForSave(List<IsoZombie> bodies) {
+        beforePopulationSave();
+        if (bodies == null || bodies.isEmpty()) return bodies;
+        List<IsoZombie> selected = new ArrayList<>(bodies.size());
+        for (IsoZombie body : bodies) if (!populationExcluded(body)) selected.add(body);
+        return selected;
+    }
+
     /** Runs before native iteration; preflight itself creates then detaches a
      * temporary native body, so it must never run inside a live list iterator. */
     public static void beforePopulationSave() {

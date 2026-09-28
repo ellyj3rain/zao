@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Batch Log |
 |---|---|
-| Version | `0.5.4.0-pre-alpha` |
+| Version | `0.5.4.1-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `BATCH_LOG.md` |
 | Status | REGULATORY - chronological batch index. |
@@ -60,3 +60,4 @@ history tree. The last row below is the tip.
 | [A42](Batches/A42-20260925-2145Z-1445PST-private-contact-and-crossed-maintenance-correction.md) | 2026-09-25 | Private contact and Crossed maintenance correction | [`T-001`](Batches/THREADS.md#t-001), [`T-002`](Batches/THREADS.md#t-002) |
 | [A43](Batches/A43-20260926-0457Z-2157PST-native-facing-and-observer-exclusion.md) | 2026-09-26 | Native facing and observer exclusion | [`T-001`](Batches/THREADS.md#t-001), [`T-002`](Batches/THREADS.md#t-002) |
 | [A44](Batches/A44-20260927-0512Z-2212PST-living-orientation-and-elapsed-rollback.md) | 2026-09-27 | Living orientation and elapsed rollback | [`T-001`](Batches/THREADS.md#t-001), [`T-002`](Batches/THREADS.md#t-002) |
+| [A45](Batches/A45-20260928-2155Z-1455PDT-build-42-21-runtime-admission.md) | 2026-09-28 | Build 42.21 runtime admission | [`T-001`](Batches/THREADS.md#t-001), [`T-002`](Batches/THREADS.md#t-002) |

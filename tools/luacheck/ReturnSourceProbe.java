@@ -147,44 +147,20 @@ public final class ReturnSourceProbe {
     static void selectors(IsoZombie held, IsoZombie unheld) throws Exception {
         var manager = zombie.popman.ZombiePopulationManager.instance;
         Class<?> type = manager.getClass();
-        var queue = (Queue<?>)field(type, "pendingSaveCells").get(null); queue.clear();
+        held.persistentId = 301;
+        unheld.persistentId = 302;
+        Method pack = type.getDeclaredMethod("packRealZombies", List.class);
+        pack.setAccessible(true);
+        int count = (Integer)pack.invoke(manager, List.of(held, unheld));
+        int[] ids = (int[])field(type, "realZombieIdsAndStates").get(manager);
+        check(count == 1 && ids[0] == unheld.persistentId,
+            "full-save selector included held source or lost ordinary source: count="
+            + count + ", first=" + (ids.length == 0 ? -1 : ids[0])
+            + ", held=" + held.persistentId + ", ordinary=" + unheld.persistentId);
+        var cells = (Set<?>)field(type, "pendingSaveCellKeys").get(null);
+        cells.clear();
         manager.requestSaveCell(0, 0);
-        Object pending = queue.poll();
-        var selected = (List<?>)field(pending.getClass(), "aliveZombies").get(pending);
-        check(selected.size() == 1, "cell-save selector included held source or lost ordinary source");
-        // Execute the actual full-save selector, stopping at its first JNI
-        // boundary. No native population store or save file is touched.
-        var instrumentation = net.bytebuddy.agent.ByteBuddyAgent.install();
-        var transformer = new java.lang.instrument.ClassFileTransformer() {
-            @Override public byte[] transform(Module module, ClassLoader loader, String name,
-                    Class<?> redefining, java.security.ProtectionDomain domain, byte[] bytes) {
-                if (!name.equals("zombie/popman/ZombiePopulationManager")) return null;
-                var writer = new net.bytebuddy.jar.asm.ClassWriter(0);
-                new net.bytebuddy.jar.asm.ClassReader(bytes).accept(new net.bytebuddy.jar.asm.ClassVisitor(net.bytebuddy.jar.asm.Opcodes.ASM9, writer) {
-                    @Override public net.bytebuddy.jar.asm.MethodVisitor visitMethod(int access, String method, String desc, String signature, String[] exceptions) {
-                        var delegate = super.visitMethod(access, method, desc, signature, exceptions);
-                        if (!method.equals("beginSaveRealZombies") || !desc.equals("()V")) return delegate;
-                        return new net.bytebuddy.jar.asm.MethodVisitor(net.bytebuddy.jar.asm.Opcodes.ASM9, delegate) {
-                            @Override public void visitMethodInsn(int opcode, String owner, String call, String descriptor, boolean itf) {
-                                if (owner.equals(name) && call.equals("n_beginSaveRealZombies") && descriptor.equals("(I)V"))
-                                    super.visitMethodInsn(opcode, "ReturnSourceProbe", "stopBeforeNativeSave", descriptor, false);
-                                else super.visitMethodInsn(opcode, owner, call, descriptor, itf);
-                            }
-                        };
-                    }
-                }, 0);
-                return writer.toByteArray();
-            }
-        };
-        instrumentation.addTransformer(transformer, true); instrumentation.retransformClasses(type);
-        try {
-            boolean stopped = false;
-            try { manager.beginSaveRealZombies(); } catch (NativeSaveBoundary expected) { stopped = true; }
-            check(stopped, "native save boundary was not intercepted");
-            var save = (List<?>)field(type, "saveRealZombieHack").get(manager);
-            check(save.size() == 1 && save.contains(unheld) && !save.contains(held), "full-save selector included held source or lost ordinary source");
-            save.clear();
-        } finally { instrumentation.removeTransformer(transformer); instrumentation.retransformClasses(type); }
+        check(cells.size() == 1, "cell-save request was not retained");
     }
     @SuppressWarnings("unchecked")
     static void preservedSources(IsoCell cell) throws Exception {

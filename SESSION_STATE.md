@@ -1,11 +1,28 @@
 | Document | Zombie Awareness Overhaul Session State |
 |---|---|
-| Version | `0.5.4.0-pre-alpha` |
+| Version | `0.5.4.1-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `SESSION_STATE.md` |
 | Status | CANONICAL - where the work actually stands. |
 
 # Session state
+
+**Current implementation, 2026-09-28:** A45 admits the installed Build 42.21
+runtime in both ZAO mod descriptors. The full living-world study cohort had
+requested `ZombieAwareness` but the engine omitted it from the saved load order
+because `versionMax` stopped at 42.20. The descriptor now spans 42.20 through
+42.21.
+
+That omission had also concealed an engine seam change. Build 42.21 removes
+`beginSaveRealZombies()` and packs live bodies through `packRealZombies(List)`.
+The return-source weave now accepts the established 42.20 selector topology or
+the installed 42.21 topology, checkpoints before either save path, and supplies
+the 42.21 packer a copied list excluding held return sources. The native probe
+executes the installed packer and its named defect controls. ZAO behavior,
+person state and planning are unchanged. The complete sixteen-border gate
+passes. A full Build 42.21 living-world cohort retained `ZombieAwareness` in
+the saved mod list, completed with exit code zero and produced no scanned ZAO
+runtime error; SAO C98 retains the content-hashed loaded receipt.
 
 **Current implementation, 2026-09-27:** A44 closes the frozen Driver,
 Maintenance and ExecutionOwner inputs paired with SAO C89. Living Afflicted
