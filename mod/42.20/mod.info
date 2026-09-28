@@ -1,10 +1,10 @@
 name=Zombie Awareness Overhaul
 id=ZombieAwareness
 author=ellyj3rain
-modversion=0.5.4.0-pre-alpha
+modversion=0.5.4.1-pre-alpha
 description=Zombie Awareness Overhaul drives turned bodies and transferred living Afflicted and Crossed human shells from the person's retained record. PRE-ALPHA: expect defects.
 versionMin=42.20
-versionMax=42.20
+versionMax=42.21
 icon=icon.png
 poster=poster.png
 javaJarFile=media/java/ZAO.jar

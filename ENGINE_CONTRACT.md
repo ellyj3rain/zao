@@ -1,6 +1,6 @@
 | Document | Zombie Awareness Overhaul Engine Contract |
 |---|---|
-| Version | `0.5.4.0-pre-alpha` |
+| Version | `0.5.4.1-pre-alpha` |
 | Author | ellyj3rain |
 | Repository | `ENGINE_CONTRACT.md` |
 | Status | CANONICAL, INCOMPLETE - the verified engine mechanics the turned require; nothing here is live-verified. |
@@ -79,6 +79,15 @@ initializes and loads before `ReanimatedPlayers.loadReanimatedPlayers`; during
 save, Lua `OnSave` runs before `IsoCell.save`, which runs before
 `GlobalModData.save`. The native file format beyond the exercised source record
 remains Java-side.
+
+A45 extends that verified return-source seam through installed Build 42.21.
+`ZombiePopulationManager.beginSaveRealZombies()` no longer exists; live bodies
+are packed by `packRealZombies(List)` before `n_updateRealZombies`, while cell
+save requests now retain only packed cell coordinates before `n_saveCell`.
+The source-return weave recognizes the prior 42.20 selector topology and this
+42.21 topology explicitly. On 42.21 it checkpoints held sources before packing
+and passes the native packer a copied list with those exact sources excluded.
+The native list owned by the engine is never mutated.
 
 Lua reach: `body:reanimateNow()` (shipped:
 `DebugUIs/DebugContextMenu.lua:680-688` — its menu also shows the shipped

@@ -49,6 +49,12 @@ public final class ZAOReturnWeave {
     public static final class BeforeSave {
         @Advice.OnMethodEnter public static void enter() { ZAOReturnSourceStore.beforePopulationSave(); }
     }
+    public static final class PackedSave {
+        @Advice.OnMethodEnter
+        public static void enter(@Advice.Argument(value = 0, readOnly = false) java.util.List<zombie.characters.IsoZombie> bodies) {
+            bodies = ZAOReturnSourceStore.populationForSave(bodies);
+        }
+    }
     public static final class Virtualize {
         @Advice.OnMethodEnter(skipOn = Advice.OnNonDefaultValue.class)
         public static boolean enter(@Advice.Argument(0) zombie.characters.IsoZombie body) {
@@ -136,6 +142,8 @@ public final class ZAOReturnWeave {
                 .and(ElementMatchers.takesArguments(0)).and(ElementMatchers.returns(void.class))));
         return builder.visit(Advice.to(BeforeSave.class).on(ElementMatchers.named("beginSaveRealZombies").and(ElementMatchers.takesArguments(0))
                     .or(ElementMatchers.named("requestSaveCell").and(ElementMatchers.takesArguments(int.class, int.class)))))
+                .visit(Advice.to(PackedSave.class).on(ElementMatchers.named("packRealZombies")
+                    .and(ElementMatchers.takesArguments(java.util.List.class))))
                 .visit(Advice.to(Virtualize.class).on(ElementMatchers.named("virtualizeZombie")
                     .and(ElementMatchers.takesArguments(zombie.characters.IsoZombie.class))))
                 .visit(Advice.to(PopulationUnload.class).on(ElementMatchers.named("removeChunkFromWorld")
@@ -150,24 +158,30 @@ public final class ZAOReturnWeave {
                 net.bytebuddy.description.field.FieldList<net.bytebuddy.description.field.FieldDescription.InDefinedShape> fields,
                 net.bytebuddy.description.method.MethodList<?> methods, int writerFlags, int readerFlags) {
             return new ClassVisitor(Opcodes.ASM9, visitor) {
-                int sites;
+                int beginSites, cellSites;
                 @Override public MethodVisitor visitMethod(int access, String method, String desc, String signature, String[] exceptions) {
                     MethodVisitor delegate = super.visitMethod(access, method, desc, signature, exceptions);
-                    boolean selector = ("beginSaveRealZombies".equals(method) && "()V".equals(desc))
-                        || ("requestSaveCell".equals(method) && "(II)V".equals(desc));
+                    boolean legacyFull = "beginSaveRealZombies".equals(method) && "()V".equals(desc);
+                    boolean legacyCell = "requestSaveCell".equals(method) && "(II)V".equals(desc);
+                    boolean selector = legacyFull || legacyCell;
                     if (!selector) return delegate;
                     return new MethodVisitor(Opcodes.ASM9, delegate) {
                         @Override public void visitMethodInsn(int opcode, String owner, String call, String descriptor, boolean itf) {
                             if (opcode == Opcodes.INVOKEVIRTUAL && "zombie/characters/IsoZombie".equals(owner)
                                     && "isReanimatedPlayer".equals(call) && "()Z".equals(descriptor)) {
-                                sites++;
+                                if (legacyFull) beginSites++;
+                                else cellSites++;
                                 super.visitMethodInsn(Opcodes.INVOKESTATIC, STORE, "populationExcluded", "(Lzombie/characters/IsoZombie;)Z", false);
                             } else super.visitMethodInsn(opcode, owner, call, descriptor, itf);
                         }
                     };
                 }
                 @Override public void visitEnd() {
-                    if (sites != 2) throw new IllegalStateException("Native population selection sites changed: " + sites);
+                    boolean build420 = beginSites == 1 && cellSites == 1;
+                    boolean build421 = beginSites == 0 && cellSites == 0;
+                    if (!build420 && !build421) throw new IllegalStateException(
+                        "Native population selection sites changed: begin=" + beginSites
+                        + ", cell=" + cellSites);
                     super.visitEnd();
                 }
             };
@@ -205,7 +219,7 @@ public final class ZAOReturnWeave {
                         : PRESERVED.equals(name) && "loadReanimatedPlayers".equals(method) && "(Ljava/nio/ByteBuffer;)V".equals(desc) ? 512
                         : GLOBAL.equals(name) && "load".equals(method) && "()V".equals(desc) ? 2048
                         : POPULATION.equals(name) ? switch (method + desc) {
-                            case "beginSaveRealZombies()V" -> 16;
+                            case "beginSaveRealZombies()V", "packRealZombies(Ljava/util/List;)I" -> 16;
                             case "requestSaveCell(II)V" -> 32;
                             case "virtualizeZombie(Lzombie/characters/IsoZombie;)V" -> 64;
                             case "removeChunkFromWorld(Lzombie/iso/IsoChunk;)V" -> 256;
@@ -220,7 +234,11 @@ public final class ZAOReturnWeave {
                                 || (bit != 0 && bit != 8 && "hasHold".equals(call) && "(Ljava/lang/Object;)Z".equals(descriptor))))
                             result[0] |= bit;
                         if (opcode == Opcodes.INVOKESTATIC && STORE.equals(owner)) {
-                            if ((bit == 16 || bit == 32) && "populationExcluded".equals(call)
+                            if (bit == 16 && "populationForSave".equals(call)
+                                    && "(Ljava/util/List;)Ljava/util/List;".equals(descriptor)) {
+                                selection = true; preparation = true;
+                            }
+                            if (bit == 16 && "populationExcluded".equals(call)
                                     && "(Lzombie/characters/IsoZombie;)Z".equals(descriptor)) selection = true;
                             if ((bit == 16 || bit == 32) && "beforePopulationSave".equals(call) && "()V".equals(descriptor)) preparation = true;
                             if (bit == 64 && "virtualize".equals(call) && "(Lzombie/characters/IsoZombie;)Z".equals(descriptor)) result[0] |= bit;
@@ -232,7 +250,9 @@ public final class ZAOReturnWeave {
                             if (bit == 2048 && "recover".equals(call) && "()V".equals(descriptor)) result[0] |= bit;
                         }
                     }
-                    @Override public void visitEnd() { if (selection && preparation) result[0] |= bit; }
+                    @Override public void visitEnd() {
+                        if ((bit == 16 && selection && preparation) || (bit == 32 && preparation)) result[0] |= bit;
+                    }
                 };
             }
         }, ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
