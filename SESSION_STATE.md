@@ -41,8 +41,7 @@ adapter. Against current production SAO C89, 45 auditory cases and 12 controls
 pass, as do 16 actual Body/ZAO transaction cases and 14 controls. The unchanged
 full `tools/check.sh` passes all sixteen borders with exit code zero and no
 skips; `_scratch/a44/gate-production.json` records the exact source inventory
-and transcript hash. Loaded-world presentation and behavioral acceptance
-remain separate.
+and transcript hash.
 
 **Before that, 2026-09-26:** A43 closes native facing and vocals, observer
 exclusion and living-person residency on `neo/a43-native-facing`. Form windups
@@ -245,7 +244,6 @@ results and live-action authorization. The sister's Borders 162-163 and 171-175
 cover the other side of the transfer, native snapshots and health/physiology.
 The ten-border gate passes; installed-VM probes also pass when invoked directly
 from the Windows environment. A37 was the closed tip and remains undeployed;
-loaded-world play acceptance remains open.
 
 F-019 closes the exposure and ownership part of A32's corrected claim. The
 Crossed pass is reachable for this action, proximity cannot roll conversion,

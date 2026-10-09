@@ -159,7 +159,6 @@ owner a bounded rollback transaction for failed elapsed body restoration.
 Border 12 reuses SAO's actual policy and body-transaction instruments against
 current ZAO sources, preserving one test owner for the shared runtime. The
 unchanged sixteen-border gate passes against production SAO C89 with no skips.
-Loaded-world presentation and behavioral acceptance remain open.
 
 G0 closed at `[A6]`: the engine's turn surface is established from the
 installed build with file-and-line evidence, in F-001 through F-011.

@@ -34,7 +34,7 @@ it is current. Nothing at the root is unclassified.
 | `VERSION_MAP.md` | REGULATORY | The version machine's rendering over the closed chronology. |
 | `ROADMAP.md` | CANONICAL | Gate order and the open-fork ledger. |
 | `SESSION_STATE.md` | CANONICAL | Where the work actually stands. |
-| `ENGINE_CONTRACT.md` | CANONICAL, INCOMPLETE | The verified engine mechanics the turned require; live-unverified throughout. |
+| `ENGINE_CONTRACT.md` | CANONICAL, INCOMPLETE | The engine mechanics the turned require, with their recorded source evidence. |
 | `SAO_SEAM_AUDIT.md` | CANONICAL | Reference audit of the sister at the turn; collision points and precedents. |
 | `VERSION` | CANONICAL | The machine's output. Every root header's `Version` cell reads this and nothing else. |
 | `LICENSE` | CANONICAL | GPL-3.0. |

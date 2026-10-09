@@ -38,8 +38,8 @@ SAO the actor's planner or executor.
 - **Batch shape.** A batch is a coherent development unit, closed when the
   work is done, not when a message ends. Closing a batch means the record, the
   `BATCH_LOG.md` row, and the `SESSION_STATE.md` advance, in that order, plus
-  the version machine's restamp — and, once instruments exist for the class
-  the batch touched, a border and a control that flips its verdict.
+  the version machine's restamp and sufficient verification of the changed
+  contracts. Later improvements continue in a linked batch.
 - **Commit shape.** `[A#] source: ...` for implementation, `[A#] reference: ...`
   for records and documents, `[A#] governance: ...` for closings and process,
   `[REPO] ...` for repository mechanics. One batch is one logical unit and
@@ -58,9 +58,10 @@ SAO the actor's planner or executor.
 - **Verify the tool before trusting its output.** An analysis script is not
   evidence until its own correctness is established against a known-bad
   control.
-- **The gate.** `tools/check.sh` runs every border; the pre-commit hook runs
-  it. Run it before every commit and read the whole verdict, including the
-  exit code.
+- **Verification.** Select sufficient checks for changed inputs and affected
+  contracts, reusing applicable evidence. `tools/check.sh` is the full border
+  runner used by the installed hook; actual required checks retain that
+  external enforcement. Read the verdict and exit code of checks performed.
 - **Publishing.** A closed batch reaches `origin/main` through a branch and a
   pull request, merged by you. `main` is protected and refuses a direct push.
   The shape is SAO's, which is CAO's:
