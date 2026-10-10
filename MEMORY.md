@@ -57,4 +57,4 @@ it is current. Nothing at the root is unclassified.
 | `Batches/` | One alphanumeric batch sequence; one record per closed batch; the thread index. |
 | `tools/` | The evidence apparatus: the borders, `check.sh`, the version machine, the pre-commit hook. |
 
-`artifacts/docx/` holds generated readable exports; the corresponding Markdown remains the working source.
+Markdown documents are complete canonical artifacts. Another format is produced only on explicit operator request; automatic Word exports are retired.

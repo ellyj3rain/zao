@@ -65,3 +65,8 @@ history tree. The last row below is the tip.
 ## [REPO] 2026-10-09 23:55 UTC - Aggregate development assessment correction
 
 Neo maintains current capability and README assessment from ordinary operator feedback, repairs and retained results. This maintenance corrects active playtest/acceptance copy within the existing project; published product chronology and versions remain unchanged. Checks cover the owned text diff, applicable syntax, current source links and tracked Word twins. The operator plays the aggregate build; completed mechanics have no standing one-to-one acceptance queue.
+
+
+## [REPO] 2026-10-10 00:42 UTC - Markdown documentation maintenance
+
+The operator retires automatic Word companions. Markdown remains the complete canonical documentation. This maintenance removes 19 generated tracked DOCX exports and corrects the current documentation contract; current product source, versions and prior Markdown history remain preserved. Checks cover the exact deletion allowlist, current policy text, committed diff hygiene and affected producer lifecycle where changed. Generated derivatives receive no additional duplicate archive.
